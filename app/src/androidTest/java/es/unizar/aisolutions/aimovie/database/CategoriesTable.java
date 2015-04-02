@@ -12,7 +12,7 @@ import android.util.Log;
  */
 public class CategoriesTable {
 
-    public static final String TABLE_NAME = "films";
+    public static final String TABLE_NAME = "categories";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_CATEGORIE_NAME = "name";
     public static final String COLUMN_DESCRIPTION = "description";
