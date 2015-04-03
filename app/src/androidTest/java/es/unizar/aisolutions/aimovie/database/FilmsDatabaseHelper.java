@@ -28,4 +28,6 @@ public class FilmsDatabaseHelper extends SQLiteOpenHelper {
         FilmsTable.onUpgrade(db, oldVersion, newVersion);
         CategoriesTable.onUpgrade(db, oldVersion, newVersion);
     }
+
+
 }

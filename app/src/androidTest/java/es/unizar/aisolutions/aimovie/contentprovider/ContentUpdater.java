@@ -54,13 +54,13 @@ public interface ContentUpdater {
      * @param newCategory Category replacing one with the same _id.
      * @return Category which has been replaced.
      */
-    public Category updateCategory(Category newCategory);
+    public boolean updateCategory(Category newCategory);
 
     /**
      * @param newFilm Film replacing one with the same _id.
      * @return Film which has been replaced.
      */
-    public Film updateFilm(Film newFilm);
+    public boolean updateFilm(Film newFilm);
 
     /**
      * addFilm adds a new Film to database.
