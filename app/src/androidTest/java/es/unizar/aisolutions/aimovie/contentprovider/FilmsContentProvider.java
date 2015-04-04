@@ -2,7 +2,6 @@ package es.unizar.aisolutions.aimovie.contentprovider;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-
 import java.util.Vector;
 import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Film;
@@ -10,8 +9,6 @@ import es.unizar.aisolutions.aimovie.database.CategoriesTable;
 import es.unizar.aisolutions.aimovie.database.FilmsDatabaseHelper;
 import es.unizar.aisolutions.aimovie.database.FilmsTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * FilmsContentProvider implements all needed methods to manage database.
@@ -54,14 +51,39 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
             return null;
         }
     }
+
+    /**
+     *
+     * @param c : Category used as filter.
+     * @return A vector with all films whose category is c
+     */
     @Override
     public Vector<Film> fetchFilms(Category c) {
-        return null;
+        Vector<Film> c = new Vector<>();
+        Cursor cursor;
+        cursor= mDb.query(KindTable.TABLE_NAME, new String[]{KindTable.COLUMN_FILM_ID},
+                KindTable.COLUMN_CATEGORIE_ID + "=" + c, null, null, null, null,null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                c.add(fetchFilms(cursor.getString(1)));
+            } while (cursor.moveToNext());
+        }
+        return c;
     }
 
+    /**
+     *
+     * @param c = Categories list used as filter.
+     * @return A vector with all films whose category is in c
+     */
     @Override
     public Vector<Film> fetchFilms(Vector<Category> c) {
-        return null;
+        Vector<Film> result = new Vector<>();
+        for (int i=r.size()-1;i>=0;i--) {
+            result.addAll(fetchFilms(c.get(i)));
+        }
+        return result;
     }
 
     /**
@@ -134,7 +156,8 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
     }
 
     @Override
-    public Vector<Boolean> deleteFilms(Category c) {
+    public boolean deleteFilms(Category c) {
+
         return null;
     }
 
@@ -145,12 +168,19 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
 
     @Override
     public boolean deleteKind(String id) {
-        return false;
+        return null;
+
     }
 
+    /**
+     *
+     * @param f Identifier from film whose relationship 'kind' be deleted.
+     * @param c Identifier from category whose relationship 'kind' be deleted.
+     * @return true if the delete have been successfully
+     */
     @Override
     public boolean deleteKind(String f, String c) {
-        return false;
+        return null;
     }
 
     /**
