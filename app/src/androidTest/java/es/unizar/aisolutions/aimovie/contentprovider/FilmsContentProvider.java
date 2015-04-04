@@ -1,7 +1,11 @@
 package es.unizar.aisolutions.aimovie.contentprovider;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.sql.SQLException;
 import java.util.Vector;
 import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Film;
@@ -18,6 +22,41 @@ import es.unizar.aisolutions.aimovie.database.KindTable;
  *
  */
 public class FilmsContentProvider implements ContentProvider,ContentUpdater {
+
+    private FilmsDatabaseHelper mDbHelper;
+    private SQLiteDatabase mDb;
+    private final Context mCtx;
+    /**
+     * Constructor - takes the context to allow the database to be
+     * opened/created
+     *
+     * @param ctx
+     *            the Context within which to work
+     */
+    public FilmsContentProvider (Context ctx) {
+        this.mCtx = ctx;
+    }
+
+    /**
+     * Open the notes database. If it cannot be opened, try to create a new
+     * instance of the database. If it cannot be created, throw an exception to
+     * signal the failure
+     *
+     * @return this (self reference, allowing this to be chained in an
+     *         initialization call)
+     * @throws SQLException
+     *             if the database could be neither opened or created
+     */
+    public FilmsContentProvider open() throws SQLException {
+        mDbHelper = new FilmsDatabaseHelper(mCtx);
+        mDb = mDbHelper.getWritableDatabase();
+        return this;
+    }
+
+    public void close() {
+        mDbHelper.close();
+    }
+
     /**
      *
      * @return  A vector with all categories from the database (it's possible with null)
@@ -40,8 +79,8 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
 
         /**
          *
-         * @param mCursor Cursor where to get the information
-         * @return Get the information from a Cursor into a category
+         * @param mCursor Cursor where to get the information of a category
+         * @return Get the information from a Cursor into one category
          */
     private Category getCategory (Cursor mCursor) {
         if (mCursor != null) {
@@ -59,17 +98,17 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
      */
     @Override
     public Vector<Film> fetchFilms(Category c) {
-        Vector<Film> c = new Vector<>();
+        Vector<Film> result = new Vector<>();
         Cursor cursor;
         cursor= mDb.query(KindTable.TABLE_NAME, new String[]{KindTable.COLUMN_FILM_ID},
                 KindTable.COLUMN_CATEGORIE_ID + "=" + c, null, null, null, null,null);
 
         if (cursor.moveToFirst()) {
             do {
-                c.add(fetchFilms(cursor.getString(1)));
+                result.add(fetchFilms(cursor.getString(1)));
             } while (cursor.moveToNext());
         }
-        return c;
+        return result;
     }
 
     /**
@@ -80,7 +119,8 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
     @Override
     public Vector<Film> fetchFilms(Vector<Category> c) {
         Vector<Film> result = new Vector<>();
-        for (int i=r.size()-1;i>=0;i--) {
+        int count= c.size();
+        for (int i=count-1;i>=0;i--) {
             result.addAll(fetchFilms(c.get(i)));
         }
         return result;
@@ -156,7 +196,7 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
     }
 
     @Override
-    public boolean deleteFilms(Category c) {
+    public Vector<Boolean> deleteFilms(Category c) {
 
         return null;
     }
@@ -168,7 +208,7 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
 
     @Override
     public boolean deleteKind(String id) {
-        return null;
+        return false;
 
     }
 
@@ -180,7 +220,7 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
      */
     @Override
     public boolean deleteKind(String f, String c) {
-        return null;
+        return false;
     }
 
     /**
@@ -256,16 +296,10 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
      *          False if not
      */
     private boolean filmComplete (Film film_o) {
-        if (film_o._id!=null && film_o.name!=null && film_o.sinopsis!=null &&
-                film_o.name!=null && film_o.name!=null && film_o.name!=null
+        return film_o._id!=null && film_o.name!=null && film_o.sinopsis!=null
                 && film_o.director!=null && film_o._id.length()>0 && film_o.name.length()>0
                 && film_o.sinopsis.length()>0 && film_o.in_stock>=0 && film_o.rented>=0
-                && film_o.director.length()>0 && film_o.year>=1900) {
-            return true;
-        }
-        else {
-            return false;
-        }
+                && film_o.director.length()>0 && film_o.year>=1900;
     }
 
     /**
@@ -294,13 +328,8 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
      *          False if not
      */
     private boolean categoryComplete (Category category_o) {
-        if (category_o._id!=null && category_o.name!=null && category_o.description!=null
-                && category_o._id.length()>0 && category_o.name.length()>0 && category_o.description.length()>0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return category_o._id!=null && category_o.name!=null && category_o.description!=null
+                && category_o._id.length()>0 && category_o.name.length()>0 && category_o.description.length()>0;
     }
     /**
      *
@@ -314,11 +343,7 @@ public class FilmsContentProvider implements ContentProvider,ContentUpdater {
             ContentValues initialValues = new ContentValues();
             initialValues.put(KindTable.COLUMN_FILM_ID, f);
             initialValues.put(KindTable.COLUMN_CATEGORIE_ID, c);
-            if (! mDb.insert(KindTable.TABLE_NAME, null, initialValues) == 1) {
-                return false;
-            } else {
-                return true;
-            }
+            return (mDb.insert(KindTable.TABLE_NAME, null, initialValues) == 1);
         }
         else {
             return false;
