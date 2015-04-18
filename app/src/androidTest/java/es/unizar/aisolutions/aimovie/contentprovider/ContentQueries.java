@@ -5,12 +5,12 @@ import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Film;
 
 /**
- * ContentProvider contains every method which queries database.
+ * ContentQueries contains every method which queries database.
  *
  * Created by diego on 2/04/15.
  * Time spent: 8 minutes.
  */
-public interface ContentProvider {
+public interface ContentQueries {
 
     /**
      * @return All categories stored in database.

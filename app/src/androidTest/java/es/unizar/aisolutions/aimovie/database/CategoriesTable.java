@@ -3,6 +3,9 @@ package es.unizar.aisolutions.aimovie.database;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * CategoriesTable provides methods so as to create and update table called 'TABLE_NAME'
  * in a SQLite database.
@@ -16,7 +19,7 @@ public class CategoriesTable {
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_CATEGORIE_NAME = "name";
     public static final String COLUMN_DESCRIPTION = "description";
-
+    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY,COLUMN_CATEGORIE_NAME,COLUMN_DESCRIPTION}));
 
 
     // SQL code to create table called 'TABLE_NAME'

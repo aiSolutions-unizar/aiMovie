@@ -5,13 +5,13 @@ import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Film;
 
 /**
- * ContentUpdater defines every method that modifies database.
+ * ContentUpdates defines every method that modifies database.
  * This methods can be divided in three types adding, updating and erasing.
  *
  * Created by diego on 2/04/15.
  * Time spent: 11 minutes.
  */
-public interface ContentUpdater {
+public interface ContentUpdates {
 
     /**
      * @param id Identifier from category to delete.

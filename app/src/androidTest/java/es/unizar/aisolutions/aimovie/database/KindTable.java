@@ -3,6 +3,9 @@ package es.unizar.aisolutions.aimovie.database;
 import android.util.Log;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * KindTable provides methods so as to create and update table called 'TABLE_NAME'
  * in a SQLite database.
@@ -16,6 +19,9 @@ public class KindTable {
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_FILM_ID = "film";
     public static final String COLUMN_CATEGORIE_ID = "categorie";
+
+    public static final HashSet<String> availableColumns = new HashSet<String>();
+
 
 
     // SQL code to create table called 'TABLE_NAME'
@@ -39,6 +45,8 @@ public class KindTable {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         db.execSQL(CREATE_TRIGGER);
+        availableColumns.addAll(FilmsTable.availableColumns);
+        availableColumns.addAll(CategoriesTable.availableColumns);
     }
 
     /**
