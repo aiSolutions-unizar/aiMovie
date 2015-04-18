@@ -63,14 +63,14 @@ public class FilmsContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         database = new FilmsDatabaseHelper(getContext());
-        return database != null;
+        return true;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         checkColumns(projection, sURIMatcher.match(uri));
-        Cursor cursor = null;
+        Cursor cursor;
         switch (sURIMatcher.match(uri)) {
             case FILMS:
                 queryBuilder.setTables(FilmsTable.TABLE_NAME);
@@ -98,7 +98,7 @@ public class FilmsContentProvider extends ContentProvider {
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
-                throw new IllegalArgumentException("Uknown URI: " + uri);
+                throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
@@ -112,7 +112,7 @@ public class FilmsContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db = database.getWritableDatabase();
-        long id = 0;
+        long id;
         switch (sURIMatcher.match(uri)) {
             case FILMS:
                 id = db.insertOrThrow(FilmsTable.TABLE_NAME, null, values);
