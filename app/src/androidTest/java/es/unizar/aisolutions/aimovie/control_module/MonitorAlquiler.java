@@ -1,3 +1,5 @@
+package es.unizar.aisolutions.aimovie.control_module;
+
 /**
  * Created by Santiago on 09/04/2015.
  */

@@ -1,3 +1,5 @@
+package es.unizar.aisolutions.aimovie.control_module;
+
 import android.media.Image;
 
 /** Es la interfaz que se encarga de interactuar con la interfaz grafica */

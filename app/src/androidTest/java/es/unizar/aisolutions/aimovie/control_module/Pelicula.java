@@ -1,3 +1,5 @@
+package es.unizar.aisolutions.aimovie.control_module;
+
 import android.media.Image;
 
 /**

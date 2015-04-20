@@ -1,3 +1,5 @@
+package es.unizar.aisolutions.aimovie.control_module;
+
 import android.media.Image;
 
 import java.util.Vector;
@@ -28,7 +30,7 @@ public class Gestor implements InterfazGUI<Pelicula> {
         }
 
         // Crea una pelicula auxiliar por que no encuentra la pelicula deseada
-        Pelicula p = new Pelicula("Pelicula no encontrada");
+        Pelicula p = new Pelicula("es.unizar.aisolutions.aimovie.control_module.Pelicula no encontrada");
 
         return p;
     }
