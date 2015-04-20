@@ -1,15 +1,16 @@
 package es.unizar.aisolutions.aimovie.control_module;
 
 /**
- * Created by Santiago on 09/04/2015.
+ * Created by Santiago Peralta on 09/04/2015.
  */
-public class MonitorAlquiler {
 
-    public MonitorAlquiler (){
+public class MonitorRental {
+
+    public MonitorRental(){
 
     }
 
-    synchronized boolean alquilar(Pelicula peli, int cantidad){
+    synchronized boolean alquilar(Movie peli, int cantidad){
         int totalAlquiladas;
         int totalDisponibles;
         int alquiladas;
@@ -37,7 +38,7 @@ public class MonitorAlquiler {
         return  false;
     }
 
-    synchronized boolean devolver(Pelicula peli, int cantidad){
+    synchronized boolean devolver(Movie peli, int cantidad){
         int totalAlquiladas;
         int totalDisponibles;
         int alquiladas;

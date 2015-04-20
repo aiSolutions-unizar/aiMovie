@@ -5,48 +5,48 @@ import android.media.Image;
 import java.util.Vector;
 
 /**
- * Created by USUARIO on 09/04/2015.
+ * Created by Santiago Peralta on 09/04/2015.
  */
 
-public class Gestor implements InterfazGUI<Pelicula> {
+public class Manager implements InterfazGUI<Movie> {
 
-    private Vector<Pelicula> listaPeliculas;
-    private MonitorAlquiler monitor;
+    private Vector<Movie> movieList;
+    private MonitorRental monitor;
 
-    public Gestor(){
-        this.listaPeliculas = new Vector<Pelicula>();
-        this.monitor = new MonitorAlquiler();
+    public Manager(){
+        this.movieList = new Vector<Movie>();
+        this.monitor = new MonitorRental();
     }
 
     @Override
-    public Pelicula obtenerDatos(String titulo) {
+    public Movie obtenerDatos(String titulo) {
 
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Devuelve la pelicula que buscaban
-                return listaPeliculas.elementAt(i);
+                return movieList.elementAt(i);
             }
         }
 
         // Crea una pelicula auxiliar por que no encuentra la pelicula deseada
-        Pelicula p = new Pelicula("es.unizar.aisolutions.aimovie.control_module.Pelicula no encontrada");
+        Movie p = new Movie("Movie not found");
 
         return p;
     }
 
     @Override
     public Image obtenerImagen(String titulo) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Devuelve la pelicula que buscaban
-                return listaPeliculas.elementAt(i).getImagen();
+                return movieList.elementAt(i).getImagen();
             }
         }
 
         // Crea una pelicula auxiliar por que no encuentra la pelicula deseada
-        Pelicula p = new Pelicula("Imagen no encontrada");
+        Movie p = new Movie("Imagen no encontrada");
 
         return p.getImagen();
     }
@@ -55,18 +55,18 @@ public class Gestor implements InterfazGUI<Pelicula> {
     public boolean modificarDatos (String titulo, String categoria, String director, String sinopsis,
                                 int estreno, int identificador, Image imagen, int disponibles) {
 
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setTitulo(titulo);
-                listaPeliculas.elementAt(i).setCategoria(categoria);
-                listaPeliculas.elementAt(i).setDirector(director);
-                listaPeliculas.elementAt(i).setSinopsis(sinopsis);
-                listaPeliculas.elementAt(i).setAñoEstreno(estreno);
-                listaPeliculas.elementAt(i).setImagen(imagen);
-                listaPeliculas.elementAt(i).setImbd(identificador);
-                listaPeliculas.elementAt(i).setCantidadDisponible(disponibles);
+                movieList.elementAt(i).setTitulo(titulo);
+                movieList.elementAt(i).setCategoria(categoria);
+                movieList.elementAt(i).setDirector(director);
+                movieList.elementAt(i).setSinopsis(sinopsis);
+                movieList.elementAt(i).setAñoEstreno(estreno);
+                movieList.elementAt(i).setImagen(imagen);
+                movieList.elementAt(i).setImbd(identificador);
+                movieList.elementAt(i).setCantidadDisponible(disponibles);
 
                 return true;
             }
@@ -78,11 +78,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarTitulo(int imbd, String tituloNuevo) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getImbd() == imbd ){
+            if( movieList.elementAt(i).getImbd() == imbd ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setTitulo(tituloNuevo);
+                movieList.elementAt(i).setTitulo(tituloNuevo);
                 return true;
             }
         }
@@ -92,11 +92,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarCategoria(String titulo, String categoriaNueva) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setCategoria(categoriaNueva);
+                movieList.elementAt(i).setCategoria(categoriaNueva);
                 return true;
             }
         }
@@ -106,11 +106,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarDirector(String titulo, String directorNuevo) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setDirector(directorNuevo);
+                movieList.elementAt(i).setDirector(directorNuevo);
                 return true;
             }
         }
@@ -120,11 +120,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarSipnosis(String titulo, String sinopsisNueva) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setSinopsis(sinopsisNueva);
+                movieList.elementAt(i).setSinopsis(sinopsisNueva);
                 return true;
             }
         }
@@ -134,11 +134,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarEstreno(String titulo, int estrenoNuevo) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setAñoEstreno(estrenoNuevo);
+                movieList.elementAt(i).setAñoEstreno(estrenoNuevo);
                 return true;
             }
         }
@@ -148,11 +148,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarImbd(String titulo, int imbdNuevo) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setImbd(imbdNuevo);
+                movieList.elementAt(i).setImbd(imbdNuevo);
                 return true;
             }
         }
@@ -162,11 +162,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
 
     @Override
     public boolean modificarImagen(String titulo, Image imagenNuevo) {
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Modifica la pelicula que buscaban
-                listaPeliculas.elementAt(i).setImagen(imagenNuevo);
+                movieList.elementAt(i).setImagen(imagenNuevo);
                 return true;
             }
         }
@@ -177,12 +177,12 @@ public class Gestor implements InterfazGUI<Pelicula> {
     @Override
     public boolean solicitarPelicula(String titulo, int cantidad) {
 
-        Pelicula peli;
+        Movie peli;
 
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
-                peli = listaPeliculas.elementAt(i);
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+                peli = movieList.elementAt(i);
                 // Devuelve la pelicula que buscaban
                 if(peli.getCantidadDisponible() > cantidad){
                     return monitor.alquilar(peli, cantidad);
@@ -197,11 +197,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
     @Override
     public boolean devolverPelicula(String titulo, int cantidad) {
 
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Devuelve la pelicula que buscaban
-                return monitor.devolver(listaPeliculas.elementAt(i), cantidad);
+                return monitor.devolver(movieList.elementAt(i), cantidad);
             }
         }
         return false;
@@ -212,18 +212,18 @@ public class Gestor implements InterfazGUI<Pelicula> {
                               int estreno, int identificador, Image imagen, int disponibles) {
         boolean peliAnhadida = false;
 
-        Pelicula peli = new Pelicula(titulo, categoria, director, sinopsis, estreno, identificador, imagen, disponibles);
+        Movie peli = new Movie(titulo, categoria, director, sinopsis, estreno, identificador, imagen, disponibles);
 
-        for(int i = 0; i < listaPeliculas.size(); i++){
-            if( listaPeliculas.elementAt(i).getAñoEstreno() < peli.getAñoEstreno() ){
-                listaPeliculas.add(i, peli);
+        for(int i = 0; i < movieList.size(); i++){
+            if( movieList.elementAt(i).getAñoEstreno() < peli.getAñoEstreno() ){
+                movieList.add(i, peli);
                 peliAnhadida = true;
                 break;
             }
         }
 
         if(!peliAnhadida) {
-            listaPeliculas.add(peli);
+            movieList.add(peli);
         }
     }
 
@@ -239,11 +239,11 @@ public class Gestor implements InterfazGUI<Pelicula> {
     @Override
     public void borrarPelicula(String titulo) {
 
-        for(int i = 0; i < listaPeliculas.size(); i++){
+        for(int i = 0; i < movieList.size(); i++){
             // Compara la pelicula del vector con la que desea
-            if( listaPeliculas.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
                 // Elimina la pelicula
-                listaPeliculas.remove(listaPeliculas.elementAt(i));
+                movieList.remove(movieList.elementAt(i));
             }
         }
 

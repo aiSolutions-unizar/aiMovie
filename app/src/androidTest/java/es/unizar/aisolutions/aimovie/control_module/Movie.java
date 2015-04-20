@@ -6,7 +6,7 @@ import android.media.Image;
  * Created by Santiago on 08/04/2015.
  */
 
-public class Pelicula {
+public class Movie {
 
     private String titulo;
     private String categoria;
@@ -20,8 +20,8 @@ public class Pelicula {
     private int cantidadAlquiladas;
 
 
-    public Pelicula(String titulo, String categoria, String director, String sinopsis,
-                    int estreno, int identificador, Image imagen, int disponibles) {
+    public Movie(String titulo, String categoria, String director, String sinopsis,
+                 int estreno, int identificador, Image imagen, int disponibles) {
         this.titulo = titulo;
         this.categoria = categoria;
         this.director = director;
@@ -33,7 +33,7 @@ public class Pelicula {
         this.cantidadAlquiladas = 0;
     }
 
-    public Pelicula(String noEncontrada){
+    public Movie(String noEncontrada){
         this.titulo = noEncontrada;
     }
 

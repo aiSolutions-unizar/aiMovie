@@ -2,6 +2,10 @@ package es.unizar.aisolutions.aimovie.control_module;
 
 import android.media.Image;
 
+/**
+ * Created by Santiago Peralta on 09/04/2015.
+ */
+
 /** Es la interfaz que se encarga de interactuar con la interfaz grafica */
 
 interface InterfazGUI<E> {
