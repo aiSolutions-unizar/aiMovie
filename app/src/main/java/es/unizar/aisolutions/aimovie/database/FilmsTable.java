@@ -14,7 +14,6 @@ import java.util.HashSet;
  * Time spent: 16 minutes.
  */
 public class FilmsTable {
-
     public static final String TABLE_NAME = "films";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_FILM_NAME = "name";
@@ -25,7 +24,6 @@ public class FilmsTable {
     public static final String COLUMN_YEAR = "year";
 
     public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_SINOPSIS, COLUMN_FILM_NAME}));
-
 
     // SQL code to create table called 'TABLE_NAME'
     public static final String CREATE_TABLE =

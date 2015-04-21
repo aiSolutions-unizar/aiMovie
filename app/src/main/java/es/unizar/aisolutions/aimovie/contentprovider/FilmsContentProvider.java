@@ -27,7 +27,6 @@ import es.unizar.aisolutions.aimovie.database.KindTable;
  * Time spent: 60 minutes.
  */
 public class FilmsContentProvider extends ContentProvider {
-
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/films";
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/film";
     private static final int FILM_ID = 1;
