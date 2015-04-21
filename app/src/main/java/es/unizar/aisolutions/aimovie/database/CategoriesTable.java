@@ -17,17 +17,19 @@ public class CategoriesTable {
 
     public static final String TABLE_NAME = "categories";
     public static final String PRIMARY_KEY = "_id";
-    public static final String COLUMN_CATEGORIE_NAME = "name";
+    public static final String COLUMN_CATEGORY_NAME = "name";
     public static final String COLUMN_DESCRIPTION = "description";
-    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_CATEGORIE_NAME, COLUMN_DESCRIPTION}));
+    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_CATEGORY_NAME, COLUMN_DESCRIPTION}));
 
 
     // SQL code to create table called 'TABLE_NAME'
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME +
-                    "( " + PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_CATEGORIE_NAME + " TEXT NOT NULL, " +
-                    COLUMN_DESCRIPTION + " TEXT NOT NULL" + ");";
+    public static final String CREATE_TABLE = String.format(
+            "CREATE TABLE %s (" +
+                    "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "%s TEXT NOT NULL, " +
+                    "%s TEXT NOT NULL);",
+            TABLE_NAME, PRIMARY_KEY, COLUMN_CATEGORY_NAME, COLUMN_DESCRIPTION
+    );
 
     // SQL code to create needed triggers
     public static final String CREATE_TRIGGER = "";
@@ -39,7 +41,7 @@ public class CategoriesTable {
      */
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
-        db.execSQL(CREATE_TRIGGER);
+        //db.execSQL(CREATE_TRIGGER);
     }
 
     /**

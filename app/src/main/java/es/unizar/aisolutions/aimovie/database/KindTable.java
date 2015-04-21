@@ -16,22 +16,22 @@ public class KindTable {
 
     public static final String TABLE_NAME = "kind";
     public static final String PRIMARY_KEY = "_id";
-    public static final String COLUMN_FILM_ID = "film";
-    public static final String COLUMN_CATEGORIE_ID = "categorie";
+    public static final String COLUMN_MOVIE_ID = "movie";
+    public static final String COLUMN_CATEGORY_ID = "category";
 
     public static final HashSet<String> availableColumns = new HashSet<String>();
 
 
     // SQL code to create table called 'TABLE_NAME'
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME +
-                    "( " + PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_CATEGORIE_ID + "INTEGER NOT NULL," +
-                    COLUMN_FILM_ID + "INTEGER NOT NULL" +
-                    COLUMN_CATEGORIE_ID + "references " + CategoriesTable.TABLE_NAME
-                    + "(" + CategoriesTable.PRIMARY_KEY + ")," +
-                    COLUMN_FILM_ID + "references " + FilmsTable.TABLE_NAME
-                    + "(" + FilmsTable.PRIMARY_KEY + ") );";
+    public static final String CREATE_TABLE = String.format(
+            "CREATE TABLE %s (" +
+                    "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "%s INTEGER NOT NULL, " +
+                    "%s INTEGER NOT NULL, " +
+                    "foreign key (%s) references %s (%s), " +
+                    "foreign key (%s) references %s (%s));",
+            TABLE_NAME, PRIMARY_KEY, COLUMN_CATEGORY_ID, COLUMN_MOVIE_ID, COLUMN_CATEGORY_ID, CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY, COLUMN_MOVIE_ID, FilmsTable.TABLE_NAME, FilmsTable.PRIMARY_KEY
+    );
 
     // SQL code to create needed triggers
     public static final String CREATE_TRIGGER = "";
@@ -43,7 +43,7 @@ public class KindTable {
      */
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
-        db.execSQL(CREATE_TRIGGER);
+        //db.execSQL(CREATE_TRIGGER);
         availableColumns.addAll(FilmsTable.availableColumns);
         availableColumns.addAll(CategoriesTable.availableColumns);
     }

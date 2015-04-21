@@ -143,7 +143,7 @@ public class FilmsContentProvider extends ContentProvider {
                 String category_id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(category_id)) {
                     rowsDeleted = db.delete(CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_CATEGORIE_ID + " = " + category_id, null);
+                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_CATEGORY_ID + " = " + category_id, null);
                 }
                 break;
             default:
@@ -173,7 +173,7 @@ public class FilmsContentProvider extends ContentProvider {
                 String category_id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(category_id)) {
                     rowsUpdated = db.update(CategoriesTable.TABLE_NAME, values, CategoriesTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_CATEGORIE_ID + " = " + category_id, null);
+                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_CATEGORY_ID + " = " + category_id, null);
                 }
                 break;
             default:

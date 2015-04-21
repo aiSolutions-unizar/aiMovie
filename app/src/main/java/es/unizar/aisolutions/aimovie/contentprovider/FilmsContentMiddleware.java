@@ -64,7 +64,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
         Vector<Category> c = new Vector<>();
         Cursor cursor;
         cursor = mDb.query(CategoriesTable.TABLE_NAME, new String[]{CategoriesTable.PRIMARY_KEY,
-                        CategoriesTable.COLUMN_CATEGORIE_NAME, CategoriesTable.COLUMN_DESCRIPTION},
+                        CategoriesTable.COLUMN_CATEGORY_NAME, CategoriesTable.COLUMN_DESCRIPTION},
                 null, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
@@ -95,8 +95,8 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
     public Vector<Film> fetchFilms(Category c) {
         Vector<Film> result = new Vector<>();
         Cursor cursor;
-        cursor = mDb.query(KindTable.TABLE_NAME, new String[]{KindTable.COLUMN_FILM_ID},
-                KindTable.COLUMN_CATEGORIE_ID + "=" + c, null, null, null, null, null);
+        cursor = mDb.query(KindTable.TABLE_NAME, new String[]{KindTable.COLUMN_MOVIE_ID},
+                KindTable.COLUMN_CATEGORY_ID + "=" + c, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -128,7 +128,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
         Vector<Film> c = new Vector<>();
         Cursor cursor;
         cursor = mDb.query(FilmsTable.TABLE_NAME, new String[]{FilmsTable.PRIMARY_KEY,
-                        FilmsTable.COLUMN_FILM_NAME, FilmsTable.COLUMN_SINOPSIS, FilmsTable.COLUMN_DIRECTOR,
+                        FilmsTable.COLUMN_FILM_NAME, FilmsTable.COLUMN_PLOT, FilmsTable.COLUMN_DIRECTOR,
                         FilmsTable.COLUMN_IN_STOCK, FilmsTable.COLUMN_RENTED, FilmsTable.COLUMN_YEAR},
                 null, null, null, null, null, null);
 
@@ -147,7 +147,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
     @Override
     public Film fetchFilms(String id) {
         Cursor mCursor = mDb.query(FilmsTable.TABLE_NAME, new String[]{FilmsTable.PRIMARY_KEY,
-                        FilmsTable.COLUMN_FILM_NAME, FilmsTable.COLUMN_SINOPSIS, FilmsTable.COLUMN_DIRECTOR,
+                        FilmsTable.COLUMN_FILM_NAME, FilmsTable.COLUMN_PLOT, FilmsTable.COLUMN_DIRECTOR,
                         FilmsTable.COLUMN_IN_STOCK, FilmsTable.COLUMN_RENTED, FilmsTable.COLUMN_YEAR},
                 FilmsTable.PRIMARY_KEY + "=" + id, null, null, null, null, null);
         mCursor.moveToFirst();
@@ -221,7 +221,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
         if (newCategory != null && categoryComplete(newCategory)) {
             ContentValues args = new ContentValues();
             args.put(CategoriesTable.PRIMARY_KEY, newCategory._id);
-            args.put(CategoriesTable.COLUMN_CATEGORIE_NAME, newCategory.name);
+            args.put(CategoriesTable.COLUMN_CATEGORY_NAME, newCategory.name);
             args.put(CategoriesTable.COLUMN_DESCRIPTION, newCategory.description);
             return mDb.update(CategoriesTable.TABLE_NAME, args,
                     CategoriesTable.PRIMARY_KEY + "=" + newCategory._id, null) > 0;
@@ -240,7 +240,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
             ContentValues args = new ContentValues();
             args.put(FilmsTable.PRIMARY_KEY, newFilm._id);
             args.put(FilmsTable.COLUMN_FILM_NAME, newFilm.name);
-            args.put(FilmsTable.COLUMN_SINOPSIS, newFilm.sinopsis);
+            args.put(FilmsTable.COLUMN_PLOT, newFilm.sinopsis);
             args.put(FilmsTable.COLUMN_IN_STOCK, newFilm.in_stock);
             args.put(FilmsTable.COLUMN_RENTED, newFilm.rented);
             args.put(FilmsTable.COLUMN_DIRECTOR, newFilm.director);
@@ -261,7 +261,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
             ContentValues initialValues = new ContentValues();
             initialValues.put(FilmsTable.PRIMARY_KEY, newFilm._id);
             initialValues.put(FilmsTable.COLUMN_FILM_NAME, newFilm.name);
-            initialValues.put(FilmsTable.COLUMN_SINOPSIS, newFilm.sinopsis);
+            initialValues.put(FilmsTable.COLUMN_PLOT, newFilm.sinopsis);
             initialValues.put(FilmsTable.COLUMN_IN_STOCK, newFilm.in_stock);
             initialValues.put(FilmsTable.COLUMN_RENTED, newFilm.rented);
             initialValues.put(FilmsTable.COLUMN_DIRECTOR, newFilm.director);
@@ -293,7 +293,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
         if (categoryComplete(newCategory)) {
             ContentValues initialValues = new ContentValues();
             initialValues.put(CategoriesTable.PRIMARY_KEY, newCategory._id);
-            initialValues.put(CategoriesTable.COLUMN_CATEGORIE_NAME, newCategory.name);
+            initialValues.put(CategoriesTable.COLUMN_CATEGORY_NAME, newCategory.name);
             initialValues.put(CategoriesTable.COLUMN_DESCRIPTION, newCategory.description);
             return mDb.insert(CategoriesTable.TABLE_NAME, null, initialValues) >= 0;
         } else {
@@ -320,8 +320,8 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
     public boolean addKind(String f, String c) {
         if (f != null && c != null && f.length() > 0 && c.length() > 0) {
             ContentValues initialValues = new ContentValues();
-            initialValues.put(KindTable.COLUMN_FILM_ID, f);
-            initialValues.put(KindTable.COLUMN_CATEGORIE_ID, c);
+            initialValues.put(KindTable.COLUMN_MOVIE_ID, f);
+            initialValues.put(KindTable.COLUMN_CATEGORY_ID, c);
             return (mDb.insert(KindTable.TABLE_NAME, null, initialValues) == 1);
         } else {
             return false;

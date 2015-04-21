@@ -14,27 +14,29 @@ import java.util.HashSet;
  * Time spent: 16 minutes.
  */
 public class FilmsTable {
-    public static final String TABLE_NAME = "films";
+    public static final String TABLE_NAME = "movies";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_FILM_NAME = "name";
-    public static final String COLUMN_SINOPSIS = "sinopsis";
+    public static final String COLUMN_PLOT = "plot";
     public static final String COLUMN_IN_STOCK = "in_stock";
     public static final String COLUMN_RENTED = "rented";
     public static final String COLUMN_DIRECTOR = "director";
     public static final String COLUMN_YEAR = "year";
 
-    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_SINOPSIS, COLUMN_FILM_NAME}));
+    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_PLOT, COLUMN_FILM_NAME}));
 
     // SQL code to create table called 'TABLE_NAME'
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME +
-                    "( " + PRIMARY_KEY + " TEXT PRIMARY KEY, " +
-                    COLUMN_FILM_NAME + " TEXT NOT NULL, " +
-                    COLUMN_SINOPSIS + " TEXT NOT NULL," +
-                    COLUMN_DIRECTOR + "TEXT NOT NULL," +
-                    COLUMN_IN_STOCK + "INTEGER NOT NULL," +
-                    COLUMN_RENTED + "INTEGER NOT NULL," +
-                    COLUMN_YEAR + "INTEGER NOT NULL," + ");";
+    public static final String CREATE_TABLE = String.format(
+            "CREATE TABLE %s (" +
+                    "%s TEXT PRIMARY KEY, " +
+                    "%s TEXT NOT NULL, " +
+                    "%s TEXT NOT NULL, " +
+                    "%s TEXT NOT NULL, " +
+                    "%s INTEGER NOT NULL, " +
+                    "%s INTEGER NOT NULL, " +
+                    "%s INTEGER NOT NULL);",
+            TABLE_NAME, PRIMARY_KEY, COLUMN_FILM_NAME, COLUMN_PLOT, COLUMN_DIRECTOR, COLUMN_IN_STOCK, COLUMN_RENTED, COLUMN_YEAR
+    );
 
     // SQL code to create needed triggers
     public static final String CREATE_TRIGGER = "";
@@ -46,7 +48,7 @@ public class FilmsTable {
      */
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
-        db.execSQL(CREATE_TRIGGER);
+        //db.execSQL(CREATE_TRIGGER);
     }
 
     /**
