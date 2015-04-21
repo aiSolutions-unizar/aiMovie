@@ -27,7 +27,6 @@ import es.unizar.aisolutions.aimovie.database.KindTable;
  * Time spent: 60 minutes.
  */
 public class FilmsContentProvider extends ContentProvider {
-
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/films";
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/film";
     private static final int FILM_ID = 1;
@@ -36,7 +35,7 @@ public class FilmsContentProvider extends ContentProvider {
     private static final int JOIN = 5;
     private static final int KINDS = 6;
     private static final int CATEGORY_ID = 7;
-    private static final String AUTHORITY = "es.unizar.aisoutions.aimovie.contentprovider";
+    private static final String AUTHORITY = "es.unizar.aisolutions.aimovie.contentprovider";
     private static final String BASE_PATH = "FILMS";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);

@@ -9,9 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class FilmsDatabaseHelper extends SQLiteOpenHelper {
-
     private static final String DATABASE_NAME = "films.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public FilmsDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,6 +29,4 @@ public class FilmsDatabaseHelper extends SQLiteOpenHelper {
         FilmsTable.onUpgrade(db, oldVersion, newVersion);
         CategoriesTable.onUpgrade(db, oldVersion, newVersion);
     }
-
-
 }
