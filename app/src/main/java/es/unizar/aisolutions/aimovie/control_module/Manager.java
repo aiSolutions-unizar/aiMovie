@@ -13,7 +13,7 @@ public class Manager implements InterfazGUI<Movie> {
     private Vector<Movie> movieList;
     private MonitorRental monitor;
 
-    public Manager(){
+    public Manager() {
         this.movieList = new Vector<Movie>();
         this.monitor = new MonitorRental();
     }
@@ -21,9 +21,9 @@ public class Manager implements InterfazGUI<Movie> {
     @Override
     public Movie obtenerDatos(String titulo) {
 
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Devuelve la pelicula que buscaban
                 return movieList.elementAt(i);
             }
@@ -37,9 +37,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public Image obtenerImagen(String titulo) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Devuelve la pelicula que buscaban
                 return movieList.elementAt(i).getImagen();
             }
@@ -52,18 +52,18 @@ public class Manager implements InterfazGUI<Movie> {
     }
 
     @Override
-    public boolean modificarDatos (String titulo, String categoria, String director, String sinopsis,
-                                int estreno, int identificador, Image imagen, int disponibles) {
+    public boolean modificarDatos(String titulo, String categoria, String director, String sinopsis,
+                                  int estreno, int identificador, Image imagen, int disponibles) {
 
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setTitulo(titulo);
                 movieList.elementAt(i).setCategoria(categoria);
                 movieList.elementAt(i).setDirector(director);
                 movieList.elementAt(i).setSinopsis(sinopsis);
-                movieList.elementAt(i).setAñoEstreno(estreno);
+                movieList.elementAt(i).setAÃ±oEstreno(estreno);
                 movieList.elementAt(i).setImagen(imagen);
                 movieList.elementAt(i).setImbd(identificador);
                 movieList.elementAt(i).setCantidadDisponible(disponibles);
@@ -78,9 +78,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarTitulo(int imbd, String tituloNuevo) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getImbd() == imbd ){
+            if (movieList.elementAt(i).getImbd() == imbd) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setTitulo(tituloNuevo);
                 return true;
@@ -92,9 +92,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarCategoria(String titulo, String categoriaNueva) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setCategoria(categoriaNueva);
                 return true;
@@ -106,9 +106,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarDirector(String titulo, String directorNuevo) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setDirector(directorNuevo);
                 return true;
@@ -120,9 +120,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarSipnosis(String titulo, String sinopsisNueva) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setSinopsis(sinopsisNueva);
                 return true;
@@ -134,11 +134,11 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarEstreno(String titulo, int estrenoNuevo) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
-                movieList.elementAt(i).setAñoEstreno(estrenoNuevo);
+                movieList.elementAt(i).setAÃ±oEstreno(estrenoNuevo);
                 return true;
             }
         }
@@ -148,9 +148,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarImbd(String titulo, int imbdNuevo) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setImbd(imbdNuevo);
                 return true;
@@ -162,9 +162,9 @@ public class Manager implements InterfazGUI<Movie> {
 
     @Override
     public boolean modificarImagen(String titulo, Image imagenNuevo) {
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Modifica la pelicula que buscaban
                 movieList.elementAt(i).setImagen(imagenNuevo);
                 return true;
@@ -179,12 +179,12 @@ public class Manager implements InterfazGUI<Movie> {
 
         Movie peli;
 
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 peli = movieList.elementAt(i);
                 // Devuelve la pelicula que buscaban
-                if(peli.getCantidadDisponible() > cantidad){
+                if (peli.getCantidadDisponible() > cantidad) {
                     return monitor.alquilar(peli, cantidad);
                 } else {
                     System.out.print("No hay peliculassuficiente para realizar la reserva.");
@@ -197,9 +197,9 @@ public class Manager implements InterfazGUI<Movie> {
     @Override
     public boolean devolverPelicula(String titulo, int cantidad) {
 
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Devuelve la pelicula que buscaban
                 return monitor.devolver(movieList.elementAt(i), cantidad);
             }
@@ -214,21 +214,22 @@ public class Manager implements InterfazGUI<Movie> {
 
         Movie peli = new Movie(titulo, categoria, director, sinopsis, estreno, identificador, imagen, disponibles);
 
-        for(int i = 0; i < movieList.size(); i++){
-            if( movieList.elementAt(i).getAñoEstreno() < peli.getAñoEstreno() ){
+        for (int i = 0; i < movieList.size(); i++) {
+            if (movieList.elementAt(i).getAÃ±oEstreno() < peli.getAÃ±oEstreno()) {
                 movieList.add(i, peli);
                 peliAnhadida = true;
                 break;
             }
         }
 
-        if(!peliAnhadida) {
+        if (!peliAnhadida) {
             movieList.add(peli);
         }
     }
 
     /**
      * Anhade automatiamente la pelicula
+     *
      * @param imdb, por lo se se identificara la pelicula
      */
     @Override
@@ -239,9 +240,9 @@ public class Manager implements InterfazGUI<Movie> {
     @Override
     public void borrarPelicula(String titulo) {
 
-        for(int i = 0; i < movieList.size(); i++){
+        for (int i = 0; i < movieList.size(); i++) {
             // Compara la pelicula del vector con la que desea
-            if( movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo) ){
+            if (movieList.elementAt(i).getTitulo().equalsIgnoreCase(titulo)) {
                 // Elimina la pelicula
                 movieList.remove(movieList.elementAt(i));
             }

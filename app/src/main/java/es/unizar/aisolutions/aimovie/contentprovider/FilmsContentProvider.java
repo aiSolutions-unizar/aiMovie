@@ -22,7 +22,7 @@ import es.unizar.aisolutions.aimovie.database.KindTable;
 /**
  * FilmsContentProvider manage access to our structured set of data.
  * They encapsulate the data, and provide mechanisms for defining data security.
- *
+ * <p/>
  * Created by diego on 18/04/15.
  * Time spent: 60 minutes.
  */
@@ -130,28 +130,28 @@ public class FilmsContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int rowsDeleted = 0;
         SQLiteDatabase db = database.getWritableDatabase();
-        switch(sURIMatcher.match(uri)) {
+        switch (sURIMatcher.match(uri)) {
             case FILMS:
-                rowsDeleted = db.delete(FilmsTable.TABLE_NAME,selection,selectionArgs);
+                rowsDeleted = db.delete(FilmsTable.TABLE_NAME, selection, selectionArgs);
                 break;
             case FILM_ID:
                 String id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(id)) {
-                    rowsDeleted = db.delete(FilmsTable.TABLE_NAME,FilmsTable.PRIMARY_KEY + " = " + id,null);
+                    rowsDeleted = db.delete(FilmsTable.TABLE_NAME, FilmsTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
             case CATEGORY_ID:
                 String category_id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(category_id)) {
-                    rowsDeleted = db.delete(CategoriesTable.TABLE_NAME,CategoriesTable.PRIMARY_KEY+" = "+category_id,null);
-                    rowsDeleted += db.delete(KindTable.TABLE_NAME,KindTable.COLUMN_CATEGORIE_ID+ " = "+category_id,null);
+                    rowsDeleted = db.delete(CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY + " = " + category_id, null);
+                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_CATEGORIE_ID + " = " + category_id, null);
                 }
                 break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
         }
-        if (getContext()!=null) {
-            getContext().getContentResolver().notifyChange(uri,null);
+        if (getContext() != null) {
+            getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
     }
@@ -160,28 +160,28 @@ public class FilmsContentProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int rowsUpdated = 0;
         SQLiteDatabase db = database.getWritableDatabase();
-        switch(sURIMatcher.match(uri)) {
+        switch (sURIMatcher.match(uri)) {
             case FILMS:
-                rowsUpdated = db.update(FilmsTable.TABLE_NAME,values,selection,selectionArgs);
+                rowsUpdated = db.update(FilmsTable.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case FILM_ID:
                 String id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(id)) {
-                    rowsUpdated = db.update(FilmsTable.TABLE_NAME,values,FilmsTable.PRIMARY_KEY + " = " + id,null);
+                    rowsUpdated = db.update(FilmsTable.TABLE_NAME, values, FilmsTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
             case CATEGORY_ID:
                 String category_id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(category_id)) {
-                    rowsUpdated = db.update(CategoriesTable.TABLE_NAME,values,CategoriesTable.PRIMARY_KEY+" = "+category_id,null);
-                    rowsUpdated += db.update(KindTable.TABLE_NAME,values,KindTable.COLUMN_CATEGORIE_ID+ " = "+category_id,null);
+                    rowsUpdated = db.update(CategoriesTable.TABLE_NAME, values, CategoriesTable.PRIMARY_KEY + " = " + category_id, null);
+                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_CATEGORIE_ID + " = " + category_id, null);
                 }
                 break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
         }
-        if (getContext()!=null) {
-            getContext().getContentResolver().notifyChange(uri,null);
+        if (getContext() != null) {
+            getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
     }

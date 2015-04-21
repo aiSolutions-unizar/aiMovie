@@ -12,7 +12,7 @@ public class Movie {
     private String categoria;
     private String director;
     private String sinopsis;
-    private int añoEstreno;
+    private int aÃ±oEstreno;
     private int imbd;
     private Image imagen;
 
@@ -26,90 +26,92 @@ public class Movie {
         this.categoria = categoria;
         this.director = director;
         this.sinopsis = sinopsis;
-        this.añoEstreno = estreno;
+        this.aÃ±oEstreno = estreno;
         this.imbd = identificador;
         this.imagen = imagen;
         this.cantidadDisponible = disponibles;
         this.cantidadAlquiladas = 0;
     }
 
-    public Movie(String noEncontrada){
+    public Movie(String noEncontrada) {
         this.titulo = noEncontrada;
-    }
-
-    /*********************
-     ***** SET & GET *****
-     *********************/
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
-    }
-
-    public void setSinopsis(String sinopsis) {
-        this.sinopsis = sinopsis;
-    }
-
-    public void setAñoEstreno(int añoEstreno) {
-        this.añoEstreno = añoEstreno;
-    }
-
-    public void setImbd(int imbd) {
-        this.imbd = imbd;
-    }
-
-    public void setImagen(Image imagen) {
-        this.imagen = imagen;
-    }
-
-    public void setCantidadDisponible(int cantidadDisponible) {
-        this.cantidadDisponible = cantidadDisponible;
-    }
-
-    public void setCantidadAlquiladas(int cantidadAlquiladas) {
-        this.cantidadAlquiladas = cantidadAlquiladas;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
+    /**
+     * ******************
+     * **** SET & GET *****
+     * *******************
+     */
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     public String getCategoria() {
         return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public String getDirector() {
         return director;
     }
 
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
     public String getSinopsis() {
         return sinopsis;
     }
 
-    public Image getImagen(){
+    public void setSinopsis(String sinopsis) {
+        this.sinopsis = sinopsis;
+    }
+
+    public Image getImagen() {
         return imagen;
     }
 
-    public int getAñoEstreno() {
-        return añoEstreno;
+    public void setImagen(Image imagen) {
+        this.imagen = imagen;
+    }
+
+    public int getAÃ±oEstreno() {
+        return aÃ±oEstreno;
+    }
+
+    public void setAÃ±oEstreno(int aÃ±oEstreno) {
+        this.aÃ±oEstreno = aÃ±oEstreno;
     }
 
     public int getImbd() {
         return imbd;
     }
 
+    public void setImbd(int imbd) {
+        this.imbd = imbd;
+    }
+
     public int getCantidadDisponible() {
         return cantidadDisponible;
     }
 
+    public void setCantidadDisponible(int cantidadDisponible) {
+        this.cantidadDisponible = cantidadDisponible;
+    }
+
     public int getCantidadAlquiladas() {
         return cantidadAlquiladas;
+    }
+
+    public void setCantidadAlquiladas(int cantidadAlquiladas) {
+        this.cantidadAlquiladas = cantidadAlquiladas;
     }
 }

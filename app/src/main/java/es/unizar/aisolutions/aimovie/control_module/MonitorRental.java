@@ -6,11 +6,11 @@ package es.unizar.aisolutions.aimovie.control_module;
 
 public class MonitorRental {
 
-    public MonitorRental(){
+    public MonitorRental() {
 
     }
 
-    synchronized boolean alquilar(Movie peli, int cantidad){
+    synchronized boolean alquilar(Movie peli, int cantidad) {
         int totalAlquiladas;
         int totalDisponibles;
         int alquiladas;
@@ -19,7 +19,7 @@ public class MonitorRental {
         try {
             // Obtenemos la cantidades necesarias
             disponibles = peli.getCantidadDisponible();
-            alquiladas= peli.getCantidadAlquiladas();
+            alquiladas = peli.getCantidadAlquiladas();
 
             // Obtenemos las nuevas cantiadades
             totalDisponibles = disponibles - cantidad;
@@ -30,15 +30,15 @@ public class MonitorRental {
             peli.setCantidadAlquiladas(totalAlquiladas);
 
             return true;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             System.out.println("Se produjo problemas en la reserva de la pelicula.");
         }
 
-        return  false;
+        return false;
     }
 
-    synchronized boolean devolver(Movie peli, int cantidad){
+    synchronized boolean devolver(Movie peli, int cantidad) {
         int totalAlquiladas;
         int totalDisponibles;
         int alquiladas;
@@ -47,7 +47,7 @@ public class MonitorRental {
         try {
             // Obtenemos la cantidades necesarias
             disponibles = peli.getCantidadDisponible();
-            alquiladas= peli.getCantidadAlquiladas();
+            alquiladas = peli.getCantidadAlquiladas();
 
             // Obtenemos las nuevas cantiadades
             totalDisponibles = disponibles + cantidad;
@@ -59,12 +59,12 @@ public class MonitorRental {
 
             return true;
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             System.out.println("Se produjo problemas en la devolucion de la pelicula.");
         }
 
-        return  false;
+        return false;
     }
 
 
