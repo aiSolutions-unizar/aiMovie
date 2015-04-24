@@ -6,14 +6,14 @@ package es.unizar.aisolutions.aimovie.data;
  * Created by diego on 2/04/15.
  * Time spent: 7 minutes.
  */
-public class Film {
+public class Movie {
 
     // _id should be an IMDb identifier.
     public String _id, name, sinopsis, director;
     public int in_stock, rented, year;
 
 
-    public Film(String _id, String name, String sinopsis, String director, int in_stock, int rented, int year) {
+    public Movie(String _id, String name, String sinopsis, String director, int in_stock, int rented, int year) {
         this._id = _id;
         this.name = name;
         this.sinopsis = sinopsis;

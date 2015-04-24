@@ -12,9 +12,11 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.FilmsContentProvider;
-import es.unizar.aisolutions.aimovie.database.FilmsTable;
+import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
@@ -25,11 +27,15 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         setContentView(R.layout.activity_movie_list);
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
-        String[] from = {FilmsTable.COLUMN_FILM_NAME};
+        String[] from = {MoviesTable.COLUMN_FILM_NAME};
         int[] to = {R.id.activity_movie_list_item_title};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
         listView.setAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
+
+        // FAB button
+        final FloatingActionButton addManually = (FloatingActionButton) findViewById(R.id.add_movie_manually);
+        final FloatingActionButton addIMDB = (FloatingActionButton) findViewById(R.id.add_movie_imdb);
     }
 
     @Override
@@ -57,9 +63,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = FilmsContentProvider.CONTENT_URI;
-        String[] projection = {FilmsTable.PRIMARY_KEY, FilmsTable.COLUMN_FILM_NAME};
-        CursorLoader cursorLoader = new CursorLoader(this, uri, projection, null, null, null);
-        return cursorLoader;
+        String[] projection = {MoviesTable.PRIMARY_KEY, MoviesTable.COLUMN_FILM_NAME};
+        return new CursorLoader(this, uri, projection, null, null, null);
     }
 
     @Override

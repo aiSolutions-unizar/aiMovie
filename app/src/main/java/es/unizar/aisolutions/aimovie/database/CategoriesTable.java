@@ -14,12 +14,11 @@ import java.util.HashSet;
  * Time spent: 11 minutes.
  */
 public class CategoriesTable {
-
     public static final String TABLE_NAME = "categories";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_CATEGORY_NAME = "name";
     public static final String COLUMN_DESCRIPTION = "description";
-    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_CATEGORY_NAME, COLUMN_DESCRIPTION}));
+    public static final HashSet<String> availableColumns = new HashSet<>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_CATEGORY_NAME, COLUMN_DESCRIPTION}));
 
 
     // SQL code to create table called 'TABLE_NAME'

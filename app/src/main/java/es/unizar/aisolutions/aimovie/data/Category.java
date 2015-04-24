@@ -7,7 +7,6 @@ package es.unizar.aisolutions.aimovie.data;
  * Time spent: 2 minutes.
  */
 public class Category {
-
     public String description;
     public String name;
     public String _id;

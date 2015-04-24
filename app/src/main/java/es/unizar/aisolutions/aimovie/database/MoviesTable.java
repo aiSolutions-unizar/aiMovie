@@ -13,7 +13,7 @@ import java.util.HashSet;
  * Created by diego on 2/04/15.
  * Time spent: 16 minutes.
  */
-public class FilmsTable {
+public class MoviesTable {
     public static final String TABLE_NAME = "movies";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_FILM_NAME = "name";
@@ -23,7 +23,7 @@ public class FilmsTable {
     public static final String COLUMN_DIRECTOR = "director";
     public static final String COLUMN_YEAR = "year";
 
-    public static final HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_PLOT, COLUMN_FILM_NAME}));
+    public static final HashSet<String> availableColumns = new HashSet<>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_PLOT, COLUMN_FILM_NAME}));
 
     // SQL code to create table called 'TABLE_NAME'
     public static final String CREATE_TABLE = String.format(
@@ -59,7 +59,7 @@ public class FilmsTable {
      * @param newVersion = New database version.
      */
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(FilmsTable.class.getName(), "Upgrading database from version " + oldVersion
+        Log.w(MoviesTable.class.getName(), "Upgrading database from version " + oldVersion
                 + " to " + newVersion + " (all data will be destroyed)");
         db.execSQL("drop table if exists " + TABLE_NAME);
         onCreate(db);

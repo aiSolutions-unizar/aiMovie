@@ -13,13 +13,12 @@ import java.util.HashSet;
  * Time spent: 11 minutes.
  */
 public class KindTable {
-
     public static final String TABLE_NAME = "kind";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_MOVIE_ID = "movie";
     public static final String COLUMN_CATEGORY_ID = "category";
 
-    public static final HashSet<String> availableColumns = new HashSet<String>();
+    public static final HashSet<String> availableColumns = new HashSet<>();
 
 
     // SQL code to create table called 'TABLE_NAME'
@@ -30,7 +29,7 @@ public class KindTable {
                     "%s INTEGER NOT NULL, " +
                     "foreign key (%s) references %s (%s), " +
                     "foreign key (%s) references %s (%s));",
-            TABLE_NAME, PRIMARY_KEY, COLUMN_CATEGORY_ID, COLUMN_MOVIE_ID, COLUMN_CATEGORY_ID, CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY, COLUMN_MOVIE_ID, FilmsTable.TABLE_NAME, FilmsTable.PRIMARY_KEY
+            TABLE_NAME, PRIMARY_KEY, COLUMN_CATEGORY_ID, COLUMN_MOVIE_ID, COLUMN_CATEGORY_ID, CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY
     );
 
     // SQL code to create needed triggers
@@ -44,7 +43,7 @@ public class KindTable {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         //db.execSQL(CREATE_TRIGGER);
-        availableColumns.addAll(FilmsTable.availableColumns);
+        availableColumns.addAll(MoviesTable.availableColumns);
         availableColumns.addAll(CategoriesTable.availableColumns);
     }
 
@@ -56,7 +55,7 @@ public class KindTable {
      * @param newVersion = New database version.
      */
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(FilmsTable.class.getName(), "Upgrading database from version " + oldVersion
+        Log.w(MoviesTable.class.getName(), "Upgrading database from version " + oldVersion
                 + " to " + newVersion + " (all data will be destroyed)");
         db.execSQL("drop table if exists " + TABLE_NAME);
         onCreate(db);

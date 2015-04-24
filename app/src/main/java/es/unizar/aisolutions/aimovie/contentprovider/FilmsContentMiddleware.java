@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import es.unizar.aisolutions.aimovie.data.Category;
-import es.unizar.aisolutions.aimovie.data.Film;
+import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.database.CategoriesTable;
-import es.unizar.aisolutions.aimovie.database.FilmsDatabaseHelper;
-import es.unizar.aisolutions.aimovie.database.FilmsTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
+import es.unizar.aisolutions.aimovie.database.MoviesDatabaseHelper;
+import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 /**
  * FilmsContentMiddleware implements all needed methods to manage database.
@@ -22,9 +22,8 @@ import es.unizar.aisolutions.aimovie.database.KindTable;
  * Time spent: 1 minute.
  */
 public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
-
     private final Context mCtx;
-    private FilmsDatabaseHelper mDbHelper;
+    private MoviesDatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
     /**
@@ -47,7 +46,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      * @throws SQLException if the database could be neither opened or created
      */
     public FilmsContentMiddleware open() throws SQLException {
-        mDbHelper = new FilmsDatabaseHelper(mCtx);
+        mDbHelper = new MoviesDatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
     }
@@ -92,8 +91,8 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      * @return A vector with all films whose category is c
      */
     @Override
-    public Vector<Film> fetchFilms(Category c) {
-        Vector<Film> result = new Vector<>();
+    public Vector<Movie> fetchFilms(Category c) {
+        Vector<Movie> result = new Vector<>();
         Cursor cursor;
         cursor = mDb.query(KindTable.TABLE_NAME, new String[]{KindTable.COLUMN_MOVIE_ID},
                 KindTable.COLUMN_CATEGORY_ID + "=" + c, null, null, null, null, null);
@@ -111,8 +110,8 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      * @return A vector with all films whose category is in c
      */
     @Override
-    public Vector<Film> fetchFilms(Vector<Category> c) {
-        Vector<Film> result = new Vector<>();
+    public Vector<Movie> fetchFilms(Vector<Category> c) {
+        Vector<Movie> result = new Vector<>();
         int count = c.size();
         for (int i = count - 1; i >= 0; i--) {
             result.addAll(fetchFilms(c.get(i)));
@@ -124,12 +123,12 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      * @return A vector with all films from the database (it's possible with null)
      */
     @Override
-    public Vector<Film> fetchFilms() {
-        Vector<Film> c = new Vector<>();
+    public Vector<Movie> fetchFilms() {
+        Vector<Movie> c = new Vector<>();
         Cursor cursor;
-        cursor = mDb.query(FilmsTable.TABLE_NAME, new String[]{FilmsTable.PRIMARY_KEY,
-                        FilmsTable.COLUMN_FILM_NAME, FilmsTable.COLUMN_PLOT, FilmsTable.COLUMN_DIRECTOR,
-                        FilmsTable.COLUMN_IN_STOCK, FilmsTable.COLUMN_RENTED, FilmsTable.COLUMN_YEAR},
+        cursor = mDb.query(MoviesTable.TABLE_NAME, new String[]{MoviesTable.PRIMARY_KEY,
+                        MoviesTable.COLUMN_FILM_NAME, MoviesTable.COLUMN_PLOT, MoviesTable.COLUMN_DIRECTOR,
+                        MoviesTable.COLUMN_IN_STOCK, MoviesTable.COLUMN_RENTED, MoviesTable.COLUMN_YEAR},
                 null, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
@@ -145,11 +144,11 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      * @return The film asked
      */
     @Override
-    public Film fetchFilms(String id) {
-        Cursor mCursor = mDb.query(FilmsTable.TABLE_NAME, new String[]{FilmsTable.PRIMARY_KEY,
-                        FilmsTable.COLUMN_FILM_NAME, FilmsTable.COLUMN_PLOT, FilmsTable.COLUMN_DIRECTOR,
-                        FilmsTable.COLUMN_IN_STOCK, FilmsTable.COLUMN_RENTED, FilmsTable.COLUMN_YEAR},
-                FilmsTable.PRIMARY_KEY + "=" + id, null, null, null, null, null);
+    public Movie fetchFilms(String id) {
+        Cursor mCursor = mDb.query(MoviesTable.TABLE_NAME, new String[]{MoviesTable.PRIMARY_KEY,
+                        MoviesTable.COLUMN_FILM_NAME, MoviesTable.COLUMN_PLOT, MoviesTable.COLUMN_DIRECTOR,
+                        MoviesTable.COLUMN_IN_STOCK, MoviesTable.COLUMN_RENTED, MoviesTable.COLUMN_YEAR},
+                MoviesTable.PRIMARY_KEY + "=" + id, null, null, null, null, null);
         mCursor.moveToFirst();
         return getFilm(mCursor);
     }
@@ -158,9 +157,9 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      * @param mCursor Cursor where to get the information
      * @return Get the information from a Cursor into a film
      */
-    private Film getFilm(Cursor mCursor) {
+    private Movie getFilm(Cursor mCursor) {
         if (mCursor != null) {
-            return new Film(mCursor.getString(1), mCursor.getString(2), mCursor.getString(3),
+            return new Movie(mCursor.getString(1), mCursor.getString(2), mCursor.getString(3),
                     mCursor.getString(4), mCursor.getInt(5), mCursor.getInt(6), mCursor.getInt(7));
         } else {
             return null;
@@ -182,7 +181,7 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
      */
     @Override
     public boolean deleteFilms(String id) {
-        return mDb.delete(FilmsTable.TABLE_NAME, FilmsTable.PRIMARY_KEY + "=" + id, null) > 0;
+        return mDb.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + "=" + id, null) > 0;
     }
 
     @Override
@@ -231,57 +230,57 @@ public class FilmsContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @param newFilm Film replacing one with the same _id.
+     * @param newMovie Film replacing one with the same _id.
      * @return True if the update have been successfully else false
      */
     @Override
-    public boolean updateFilm(Film newFilm) {
-        if (newFilm != null && filmComplete(newFilm)) {
+    public boolean updateFilm(Movie newMovie) {
+        if (newMovie != null && filmComplete(newMovie)) {
             ContentValues args = new ContentValues();
-            args.put(FilmsTable.PRIMARY_KEY, newFilm._id);
-            args.put(FilmsTable.COLUMN_FILM_NAME, newFilm.name);
-            args.put(FilmsTable.COLUMN_PLOT, newFilm.sinopsis);
-            args.put(FilmsTable.COLUMN_IN_STOCK, newFilm.in_stock);
-            args.put(FilmsTable.COLUMN_RENTED, newFilm.rented);
-            args.put(FilmsTable.COLUMN_DIRECTOR, newFilm.director);
-            args.put(FilmsTable.COLUMN_YEAR, newFilm.year);
-            return mDb.update(FilmsTable.TABLE_NAME, args, FilmsTable.PRIMARY_KEY + "=" + newFilm._id, null) > 0;
+            args.put(MoviesTable.PRIMARY_KEY, newMovie._id);
+            args.put(MoviesTable.COLUMN_FILM_NAME, newMovie.name);
+            args.put(MoviesTable.COLUMN_PLOT, newMovie.sinopsis);
+            args.put(MoviesTable.COLUMN_IN_STOCK, newMovie.in_stock);
+            args.put(MoviesTable.COLUMN_RENTED, newMovie.rented);
+            args.put(MoviesTable.COLUMN_DIRECTOR, newMovie.director);
+            args.put(MoviesTable.COLUMN_YEAR, newMovie.year);
+            return mDb.update(MoviesTable.TABLE_NAME, args, MoviesTable.PRIMARY_KEY + "=" + newMovie._id, null) > 0;
         } else {
             return false;
         }
     }
 
     /**
-     * @param newFilm New film to be added.
+     * @param newMovie New film to be added.
      * @return True if the film newFilm is added successfully else false
      */
     @Override
-    public boolean addFilm(Film newFilm) {
-        if (newFilm != null && filmComplete(newFilm)) {
+    public boolean addFilm(Movie newMovie) {
+        if (newMovie != null && filmComplete(newMovie)) {
             ContentValues initialValues = new ContentValues();
-            initialValues.put(FilmsTable.PRIMARY_KEY, newFilm._id);
-            initialValues.put(FilmsTable.COLUMN_FILM_NAME, newFilm.name);
-            initialValues.put(FilmsTable.COLUMN_PLOT, newFilm.sinopsis);
-            initialValues.put(FilmsTable.COLUMN_IN_STOCK, newFilm.in_stock);
-            initialValues.put(FilmsTable.COLUMN_RENTED, newFilm.rented);
-            initialValues.put(FilmsTable.COLUMN_DIRECTOR, newFilm.director);
-            initialValues.put(FilmsTable.COLUMN_YEAR, newFilm.year);
-            return mDb.insert(FilmsTable.TABLE_NAME, null, initialValues) >= 0;
+            initialValues.put(MoviesTable.PRIMARY_KEY, newMovie._id);
+            initialValues.put(MoviesTable.COLUMN_FILM_NAME, newMovie.name);
+            initialValues.put(MoviesTable.COLUMN_PLOT, newMovie.sinopsis);
+            initialValues.put(MoviesTable.COLUMN_IN_STOCK, newMovie.in_stock);
+            initialValues.put(MoviesTable.COLUMN_RENTED, newMovie.rented);
+            initialValues.put(MoviesTable.COLUMN_DIRECTOR, newMovie.director);
+            initialValues.put(MoviesTable.COLUMN_YEAR, newMovie.year);
+            return mDb.insert(MoviesTable.TABLE_NAME, null, initialValues) >= 0;
         } else {
             return false;
         }
     }
 
     /**
-     * @param film_o Film to check
+     * @param movie_o Film to check
      * @return True if the object film_o's parameters are complete and have a correct value,
      * False if not
      */
-    private boolean filmComplete(Film film_o) {
-        return film_o._id != null && film_o.name != null && film_o.sinopsis != null
-                && film_o.director != null && film_o._id.length() > 0 && film_o.name.length() > 0
-                && film_o.sinopsis.length() > 0 && film_o.in_stock >= 0 && film_o.rented >= 0
-                && film_o.director.length() > 0 && film_o.year >= 1900;
+    private boolean filmComplete(Movie movie_o) {
+        return movie_o._id != null && movie_o.name != null && movie_o.sinopsis != null
+                && movie_o.director != null && movie_o._id.length() > 0 && movie_o.name.length() > 0
+                && movie_o.sinopsis.length() > 0 && movie_o.in_stock >= 0 && movie_o.rented >= 0
+                && movie_o.director.length() > 0 && movie_o.year >= 1900;
     }
 
     /**

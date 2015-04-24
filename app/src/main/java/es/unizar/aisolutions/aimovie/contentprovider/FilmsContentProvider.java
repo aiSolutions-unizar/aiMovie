@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import es.unizar.aisolutions.aimovie.database.CategoriesTable;
-import es.unizar.aisolutions.aimovie.database.FilmsDatabaseHelper;
-import es.unizar.aisolutions.aimovie.database.FilmsTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
+import es.unizar.aisolutions.aimovie.database.MoviesDatabaseHelper;
+import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 /**
  * FilmsContentProvider manage access to our structured set of data.
@@ -50,18 +50,18 @@ public class FilmsContentProvider extends ContentProvider {
 
     }
 
-    private FilmsDatabaseHelper database;
+    private MoviesDatabaseHelper database;
 
     public FilmsContentProvider() {
     }
 
     public FilmsContentProvider(Context context) {
-        database = new FilmsDatabaseHelper(context);
+        database = new MoviesDatabaseHelper(context);
     }
 
     @Override
     public boolean onCreate() {
-        database = new FilmsDatabaseHelper(getContext());
+        database = new MoviesDatabaseHelper(getContext());
         return true;
     }
 
@@ -72,14 +72,14 @@ public class FilmsContentProvider extends ContentProvider {
         Cursor cursor;
         switch (sURIMatcher.match(uri)) {
             case FILMS:
-                queryBuilder.setTables(FilmsTable.TABLE_NAME);
+                queryBuilder.setTables(MoviesTable.TABLE_NAME);
                 cursor = queryBuilder.query(
                         database.getReadableDatabase(),
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case FILM_ID:
-                queryBuilder.setTables(FilmsTable.TABLE_NAME);
-                queryBuilder.appendWhere(FilmsTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
+                queryBuilder.setTables(MoviesTable.TABLE_NAME);
+                queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 cursor = queryBuilder.query(
                         database.getReadableDatabase(),
                         projection, selection, selectionArgs, null, null, sortOrder);
@@ -91,7 +91,7 @@ public class FilmsContentProvider extends ContentProvider {
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case JOIN:
-                queryBuilder.setTables(FilmsTable.TABLE_NAME + "," + CategoriesTable.TABLE_NAME);
+                queryBuilder.setTables(MoviesTable.TABLE_NAME + "," + CategoriesTable.TABLE_NAME);
                 cursor = queryBuilder.query(
                         database.getReadableDatabase(),
                         projection, selection, selectionArgs, null, null, sortOrder);
@@ -114,7 +114,7 @@ public class FilmsContentProvider extends ContentProvider {
         long id;
         switch (sURIMatcher.match(uri)) {
             case FILMS:
-                id = db.insertOrThrow(FilmsTable.TABLE_NAME, null, values);
+                id = db.insertOrThrow(MoviesTable.TABLE_NAME, null, values);
                 break;
             case KINDS:
                 id = db.insertOrThrow(KindTable.TABLE_NAME, null, values);
@@ -131,12 +131,12 @@ public class FilmsContentProvider extends ContentProvider {
         SQLiteDatabase db = database.getWritableDatabase();
         switch (sURIMatcher.match(uri)) {
             case FILMS:
-                rowsDeleted = db.delete(FilmsTable.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(MoviesTable.TABLE_NAME, selection, selectionArgs);
                 break;
             case FILM_ID:
                 String id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(id)) {
-                    rowsDeleted = db.delete(FilmsTable.TABLE_NAME, FilmsTable.PRIMARY_KEY + " = " + id, null);
+                    rowsDeleted = db.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
             case CATEGORY_ID:
@@ -161,12 +161,12 @@ public class FilmsContentProvider extends ContentProvider {
         SQLiteDatabase db = database.getWritableDatabase();
         switch (sURIMatcher.match(uri)) {
             case FILMS:
-                rowsUpdated = db.update(FilmsTable.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = db.update(MoviesTable.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case FILM_ID:
                 String id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(id)) {
-                    rowsUpdated = db.update(FilmsTable.TABLE_NAME, values, FilmsTable.PRIMARY_KEY + " = " + id, null);
+                    rowsUpdated = db.update(MoviesTable.TABLE_NAME, values, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
             case CATEGORY_ID:
@@ -192,7 +192,7 @@ public class FilmsContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown columns in projection");
             } else if (uriType == JOIN && !KindTable.availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
-            } else if ((uriType == FILM_ID || uriType == FILMS) && !FilmsTable.availableColumns.containsAll(requestedColumns)) {
+            } else if ((uriType == FILM_ID || uriType == FILMS) && !MoviesTable.availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
             }
         }

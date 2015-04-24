@@ -8,17 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by diego on 2/04/15.
  */
 
-public class FilmsDatabaseHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "films.db";
-    private static final int DATABASE_VERSION = 4;
+public class MoviesDatabaseHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "movies.db";
+    private static final int DATABASE_VERSION = 1;
 
-    public FilmsDatabaseHelper(Context context) {
+    public MoviesDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        FilmsTable.onCreate(db);
+        MoviesTable.onCreate(db);
         CategoriesTable.onCreate(db);
         KindTable.onCreate(db);
     }
@@ -26,7 +26,7 @@ public class FilmsDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         KindTable.onUpgrade(db, oldVersion, newVersion);
-        FilmsTable.onUpgrade(db, oldVersion, newVersion);
+        MoviesTable.onUpgrade(db, oldVersion, newVersion);
         CategoriesTable.onUpgrade(db, oldVersion, newVersion);
     }
 }

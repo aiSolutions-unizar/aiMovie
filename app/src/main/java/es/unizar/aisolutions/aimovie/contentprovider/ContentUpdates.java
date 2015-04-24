@@ -3,7 +3,7 @@ package es.unizar.aisolutions.aimovie.contentprovider;
 import java.util.Vector;
 
 import es.unizar.aisolutions.aimovie.data.Category;
-import es.unizar.aisolutions.aimovie.data.Film;
+import es.unizar.aisolutions.aimovie.data.Movie;
 
 /**
  * ContentUpdates defines every method that modifies database.
@@ -58,18 +58,18 @@ public interface ContentUpdates {
     boolean updateCategory(Category newCategory);
 
     /**
-     * @param newFilm Film replacing one with the same _id.
+     * @param newMovie Film replacing one with the same _id.
      * @return Film which has been replaced.
      */
-    boolean updateFilm(Film newFilm);
+    boolean updateFilm(Movie newMovie);
 
     /**
      * addFilm adds a new Film to database.
      *
-     * @param newFilm New film to be added.
+     * @param newMovie New film to be added.
      * @return True if the film has been added, otherwise false.
      */
-    boolean addFilm(Film newFilm);
+    boolean addFilm(Movie newMovie);
 
     /**
      * addCategory adds a new Category to database.
