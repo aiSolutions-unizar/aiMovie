@@ -20,7 +20,7 @@
     <!-- Title -->
     <TextView
         style="@style/TextStyle.Title"
-        android:id="@+id/title"
+        android:id="@+id/activity_movie_list_item_title"
         android:layout_marginTop="3dip"
         android:layout_marginLeft="4dip"
         android:layout_alignTop="@+id/thumbnail"
@@ -31,7 +31,7 @@
     <TextView
         style="@style/TextStyle"
         android:id="@+id/director"
-        android:layout_below="@id/title"
+        android:layout_below="@id/activity_movie_list_item_title"
         android:layout_marginTop="3dip"
         android:layout_marginLeft="4dip"
         android:layout_toRightOf="@+id/thumbnail"

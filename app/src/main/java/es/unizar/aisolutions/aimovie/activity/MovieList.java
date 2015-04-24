@@ -26,7 +26,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
         String[] from = {FilmsTable.COLUMN_FILM_NAME};
-        int[] to = {R.id.activity_movie_list_item};
+        int[] to = {R.id.activity_movie_list_item_title};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
         listView.setAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
