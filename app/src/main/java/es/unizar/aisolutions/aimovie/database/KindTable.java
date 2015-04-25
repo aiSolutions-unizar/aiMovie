@@ -18,7 +18,7 @@ public class KindTable {
     public static final String COLUMN_MOVIE_ID = "movie";
     public static final String COLUMN_CATEGORY_ID = "category";
 
-    public static final HashSet<String> availableColumns = new HashSet<>();
+    public static final HashSet<String> AVAILABLE_COLUMNS = new HashSet<>();
 
 
     // SQL code to create table called 'TABLE_NAME'
@@ -43,8 +43,8 @@ public class KindTable {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         //db.execSQL(CREATE_TRIGGER);
-        availableColumns.addAll(MoviesTable.availableColumns);
-        availableColumns.addAll(CategoriesTable.availableColumns);
+        AVAILABLE_COLUMNS.addAll(MoviesTable.AVAILABLE_COLUMNS);
+        AVAILABLE_COLUMNS.addAll(CategoriesTable.availableColumns);
     }
 
     /**

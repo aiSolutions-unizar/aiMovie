@@ -1,6 +1,6 @@
 package es.unizar.aisolutions.aimovie.contentprovider;
 
-import java.util.Vector;
+import java.util.List;
 
 import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Movie;
@@ -16,29 +16,29 @@ public interface ContentQueries {
     /**
      * @return All categories stored in database.
      */
-    Vector<Category> fetchCategories();
+    List<Category> fetchCategories();
 
     /**
      * @param c = Category used as filter.
      * @return All films belonging to 'c' category.
      */
-    Vector<Movie> fetchFilms(Category c);
+    List<Movie> fetchMovies(Category c);
 
     /**
-     * @param c = Categories list used as filter.
+     * @param categories = Categories list used as filter.
      * @return All films belonging to any category in the list.
      */
-    Vector<Movie> fetchFilms(Vector<Category> c);
+    List<Movie> fetchMovies(List<Category> categories);
 
     /**
      * @return All films without filtering.
      */
-    Vector<Movie> fetchFilms();
+    List<Movie> fetchMovies();
 
     /**
      * @param id Identifier from film to fetch.
      * @return The film whose identifier matches with 'id' or null.
      */
-    Movie fetchFilms(String id);
+    Movie fetchMovie(String id);
 
 }

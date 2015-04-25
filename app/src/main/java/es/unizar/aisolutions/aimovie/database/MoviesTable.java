@@ -23,7 +23,7 @@ public class MoviesTable {
     public static final String COLUMN_DIRECTOR = "director";
     public static final String COLUMN_YEAR = "year";
 
-    public static final HashSet<String> availableColumns = new HashSet<>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_PLOT, COLUMN_TITLE}));
+    public static final HashSet<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_YEAR, COLUMN_DIRECTOR, COLUMN_RENTED, COLUMN_IN_STOCK, COLUMN_PLOT, COLUMN_TITLE}));
 
     // SQL code to create table called 'TABLE_NAME'
     public static final String CREATE_TABLE = String.format(

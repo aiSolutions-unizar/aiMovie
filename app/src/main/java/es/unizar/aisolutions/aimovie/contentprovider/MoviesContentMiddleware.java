@@ -5,7 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Movie;
@@ -33,11 +34,11 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @return A vector with all categories from the database (it's possible with null)
+     * @return A list with all categories from the database (it's possible with null)
      */
     @Override
-    public Vector<Category> fetchCategories() {
-        Vector<Category> c = new Vector<>();
+    public List<Category> fetchCategories() {
+        List<Category> result = new ArrayList<>();
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORIES");
         String[] projection = new String[]{CategoriesTable.PRIMARY_KEY, CategoriesTable.COLUMN_CATEGORY_NAME, CategoriesTable.COLUMN_DESCRIPTION};
         String selection = null;
@@ -46,79 +47,63 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         if (cursor.moveToFirst()) {
             do {
-                c.add(getCategory(cursor));
+                result.add(extractCategory(cursor));
             } while (cursor.moveToNext());
         }
-        return c;
-    }
-
-    /**
-     * @param cursor Cursor to get the information of a category from
-     * @return Get the information from a Cursor into one category
-     */
-    private Category getCategory(Cursor cursor) {
-        if (cursor != null) {
-            String _id = cursor.getString(cursor.getColumnIndex(CategoriesTable.PRIMARY_KEY));
-            String description = cursor.getString(cursor.getColumnIndex(CategoriesTable.COLUMN_DESCRIPTION));
-            String name = cursor.getString(cursor.getColumnIndex(CategoriesTable.COLUMN_CATEGORY_NAME));
-            return new Category(_id, description, name);
-        } else {
-            return null;
-        }
+        return result;
     }
 
     /**
      * @param c Category used as filter.
-     * @return A vector with all films whose category is c
+     * @return A list with all films whose category is c
      */
     @Override
-    public Vector<Movie> fetchFilms(Category c) {
-        // TODO: use ContentProvider (fix query)
-        Vector<Movie> result = new Vector<>();
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/JOIN");
-        String[] projection = new String[]{KindTable.COLUMN_MOVIE_ID};
+    public List<Movie> fetchMovies(Category c) {
+        List<Movie> result = new ArrayList<>();
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
+        String[] projection = KindTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = KindTable.COLUMN_CATEGORY_ID + " = " + c.get_id();
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            do {
+                // TODO: optimize using a more complex query (in ContentProvider)
+                result.add(fetchMovie(cursor.getString(cursor.getColumnIndex(KindTable.COLUMN_MOVIE_ID))));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    /**
+     * @param categories = Categories list used as filter.
+     * @return A list with all films whose category is in c
+     */
+    @Override
+    public List<Movie> fetchMovies(List<Category> categories) {
+        // TODO: optimize using a more complex query
+        List<Movie> result = new ArrayList<>();
+        for (Category c : categories) {
+            result.addAll(fetchMovies(c));
+        }
+        return result;
+    }
+
+    /**
+     * @return A list with all films from the database (it's possible with null)
+     */
+    @Override
+    public List<Movie> fetchMovies() {
+        List<Movie> c = new ArrayList<>();
+        Uri uri = MoviesContentProvider.CONTENT_URI;
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;
         String[] selectionArgs = null;
         String sortOrder = null;
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         if (cursor.moveToFirst()) {
             do {
-                result.add(fetchFilms(cursor.getString(cursor.getColumnIndex())));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    /**
-     * @param c = Categories list used as filter.
-     * @return A vector with all films whose category is in c
-     */
-    @Override
-    public Vector<Movie> fetchFilms(Vector<Category> c) {
-        Vector<Movie> result = new Vector<>();
-        int count = c.size();
-        for (int i = count - 1; i >= 0; i--) {
-            result.addAll(fetchFilms(c.get(i)));
-        }
-        return result;
-    }
-
-    /**
-     * @return A vector with all films from the database (it's possible with null)
-     */
-    @Override
-    public Vector<Movie> fetchFilms() {
-        // TODO: use ContentProvider
-        Vector<Movie> c = new Vector<>();
-        Cursor cursor;
-        cursor = mDb.query(MoviesTable.TABLE_NAME, new String[]{MoviesTable.PRIMARY_KEY,
-                        MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_PLOT, MoviesTable.COLUMN_DIRECTOR,
-                        MoviesTable.COLUMN_IN_STOCK, MoviesTable.COLUMN_RENTED, MoviesTable.COLUMN_YEAR},
-                null, null, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                c.add(getFilm(cursor));
+                c.add(extractMovie(cursor));
             } while (cursor.moveToNext());
         }
         return c;
@@ -129,63 +114,114 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      * @return The film asked
      */
     @Override
-    public Movie fetchFilms(String id) {
-        // TODO: use ContentProvider
-        Cursor mCursor = mDb.query(MoviesTable.TABLE_NAME, new String[]{MoviesTable.PRIMARY_KEY,
-                        MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_PLOT, MoviesTable.COLUMN_DIRECTOR,
-                        MoviesTable.COLUMN_IN_STOCK, MoviesTable.COLUMN_RENTED, MoviesTable.COLUMN_YEAR},
-                MoviesTable.PRIMARY_KEY + "=" + id, null, null, null, null, null);
-        mCursor.moveToFirst();
-        return getFilm(mCursor);
+    public Movie fetchMovie(String id) {
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + id);
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        cursor.moveToFirst();
+        return extractMovie(cursor);
     }
 
     /**
-     * @param cursor Cursor where to get the information
-     * @return Get the information from a Cursor into a film
+     * @param newMovie New film to be added.
+     * @return True if the film newFilm is added successfully else false
      */
-    private Movie getFilm(Cursor cursor) {
-        if (cursor != null) {
-            String _id = cursor.getString(cursor.getColumnIndex(MoviesTable.PRIMARY_KEY));
-            String title = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_TITLE));
-            String plot = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_PLOT));
-            String director = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_DIRECTOR));
-            int in_stock = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_IN_STOCK));
-            int rented = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RENTED));
-            int year = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR));
-            return new Movie(_id, title, plot, director, in_stock, rented, year);
+    @Override
+    public boolean addMovie(Movie newMovie) {
+        // TODO: handle insertion of movies without _id or with missing fields
+        if (newMovie != null && check(newMovie)) {
+            Uri uri = MoviesContentProvider.CONTENT_URI;
+            ContentValues values = new ContentValues();
+            values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
+            values.put(MoviesTable.COLUMN_TITLE, newMovie.getName());
+            values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
+            values.put(MoviesTable.COLUMN_IN_STOCK, newMovie.getIn_stock());
+            values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
+            values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
+            values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear());
+            Uri insertedUri = context.getContentResolver().insert(uri, values);
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
     /**
-     * @param id Identifier from category to delete.
-     * @return true if the delete have been successfully
+     * @param newCategory New category to be added.
+     * @return True if the category newCategory is added successfully else false
      */
     @Override
-    public boolean deleteCategory(String id) {
-        // TODO: use ContentProvider
-        return mDb.delete(CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY + "=" + id, null) > 0;
+    public boolean addCategory(Category newCategory) {
+        if (check(newCategory)) {
+            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORIES");
+            ContentValues values = new ContentValues();
+            values.put(CategoriesTable.PRIMARY_KEY, newCategory.get_id());
+            values.put(CategoriesTable.COLUMN_CATEGORY_NAME, newCategory.getName());
+            values.put(CategoriesTable.COLUMN_DESCRIPTION, newCategory.getDescription());
+            Uri insertedUri = context.getContentResolver().insert(uri, values);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
-     * @param id Identifier from film to delete.
+     * @param f film to link
+     * @param c Category to link
+     * @return True if the parameters are complete, have a correct value and a kind is added successfully
+     * False if not
+     */
+    @Override
+    public boolean addKind(String f, String c) {
+        if (f != null && c != null && f.length() > 0 && c.length() > 0) {
+            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
+            ContentValues values = new ContentValues();
+            values.put(KindTable.COLUMN_MOVIE_ID, f);
+            values.put(KindTable.COLUMN_CATEGORY_ID, c);
+            Uri insertedUri = context.getContentResolver().insert(uri, values);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param c Category to delete.
      * @return true if the delete have been successfully
      */
     @Override
-    public boolean deleteMovies(String id) {
-        // TODO: use ContentProvider
-        return mDb.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + "=" + id, null) > 0;
+    public boolean deleteCategory(Category c) {
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORY/" + c.get_id());
+        String selection = null;
+        String[] selectionArgs = null;
+        int rowsDeleted = context.getContentResolver().delete(uri, selection, selectionArgs);
+        return rowsDeleted > 0;
+    }
+
+    /**
+     * @param m Movie to delete.
+     * @return true if the delete have been successfully
+     */
+    @Override
+    public boolean deleteMovie(Movie m) {
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + m.get_id());
+        String selection = null;
+        String[] selectionArgs = null;
+        int rowsDeleted = context.getContentResolver().delete(uri, selection, selectionArgs);
+        return rowsDeleted > 0;
     }
 
     @Override
-    public Vector<Boolean> deleteMovies(Category c) {
+    public List<Boolean> deleteMovies(Category c) {
         // TODO: use ContentProvider, implement
         return null;
     }
 
     @Override
-    public Vector<Boolean> deleteMovies(Vector<Category> c) {
+    public List<Boolean> deleteMovies(List<Category> c) {
         // TODO: use ContentProvider, implement
         return null;
     }
@@ -213,14 +249,16 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      */
     @Override
     public boolean updateCategory(Category newCategory) {
-        // TODO: use ContentProvider
-        if (newCategory != null && categoryComplete(newCategory)) {
-            ContentValues args = new ContentValues();
-            args.put(CategoriesTable.PRIMARY_KEY, newCategory._id);
-            args.put(CategoriesTable.COLUMN_CATEGORY_NAME, newCategory.name);
-            args.put(CategoriesTable.COLUMN_DESCRIPTION, newCategory.description);
-            return mDb.update(CategoriesTable.TABLE_NAME, args,
-                    CategoriesTable.PRIMARY_KEY + "=" + newCategory._id, null) > 0;
+        if (newCategory != null && check(newCategory)) {
+            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORY/" + newCategory.get_id());
+            ContentValues values = new ContentValues();
+            values.put(CategoriesTable.PRIMARY_KEY, newCategory.get_id());
+            values.put(CategoriesTable.COLUMN_CATEGORY_NAME, newCategory.getName());
+            values.put(CategoriesTable.COLUMN_DESCRIPTION, newCategory.getDescription());
+            String where = null;
+            String[] selectionArgs = null;
+            int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
+            return rowsUpdated > 0;
         } else {
             return false;
         }
@@ -232,42 +270,56 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      */
     @Override
     public boolean updateMovie(Movie newMovie) {
-        // TODO: use ContentProvider
-        if (newMovie != null && movieComplete(newMovie)) {
-            ContentValues args = new ContentValues();
-            args.put(MoviesTable.PRIMARY_KEY, newMovie._id);
-            args.put(MoviesTable.COLUMN_TITLE, newMovie.name);
-            args.put(MoviesTable.COLUMN_PLOT, newMovie.plot);
-            args.put(MoviesTable.COLUMN_IN_STOCK, newMovie.in_stock);
-            args.put(MoviesTable.COLUMN_RENTED, newMovie.rented);
-            args.put(MoviesTable.COLUMN_DIRECTOR, newMovie.director);
-            args.put(MoviesTable.COLUMN_YEAR, newMovie.year);
-            return mDb.update(MoviesTable.TABLE_NAME, args, MoviesTable.PRIMARY_KEY + "=" + newMovie._id, null) > 0;
+        if (newMovie != null && check(newMovie)) {
+            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/MOVIE/" + newMovie.get_id());
+            ContentValues values = new ContentValues();
+            values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
+            values.put(MoviesTable.COLUMN_TITLE, newMovie.getName());
+            values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
+            values.put(MoviesTable.COLUMN_IN_STOCK, newMovie.getIn_stock());
+            values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
+            values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
+            values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear());
+            String where = null;
+            String[] selectionArgs = null;
+            int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
+            return rowsUpdated > 0;
         } else {
             return false;
         }
     }
 
     /**
-     * @param newMovie New film to be added.
-     * @return True if the film newFilm is added successfully else false
+     * @param cursor Cursor where to get the information
+     * @return Get the information from a Cursor into a film
      */
-    @Override
-    public boolean addMovie(Movie newMovie) {
-        // TODO: handle insertion of movies without _id or with missing fields
-        // TODO: use ContentProvider
-        if (newMovie != null && movieComplete(newMovie)) {
-            ContentValues initialValues = new ContentValues();
-            initialValues.put(MoviesTable.PRIMARY_KEY, newMovie._id);
-            initialValues.put(MoviesTable.COLUMN_TITLE, newMovie.name);
-            initialValues.put(MoviesTable.COLUMN_PLOT, newMovie.plot);
-            initialValues.put(MoviesTable.COLUMN_IN_STOCK, newMovie.in_stock);
-            initialValues.put(MoviesTable.COLUMN_RENTED, newMovie.rented);
-            initialValues.put(MoviesTable.COLUMN_DIRECTOR, newMovie.director);
-            initialValues.put(MoviesTable.COLUMN_YEAR, newMovie.year);
-            return mDb.insert(MoviesTable.TABLE_NAME, null, initialValues) >= 0;
+    private Movie extractMovie(Cursor cursor) {
+        if (cursor != null) {
+            String _id = cursor.getString(cursor.getColumnIndex(MoviesTable.PRIMARY_KEY));
+            String title = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_TITLE));
+            String plot = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_PLOT));
+            String director = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_DIRECTOR));
+            int in_stock = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_IN_STOCK));
+            int rented = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RENTED));
+            int year = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR));
+            return new Movie(_id, title, plot, director, in_stock, rented, year);
         } else {
-            return false;
+            return null;
+        }
+    }
+
+    /**
+     * @param cursor Cursor to get the information of a category from
+     * @return Get the information from a Cursor into one category
+     */
+    private Category extractCategory(Cursor cursor) {
+        if (cursor != null) {
+            String _id = cursor.getString(cursor.getColumnIndex(CategoriesTable.PRIMARY_KEY));
+            String description = cursor.getString(cursor.getColumnIndex(CategoriesTable.COLUMN_DESCRIPTION));
+            String name = cursor.getString(cursor.getColumnIndex(CategoriesTable.COLUMN_CATEGORY_NAME));
+            return new Category(_id, description, name);
+        } else {
+            return null;
         }
     }
 
@@ -276,29 +328,11 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      * @return True if the object movie_o's parameters are complete and have a correct value,
      * False otherwise
      */
-    private boolean movieComplete(Movie movie_o) {
-        return movie_o._id != null && movie_o.name != null && movie_o.plot != null
-                && movie_o.director != null && movie_o._id.length() > 0 && movie_o.name.length() > 0
-                && movie_o.plot.length() > 0 && movie_o.in_stock >= 0 && movie_o.rented >= 0
-                && movie_o.director.length() > 0 && movie_o.year >= 1900;
-    }
-
-    /**
-     * @param newCategory New category to be added.
-     * @return True if the category newCategory is added successfully else false
-     */
-    @Override
-    public boolean addCategory(Category newCategory) {
-        // TODO: use ContentProvider
-        if (categoryComplete(newCategory)) {
-            ContentValues initialValues = new ContentValues();
-            initialValues.put(CategoriesTable.PRIMARY_KEY, newCategory._id);
-            initialValues.put(CategoriesTable.COLUMN_CATEGORY_NAME, newCategory.name);
-            initialValues.put(CategoriesTable.COLUMN_DESCRIPTION, newCategory.description);
-            return mDb.insert(CategoriesTable.TABLE_NAME, null, initialValues) >= 0;
-        } else {
-            return false;
-        }
+    private boolean check(Movie movie_o) {
+        return movie_o.get_id() != null && movie_o.getName() != null && movie_o.getPlot() != null
+                && movie_o.getDirector() != null && movie_o.get_id().length() > 0 && movie_o.getName().length() > 0
+                && movie_o.getPlot().length() > 0 && movie_o.getIn_stock() >= 0 && movie_o.getRented() >= 0
+                && movie_o.getDirector().length() > 0 && movie_o.getYear() >= 1900;
     }
 
     /**
@@ -306,27 +340,8 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      * @return True if the object category_o's parameters are complete and have a correct value,
      * False if not
      */
-    private boolean categoryComplete(Category category_o) {
-        // TODO: use ContentProvider
-        return category_o._id != null && category_o.name != null && category_o.description != null
-                && category_o._id.length() > 0 && category_o.name.length() > 0 && category_o.description.length() > 0;
-    }
-
-    /**
-     * @param f film to link, c Category to link
-     * @return True if the parameters are complete, have a correct value and a kind is added successfully
-     * False if not
-     */
-    @Override
-    public boolean addKind(String f, String c) {
-        // TODO: use ContentProvider
-        if (f != null && c != null && f.length() > 0 && c.length() > 0) {
-            ContentValues initialValues = new ContentValues();
-            initialValues.put(KindTable.COLUMN_MOVIE_ID, f);
-            initialValues.put(KindTable.COLUMN_CATEGORY_ID, c);
-            return (mDb.insert(KindTable.TABLE_NAME, null, initialValues) == 1);
-        } else {
-            return false;
-        }
+    private boolean check(Category category_o) {
+        return category_o.get_id() != null && category_o.getName() != null && category_o.getDescription() != null
+                && category_o.get_id().length() > 0 && category_o.getName().length() > 0 && category_o.getDescription().length() > 0;
     }
 }
