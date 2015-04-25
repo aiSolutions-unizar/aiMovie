@@ -24,19 +24,19 @@ public interface ContentUpdates {
      * @param id Identifier from film to delete.
      * @return True if deletion went right, otherwise false.
      */
-    boolean deleteFilms(String id);
+    boolean deleteMovies(String id);
 
     /**
      * @param c Category from all films to delete.
      * @return For each film: true if deletion went right, otherwise false.
      */
-    Vector<Boolean> deleteFilms(Category c);
+    Vector<Boolean> deleteMovies(Category c);
 
     /**
      * @param c Categories list from all films to delete.
      * @return For each film: true if deletion went right, otherwise false.
      */
-    Vector<Boolean> deleteFilms(Vector<Category> c);
+    Vector<Boolean> deleteMovies(Vector<Category> c);
 
     /**
      * @param id Identifier from the 'kind' relationship to delete.
@@ -61,26 +61,26 @@ public interface ContentUpdates {
      * @param newMovie Film replacing one with the same _id.
      * @return Film which has been replaced.
      */
-    boolean updateFilm(Movie newMovie);
+    boolean updateMovie(Movie newMovie);
 
     /**
-     * addFilm adds a new Film to database.
+     * adds a new Film to database.
      *
      * @param newMovie New film to be added.
      * @return True if the film has been added, otherwise false.
      */
-    boolean addFilm(Movie newMovie);
+    boolean addMovie(Movie newMovie);
 
     /**
-     * addCategory adds a new Category to database.
+     * adds a new Category to database.
      *
-     * @param newCategory New catecory to be added.
+     * @param newCategory New category to be added.
      * @return True if the category has been added, otherwise false.
      */
     boolean addCategory(Category newCategory);
 
     /**
-     * addKinds includes information about which film belongs to a category.
+     * includes information about which film belongs to a category.
      *
      * @param f Film to be categorized.
      * @param c Category in which film is included.

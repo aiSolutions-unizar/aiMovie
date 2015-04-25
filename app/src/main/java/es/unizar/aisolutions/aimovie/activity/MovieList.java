@@ -2,6 +2,7 @@ package es.unizar.aisolutions.aimovie.activity;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,13 +10,14 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.FilmsContentProvider;
+import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentProvider;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -27,7 +29,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         setContentView(R.layout.activity_movie_list);
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
-        String[] from = {MoviesTable.COLUMN_FILM_NAME};
+        String[] from = {MoviesTable.COLUMN_TITLE};
         int[] to = {R.id.activity_movie_list_item_title};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
         listView.setAdapter(adapter);
@@ -36,6 +38,13 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         // FAB button
         final FloatingActionButton addManually = (FloatingActionButton) findViewById(R.id.add_movie_manually);
         final FloatingActionButton addIMDB = (FloatingActionButton) findViewById(R.id.add_movie_imdb);
+        addManually.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), MovieAdder.class);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -62,8 +71,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = FilmsContentProvider.CONTENT_URI;
-        String[] projection = {MoviesTable.PRIMARY_KEY, MoviesTable.COLUMN_FILM_NAME};
+        Uri uri = MoviesContentProvider.CONTENT_URI;
+        String[] projection = {MoviesTable.PRIMARY_KEY, MoviesTable.COLUMN_TITLE};
         return new CursorLoader(this, uri, projection, null, null, null);
     }
 
