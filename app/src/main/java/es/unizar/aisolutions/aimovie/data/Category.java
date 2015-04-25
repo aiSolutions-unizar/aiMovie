@@ -7,9 +7,10 @@ package es.unizar.aisolutions.aimovie.data;
  * Time spent: 2 minutes.
  */
 public class Category {
-    private String description;
-    private String name;
+    // TODO: make _id long
     private String _id;
+    private String name;
+    private String description;
 
     public Category(String _id, String description, String name) {
         this.name = name;

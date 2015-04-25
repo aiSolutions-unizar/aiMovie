@@ -7,9 +7,15 @@ package es.unizar.aisolutions.aimovie.data;
  * Time spent: 7 minutes.
  */
 public class Movie {
-    // _id should be an IMDb identifier.
-    public String _id, name, plot, director;
-    public int in_stock, rented, year;
+    // TODO: make _id long and add another field for IMDB identifier
+    private String _id;
+    private String name;
+    private String plot;
+    private String director;
+    private int in_stock;
+    private int rented;
+    private int year;
+    // TODO: add list of categories related to the movie
 
     public Movie(String _id, String name, String plot, String director, int in_stock, int rented, int year) {
         this._id = _id;
@@ -19,5 +25,33 @@ public class Movie {
         this.in_stock = in_stock;
         this.rented = rented;
         this.year = year;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public int getIn_stock() {
+        return in_stock;
+    }
+
+    public int getRented() {
+        return rented;
+    }
+
+    public int getYear() {
+        return year;
     }
 }

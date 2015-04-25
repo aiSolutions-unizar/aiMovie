@@ -1,6 +1,6 @@
 package es.unizar.aisolutions.aimovie.contentprovider;
 
-import java.util.Vector;
+import java.util.List;
 
 import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Movie;
@@ -15,28 +15,28 @@ import es.unizar.aisolutions.aimovie.data.Movie;
 public interface ContentUpdates {
 
     /**
-     * @param id Identifier from category to delete.
+     * @param c Category to delete.
      * @return True if deletion went right, otherwise false.
      */
-    boolean deleteCategory(String id);
+    boolean deleteCategory(Category c);
 
     /**
-     * @param id Identifier from film to delete.
+     * @param m Movie to delete.
      * @return True if deletion went right, otherwise false.
      */
-    boolean deleteMovies(String id);
+    boolean deleteMovie(Movie m);
 
     /**
-     * @param c Category from all films to delete.
-     * @return For each film: true if deletion went right, otherwise false.
+     * @param c Category from all movies to delete.
+     * @return For each movie: true if deletion went right, otherwise false.
      */
-    Vector<Boolean> deleteMovies(Category c);
+    List<Boolean> deleteMovies(Category c);
 
     /**
-     * @param c Categories list from all films to delete.
-     * @return For each film: true if deletion went right, otherwise false.
+     * @param c Categories list from all movies to delete.
+     * @return For each movie: true if deletion went right, otherwise false.
      */
-    Vector<Boolean> deleteMovies(Vector<Category> c);
+    List<Boolean> deleteMovies(List<Category> c);
 
     /**
      * @param id Identifier from the 'kind' relationship to delete.
@@ -45,7 +45,7 @@ public interface ContentUpdates {
     boolean deleteKind(String id);
 
     /**
-     * @param f Identifier from film whose relationship 'kind' be deleted.
+     * @param f Identifier from movie whose relationship 'kind' be deleted.
      * @param c Identifier from category whose relationship 'kind' be deleted.
      * @return True if deletion went right, otherwise false.
      */
@@ -58,16 +58,16 @@ public interface ContentUpdates {
     boolean updateCategory(Category newCategory);
 
     /**
-     * @param newMovie Film replacing one with the same _id.
-     * @return Film which has been replaced.
+     * @param newMovie Movie replacing one with the same _id.
+     * @return Movie which has been replaced.
      */
     boolean updateMovie(Movie newMovie);
 
     /**
-     * adds a new Film to database.
+     * adds a new Movie to database.
      *
-     * @param newMovie New film to be added.
-     * @return True if the film has been added, otherwise false.
+     * @param newMovie New movie to be added.
+     * @return True if the movie has been added, otherwise false.
      */
     boolean addMovie(Movie newMovie);
 
@@ -80,10 +80,10 @@ public interface ContentUpdates {
     boolean addCategory(Category newCategory);
 
     /**
-     * includes information about which film belongs to a category.
+     * includes information about which movie belongs to a category.
      *
-     * @param f Film to be categorized.
-     * @param c Category in which film is included.
+     * @param f Movie to be categorized.
+     * @param c Category in which movie is included.
      * @return True if the relation has been added, otherwise false.
      */
     boolean addKind(String f, String c);

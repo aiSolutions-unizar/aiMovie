@@ -74,7 +74,7 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case MOVIE_ID:
                 queryBuilder.setTables(MoviesTable.TABLE_NAME);
-                queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
+                queryBuilder.appendWhereEscapeString(MoviesTable.PRIMARY_KEY + " = '" + uri.getLastPathSegment() + "'");
                 break;
             case CATEGORIES:
                 queryBuilder.setTables(CategoriesTable.TABLE_NAME);
@@ -110,6 +110,9 @@ public class MoviesContentProvider extends ContentProvider {
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
                 id = db.insertOrThrow(MoviesTable.TABLE_NAME, null, values);
+                break;
+            case CATEGORIES:
+                id = db.insertOrThrow(CategoriesTable.TABLE_NAME, null, values);
                 break;
             case KINDS:
                 id = db.insertOrThrow(KindTable.TABLE_NAME, null, values);
@@ -188,9 +191,9 @@ public class MoviesContentProvider extends ContentProvider {
             HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));
             if (uriType == CATEGORIES && !CategoriesTable.availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
-            } else if (uriType == JOIN && !KindTable.availableColumns.containsAll(requestedColumns)) {
+            } else if (uriType == JOIN && !KindTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
-            } else if ((uriType == MOVIE_ID || uriType == MOVIES) && !MoviesTable.availableColumns.containsAll(requestedColumns)) {
+            } else if ((uriType == MOVIE_ID || uriType == MOVIES) && !MoviesTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
             }
         }
