@@ -51,7 +51,8 @@ public class MovieAdder extends ActionBarActivity {
         String title = ((EditText) findViewById(R.id.title)).getText().toString();
         int year = Integer.parseInt(((EditText) findViewById(R.id.year)).getText().toString());
         String director = ((EditText) findViewById(R.id.director)).getText().toString();
-        Movie m = new Movie(null, title, null, director, -1, -1, year);
+        String synopsis = ((EditText) findViewById(R.id.synopsis)).getText().toString();
+        Movie m = new Movie(null, title, synopsis, director, -1, -1, year);
         ContentUpdates db = new MoviesContentMiddleware(this);
         db.addMovie(m);
     }

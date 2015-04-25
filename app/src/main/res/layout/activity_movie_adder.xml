@@ -24,9 +24,66 @@
         android:layout_height="wrap_content"
         android:hint="@string/director" />
 
+    <EditText
+        android:id="@+id/synopsis"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:gravity="top|left"
+        android:hint="@string/synopsis" />
+
     <!-- TODO: add checkboxes for genre selection (fetch from database -> do in MovieAdder?) -->
 
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Action"
+                android:id="@+id/action" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Animation"
+                android:id="@+id/animation" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comedy"
+                android:id="@+id/comedy" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drama"
+                android:id="@+id/drama" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Horror"
+                android:id="@+id/horror" />
+
+        </TableRow>
+
+    </TableLayout>
+
     <!-- TODO: move to the bottom right of the screen -->
+
     <Button
         android:id="@+id/confirm"
         android:layout_width="wrap_content"
