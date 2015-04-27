@@ -136,7 +136,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
             Uri uri = MoviesContentProvider.CONTENT_URI;
             ContentValues values = new ContentValues();
             values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
-            values.put(MoviesTable.COLUMN_TITLE, newMovie.getName());
+            values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
             values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
             values.put(MoviesTable.COLUMN_IN_STOCK, newMovie.getIn_stock());
             values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
@@ -274,7 +274,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
             Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/MOVIE/" + newMovie.get_id());
             ContentValues values = new ContentValues();
             values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
-            values.put(MoviesTable.COLUMN_TITLE, newMovie.getName());
+            values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
             values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
             values.put(MoviesTable.COLUMN_IN_STOCK, newMovie.getIn_stock());
             values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
@@ -329,8 +329,8 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      * False otherwise
      */
     private boolean check(Movie movie_o) {
-        return movie_o.get_id() != null && movie_o.getName() != null && movie_o.getPlot() != null
-                && movie_o.getDirector() != null && movie_o.get_id().length() > 0 && movie_o.getName().length() > 0
+        return movie_o.get_id() != null && movie_o.getTitle() != null && movie_o.getPlot() != null
+                && movie_o.getDirector() != null && movie_o.get_id().length() > 0 && movie_o.getTitle().length() > 0
                 && movie_o.getPlot().length() > 0 && movie_o.getIn_stock() >= 0 && movie_o.getRented() >= 0
                 && movie_o.getDirector().length() > 0 && movie_o.getYear() >= 1900;
     }

@@ -9,7 +9,7 @@ package es.unizar.aisolutions.aimovie.data;
 public class Movie {
     // TODO: make _id long and add another field for IMDB identifier
     private String _id;
-    private String name;
+    private String title;
     private String plot;
     private String director;
     private int in_stock;
@@ -17,9 +17,13 @@ public class Movie {
     private int year;
     // TODO: add list of categories related to the movie
 
-    public Movie(String _id, String name, String plot, String director, int in_stock, int rented, int year) {
+    public Movie() {
+
+    }
+
+    public Movie(String _id, String title, String plot, String director, int in_stock, int rented, int year) {
         this._id = _id;
-        this.name = name;
+        this.title = title;
         this.plot = plot;
         this.director = director;
         this.in_stock = in_stock;
@@ -31,8 +35,8 @@ public class Movie {
         return _id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public String getPlot() {
