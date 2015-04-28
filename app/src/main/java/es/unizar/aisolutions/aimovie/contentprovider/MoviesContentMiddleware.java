@@ -142,6 +142,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
             values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
             values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
             values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear());
+            values.put(MoviesTable.COLUMN_THUMBNAIL, newMovie.getThumbnail());
             Uri insertedUri = context.getContentResolver().insert(uri, values);
             return true;
         } else {
@@ -299,10 +300,11 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
             String title = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_TITLE));
             String plot = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_PLOT));
             String director = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_DIRECTOR));
+            String thumbnail = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_THUMBNAIL));
             int in_stock = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_IN_STOCK));
             int rented = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RENTED));
             int year = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR));
-            return new Movie(_id, title, plot, director, in_stock, rented, year);
+            return new Movie(_id, title, plot, director, thumbnail, in_stock, rented, year);
         } else {
             return null;
         }

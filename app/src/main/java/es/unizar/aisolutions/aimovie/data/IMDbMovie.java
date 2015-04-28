@@ -160,4 +160,9 @@ public class IMDbMovie extends Movie {
     public String getImdbID() {
         return imdbID;
     }
+
+    @Override
+    public String getThumbnail() {
+        return poster.toString();
+    }
 }
