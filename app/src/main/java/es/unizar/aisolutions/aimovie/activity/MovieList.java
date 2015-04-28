@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -44,32 +46,43 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         ListView listView = (ListView) findViewById(R.id.movie_list);
         String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_THUMBNAIL};
         int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
-        adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0) {
+        adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
+        SimpleCursorAdapter.ViewBinder viewBinder = new SimpleCursorAdapter.ViewBinder() {
             @Override
-            public void setViewImage(final ImageView v, final String value) {
-                if (value != null && !value.isEmpty()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                // TODO: cache thumbnail into resource when inserting movie
-                                URL url = new URL(value);
-                                final Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        v.setImageBitmap(thumbnail);
-                                    }
-                                });
-                            } catch (IOException e) {
-                                // TODO: error handling
-                                e.printStackTrace();
+            public boolean setViewValue(final View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == cursor.getColumnIndex(MoviesTable.COLUMN_THUMBNAIL)) {
+                    final String link = cursor.getString(columnIndex);
+                    if (link != null && !link.isEmpty()) {
+                        new AsyncTask<String, Void, Bitmap>() {
+                            @Override
+                            protected Bitmap doInBackground(String... link) {
+                                try {
+                                    // TODO: cache thumbnail into resource when inserting movie
+                                    URL url = new URL(link[0]);
+                                    Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                                    return thumbnail;
+                                } catch (IOException e) {
+                                    // TODO: error handling
+                                    e.printStackTrace();
+                                    return null;
+                                }
                             }
-                        }
-                    }).start();
+
+                            @Override
+                            protected void onPostExecute(Bitmap thumbnail) {
+                                ((ImageView) view).setImageBitmap(thumbnail);
+                            }
+                        }.execute(link);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
                 }
             }
         };
+        adapter.setViewBinder(viewBinder);
         listView.setAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
 
@@ -95,24 +108,23 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final String id = input.getText().toString();
-                        new Thread(new Runnable() {
+                        String id = input.getText().toString();
+                        new AsyncTask<String, Void, Movie>() {
                             @Override
-                            public void run() {
-                                Movie movie = new OMDbMovieFetcher().getMovieById(id);
+                            protected Movie doInBackground(String... id) {
+                                Movie movie = new OMDbMovieFetcher().getMovieById(id[0]);
+                                return movie;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Movie movie) {
                                 if (movie != null) {
                                     mcm.addMovie(movie);
                                 } else {
-                                    // TODO: implement AsyncTask and run in doInBackground()
-                                    /*runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), "Movie not found", Toast.LENGTH_LONG);
-                                        }
-                                    });*/
+                                    Toast.makeText(getApplicationContext(), "Movie not found", Toast.LENGTH_LONG);
                                 }
                             }
-                        }).start();
+                        }.execute(id);
                     }
                 });
                 builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
