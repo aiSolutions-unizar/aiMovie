@@ -13,6 +13,7 @@ import java.net.URL;
 
 import es.unizar.aisolutions.aimovie.data.IMDbMovie;
 import es.unizar.aisolutions.aimovie.data.Movie;
+import es.unizar.aisolutions.aimovie.data.MovieParseException;
 
 /**
  * Created by dbarelop on 27/04/15.
@@ -62,6 +63,8 @@ public class OMDbMovieFetcher implements MovieFetcher {
         } catch (IOException e) {
             // TODO: log exception
             e.printStackTrace();
+            return null;
+        } catch (MovieParseException e) {
             return null;
         }
     }

@@ -2,7 +2,6 @@ package es.unizar.aisolutions.aimovie.activity;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -57,11 +55,10 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         addIMDb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Context context = v.getContext();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
                 builder.setTitle(getString(R.string.enter_imdb_id));
-                final EditText input = new EditText(context);
-                final MoviesContentMiddleware mcm = new MoviesContentMiddleware(context);
+                final EditText input = new EditText(getApplicationContext());
+                final MoviesContentMiddleware mcm = new MoviesContentMiddleware(getApplicationContext());
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
@@ -75,7 +72,13 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                                 if (movie != null) {
                                     mcm.addMovie(movie);
                                 } else {
-                                    Toast.makeText(context, "Movie not found", Toast.LENGTH_LONG);
+                                    // TODO: implement AsyncTask and run in doInBackground()
+                                    /*runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "Movie not found", Toast.LENGTH_LONG);
+                                        }
+                                    });*/
                                 }
                             }
                         }).start();

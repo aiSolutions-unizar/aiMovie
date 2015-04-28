@@ -34,45 +34,55 @@ public class IMDbMovie extends Movie {
     private Integer imdbVotes;
     private String imdbID;
 
-    public IMDbMovie(JsonObject jsonMovie) {
-        title = jsonMovie.get("Title").getAsString();
-        year = jsonMovie.get("Year").getAsInt();
-        rated = jsonMovie.get("Rated").getAsString();
-        try {
-            released = DATE_FORMATTER.parse(jsonMovie.get("Released").getAsString());
-        } catch (ParseException e) {
-            released = null;
+    public IMDbMovie(JsonObject jsonMovie) throws MovieParseException {
+        String response = jsonMovie.get("Response").getAsString();
+        if (!response.equals("False")) {
+            String type = jsonMovie.get("Type").getAsString();
+            if (type.equals("movie")) {
+                title = jsonMovie.get("Title").getAsString();
+                year = jsonMovie.get("Year").getAsInt();
+                rated = jsonMovie.get("Rated").getAsString();
+                try {
+                    released = DATE_FORMATTER.parse(jsonMovie.get("Released").getAsString());
+                } catch (ParseException e) {
+                    released = null;
+                }
+                runtime = jsonMovie.get("Runtime").getAsString();
+                genre = Arrays.asList(jsonMovie.get("Genre").getAsString().split(","));
+                director = jsonMovie.get("Director").getAsString();
+                writer = jsonMovie.get("Writer").getAsString();
+                actors = Arrays.asList(jsonMovie.get("Actors").getAsString().split(","));
+                plot = jsonMovie.get("Plot").getAsString();
+                language = jsonMovie.get("Language").getAsString();
+                country = jsonMovie.get("Country").getAsString();
+                awards = jsonMovie.get("Awards").getAsString();
+                try {
+                    poster = new URL(jsonMovie.get("Poster").getAsString());
+                } catch (MalformedURLException e) {
+                    poster = null;
+                }
+                try {
+                    metascore = Integer.parseInt(jsonMovie.get("Metascore").getAsString());
+                } catch (NumberFormatException e) {
+                    metascore = null;
+                }
+                try {
+                    imdbRating = Float.parseFloat(jsonMovie.get("imdbRating").getAsString());
+                } catch (NumberFormatException e) {
+                    imdbRating = null;
+                }
+                try {
+                    imdbVotes = Integer.parseInt(jsonMovie.get("imdbVotes").getAsString().replace(",", ""));
+                } catch (NumberFormatException e) {
+                    imdbVotes = null;
+                }
+                imdbID = jsonMovie.get("imdbID").getAsString();
+            } else {
+                throw new MovieParseException("Provided JSON doesn't belong to a movie");
+            }
+        } else {
+            throw new MovieParseException("Error parsing IMDbMovie from JSON");
         }
-        runtime = jsonMovie.get("Runtime").getAsString();
-        genre = Arrays.asList(jsonMovie.get("Genre").getAsString().split(","));
-        director = jsonMovie.get("Director").getAsString();
-        writer = jsonMovie.get("Writer").getAsString();
-        actors = Arrays.asList(jsonMovie.get("Actors").getAsString().split(","));
-        plot = jsonMovie.get("Plot").getAsString();
-        language = jsonMovie.get("Language").getAsString();
-        country = jsonMovie.get("Country").getAsString();
-        awards = jsonMovie.get("Awards").getAsString();
-        try {
-            poster = new URL(jsonMovie.get("Poster").getAsString());
-        } catch (MalformedURLException e) {
-            poster = null;
-        }
-        try {
-            metascore = Integer.parseInt(jsonMovie.get("Metascore").getAsString());
-        } catch (NumberFormatException e) {
-            metascore = null;
-        }
-        try {
-            imdbRating = Float.parseFloat(jsonMovie.get("imdbRating").getAsString());
-        } catch (NumberFormatException e) {
-            imdbRating = null;
-        }
-        try {
-            imdbVotes = Integer.parseInt(jsonMovie.get("imdbVotes").getAsString().replace(",", ""));
-        } catch (NumberFormatException e) {
-            imdbVotes = null;
-        }
-        imdbID = jsonMovie.get("imdbID").getAsString();
     }
 
     @Override
