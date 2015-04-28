@@ -24,6 +24,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.IOException;
 import java.net.URL;
@@ -87,6 +88,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         getLoaderManager().initLoader(0, null, this);
 
         // FAB button
+        final FloatingActionsMenu fabButton = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         final FloatingActionButton addManually = (FloatingActionButton) findViewById(R.id.add_movie_manually);
         addManually.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +136,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                     }
                 });
                 builder.show();
-                // TODO: fold FAB button when the dialog is closed
+                fabButton.collapse();
             }
         });
     }
