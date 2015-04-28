@@ -2,6 +2,7 @@ package es.unizar.aisolutions.aimovie.activity;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -36,8 +38,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         setContentView(R.layout.activity_movie_list);
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
-        String[] from = {MoviesTable.COLUMN_TITLE};
-        int[] to = {R.id.activity_movie_list_item_title};
+        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR};
+        int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
         listView.setAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
@@ -55,10 +57,11 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         addIMDb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                final Context context = v.getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(getString(R.string.enter_imdb_id));
-                final EditText input = new EditText(v.getContext());
-                final MoviesContentMiddleware mcm = new MoviesContentMiddleware(v.getContext());
+                final EditText input = new EditText(context);
+                final MoviesContentMiddleware mcm = new MoviesContentMiddleware(context);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
@@ -69,7 +72,11 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                             @Override
                             public void run() {
                                 Movie movie = new OMDbMovieFetcher().getMovieById(id);
-                                mcm.addMovie(movie);
+                                if (movie != null) {
+                                    mcm.addMovie(movie);
+                                } else {
+                                    Toast.makeText(context, "Movie not found", Toast.LENGTH_LONG);
+                                }
                             }
                         }).start();
                     }
@@ -110,7 +117,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = MoviesContentProvider.CONTENT_URI;
-        String[] projection = {MoviesTable.PRIMARY_KEY, MoviesTable.COLUMN_TITLE};
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         return new CursorLoader(this, uri, projection, null, null, null);
     }
 
