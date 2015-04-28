@@ -132,7 +132,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     @Override
     public boolean addMovie(Movie newMovie) {
         // TODO: handle insertion of movies without _id or with missing fields
-        if (newMovie != null && check(newMovie)) {
+        if (newMovie != null) {// && check(newMovie)) {
             Uri uri = MoviesContentProvider.CONTENT_URI;
             ContentValues values = new ContentValues();
             values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());

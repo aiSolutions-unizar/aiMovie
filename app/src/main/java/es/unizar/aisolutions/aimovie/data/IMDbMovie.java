@@ -29,9 +29,9 @@ public class IMDbMovie extends Movie {
     private String country;
     private String awards;
     private URL poster;
-    private int metascore;
-    private float imdbRating;
-    private int imdbVotes;
+    private Integer metascore;
+    private Float imdbRating;
+    private Integer imdbVotes;
     private String imdbID;
 
     public IMDbMovie(JsonObject jsonMovie) {
@@ -57,9 +57,21 @@ public class IMDbMovie extends Movie {
         } catch (MalformedURLException e) {
             poster = null;
         }
-        metascore = Integer.parseInt(jsonMovie.get("Metascore").getAsString());
-        imdbRating = Float.parseFloat(jsonMovie.get("imdbRating").getAsString());
-        imdbVotes = Integer.parseInt(jsonMovie.get("imdbVotes").getAsString().replace(",", ""));
+        try {
+            metascore = Integer.parseInt(jsonMovie.get("Metascore").getAsString());
+        } catch (NumberFormatException e) {
+            metascore = null;
+        }
+        try {
+            imdbRating = Float.parseFloat(jsonMovie.get("imdbRating").getAsString());
+        } catch (NumberFormatException e) {
+            imdbRating = null;
+        }
+        try {
+            imdbVotes = Integer.parseInt(jsonMovie.get("imdbVotes").getAsString().replace(",", ""));
+        } catch (NumberFormatException e) {
+            imdbVotes = null;
+        }
         imdbID = jsonMovie.get("imdbID").getAsString();
     }
 
