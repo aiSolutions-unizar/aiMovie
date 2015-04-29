@@ -45,13 +45,13 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         setContentView(R.layout.activity_movie_list);
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
-        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_THUMBNAIL};
+        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER};
         int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
         SimpleCursorAdapter.ViewBinder viewBinder = new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(final View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == cursor.getColumnIndex(MoviesTable.COLUMN_THUMBNAIL)) {
+                if (columnIndex == cursor.getColumnIndex(MoviesTable.COLUMN_POSTER)) {
                     final String link = cursor.getString(columnIndex);
                     if (link != null && !link.isEmpty()) {
                         new AsyncTask<String, Void, Bitmap>() {
@@ -93,6 +93,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         addManually.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fabButton.collapse();
                 Intent i = new Intent(v.getContext(), MovieAdder.class);
                 startActivity(i);
             }

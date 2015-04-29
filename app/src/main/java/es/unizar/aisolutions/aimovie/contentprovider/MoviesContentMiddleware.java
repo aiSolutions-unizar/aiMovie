@@ -5,17 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import es.unizar.aisolutions.aimovie.data.Category;
 import es.unizar.aisolutions.aimovie.data.Movie;
+import es.unizar.aisolutions.aimovie.data.StoredMovie;
 import es.unizar.aisolutions.aimovie.database.CategoriesTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 /**
- * FilmsContentMiddleware implements all needed methods to manage database.
+ * moviesContentMiddleware implements all needed methods to manage database.
  * <p/>
  * Created by diego on 2/04/15.
  * Time spent: 1 minute.
@@ -55,7 +59,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
 
     /**
      * @param c Category used as filter.
-     * @return A list with all films whose category is c
+     * @return A list with all movies whose category is c
      */
     @Override
     public List<Movie> fetchMovies(Category c) {
@@ -77,7 +81,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
 
     /**
      * @param categories = Categories list used as filter.
-     * @return A list with all films whose category is in c
+     * @return A list with all movies whose category is in c
      */
     @Override
     public List<Movie> fetchMovies(List<Category> categories) {
@@ -90,7 +94,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @return A list with all films from the database (it's possible with null)
+     * @return A list with all movies from the database (it's possible with null)
      */
     @Override
     public List<Movie> fetchMovies() {
@@ -110,8 +114,8 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @param id Identifier from film to fetch.
-     * @return The film asked
+     * @param id Identifier from movie to fetch.
+     * @return The movie asked
      */
     @Override
     public Movie fetchMovie(String id) {
@@ -126,28 +130,31 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @param newMovie New film to be added.
-     * @return True if the film newFilm is added successfully else false
+     * @param newMovie New movie to be added.
+     * @return True if the movie newmovie is added successfully else false
      */
     @Override
     public boolean addMovie(Movie newMovie) {
-        // TODO: handle insertion of movies without _id or with missing fields
-        if (newMovie != null) {// && check(newMovie)) {
-            Uri uri = MoviesContentProvider.CONTENT_URI;
-            ContentValues values = new ContentValues();
-            values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
-            values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
-            values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
-            values.put(MoviesTable.COLUMN_IN_STOCK, newMovie.getIn_stock());
-            values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
-            values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
-            values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear());
-            values.put(MoviesTable.COLUMN_THUMBNAIL, newMovie.getThumbnail());
-            Uri insertedUri = context.getContentResolver().insert(uri, values);
-            return true;
-        } else {
-            return false;
-        }
+        Uri uri = MoviesContentProvider.CONTENT_URI;
+        ContentValues values = new ContentValues();
+        values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
+        values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
+        values.put(MoviesTable.COLUMN_RATED, newMovie.getRated());
+        values.put(MoviesTable.COLUMN_RELEASED, newMovie.getReleased() != null ? newMovie.getReleased().getTime() : null);
+        values.put(MoviesTable.COLUMN_RUNTIME, newMovie.getRuntime());
+        values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
+        values.put(MoviesTable.COLUMN_WRITER, newMovie.getWriter());
+        values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
+        values.put(MoviesTable.COLUMN_LANGUAGE, newMovie.getLanguage());
+        values.put(MoviesTable.COLUMN_COUNTRY, newMovie.getCountry());
+        values.put(MoviesTable.COLUMN_AWARDS, newMovie.getAwards());
+        values.put(MoviesTable.COLUMN_POSTER, newMovie.getPoster() != null ? newMovie.getPoster().toString() : null);
+        values.put(MoviesTable.COLUMN_METASCORE, newMovie.getMetascore() == -1 ? null : newMovie.getMetascore());
+        values.put(MoviesTable.COLUMN_IMDB_RATING, newMovie.getImdbRating() == -1 ? null : newMovie.getImdbRating());
+        values.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
+        values.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
+        Uri insertedUri = context.getContentResolver().insert(uri, values);
+        return true;
     }
 
     /**
@@ -170,7 +177,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @param f film to link
+     * @param f movie to link
      * @param c Category to link
      * @return True if the parameters are complete, have a correct value and a kind is added successfully
      * False if not
@@ -234,7 +241,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @param f Identifier from film whose relationship 'kind' be deleted.
+     * @param f Identifier from movie whose relationship 'kind' be deleted.
      * @param c Identifier from category whose relationship 'kind' be deleted.
      * @return true if the delete have been successfully
      */
@@ -266,48 +273,71 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
     }
 
     /**
-     * @param newMovie Film replacing one with the same _id.
+     * @param newMovie Movie replacing one with the same _id.
      * @return True if the update have been successfully else false
      */
     @Override
     public boolean updateMovie(Movie newMovie) {
-        if (newMovie != null && check(newMovie)) {
-            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/MOVIE/" + newMovie.get_id());
-            ContentValues values = new ContentValues();
-            values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
-            values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
-            values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
-            values.put(MoviesTable.COLUMN_IN_STOCK, newMovie.getIn_stock());
-            values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
-            values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
-            values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear());
-            String where = null;
-            String[] selectionArgs = null;
-            int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
-            return rowsUpdated > 0;
-        } else {
-            return false;
-        }
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/MOVIE/" + newMovie.get_id());
+        ContentValues values = new ContentValues();
+        values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
+        values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
+        values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
+        values.put(MoviesTable.COLUMN_RATED, newMovie.getRated());
+        values.put(MoviesTable.COLUMN_RELEASED, newMovie.getReleased() != null ? newMovie.getReleased().getTime() : null);
+        values.put(MoviesTable.COLUMN_RUNTIME, newMovie.getRuntime());
+        values.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
+        values.put(MoviesTable.COLUMN_WRITER, newMovie.getWriter());
+        values.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
+        values.put(MoviesTable.COLUMN_LANGUAGE, newMovie.getLanguage());
+        values.put(MoviesTable.COLUMN_COUNTRY, newMovie.getCountry());
+        values.put(MoviesTable.COLUMN_AWARDS, newMovie.getAwards());
+        values.put(MoviesTable.COLUMN_POSTER, newMovie.getPoster() != null ? newMovie.getPoster().toString() : null);
+        values.put(MoviesTable.COLUMN_METASCORE, newMovie.getMetascore() == -1 ? null : newMovie.getMetascore());
+        values.put(MoviesTable.COLUMN_IMDB_RATING, newMovie.getImdbRating() == -1 ? null : newMovie.getImdbRating());
+        values.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
+        values.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
+        String where = null;
+        String[] selectionArgs = null;
+        int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
+        return rowsUpdated > 0;
     }
 
     /**
      * @param cursor Cursor where to get the information
-     * @return Get the information from a Cursor into a film
+     * @return Get the information from a Cursor into a movie
      */
     private Movie extractMovie(Cursor cursor) {
-        if (cursor != null) {
-            String _id = cursor.getString(cursor.getColumnIndex(MoviesTable.PRIMARY_KEY));
-            String title = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_TITLE));
-            String plot = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_PLOT));
-            String director = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_DIRECTOR));
-            String thumbnail = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_THUMBNAIL));
-            int in_stock = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_IN_STOCK));
-            int rented = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RENTED));
-            int year = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR));
-            return new Movie(_id, title, plot, director, thumbnail, in_stock, rented, year);
-        } else {
-            return null;
+        long _id = cursor.getLong(cursor.getColumnIndex(MoviesTable.PRIMARY_KEY));
+        String title = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_TITLE));
+        int year = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR));
+        year = cursor.isNull(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR)) ? -1 : year;
+        String rated = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_RATED));
+        Date released = new Date(cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RELEASED)));
+        String runtime = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_RUNTIME));
+        List<String> genres = null;
+        String director = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_DIRECTOR));
+        String writer = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_WRITER));
+        List<String> actors = null;
+        String plot = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_PLOT));
+        String language = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_LANGUAGE));
+        String country = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_COUNTRY));
+        String awards = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_AWARDS));
+        String link = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_POSTER));
+        URL poster = null;
+        try {
+            poster = new URL(link);
+        } catch (MalformedURLException e) {
         }
+        int metascore = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_METASCORE));
+        float imdb_rating = cursor.getFloat(cursor.getColumnIndex(MoviesTable.COLUMN_IMDB_RATING));
+        int imdb_votes = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_IMDB_VOTES));
+        String imdb_id = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_IMDB_ID));
+        int stock = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_STOCK));
+        int rented = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RENTED));
+        return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
+                writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
+                imdb_votes, imdb_id);
     }
 
     /**
@@ -323,18 +353,6 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
         } else {
             return null;
         }
-    }
-
-    /**
-     * @param movie_o Movie to check
-     * @return True if the object movie_o's parameters are complete and have a correct value,
-     * False otherwise
-     */
-    private boolean check(Movie movie_o) {
-        return movie_o.get_id() != null && movie_o.getTitle() != null && movie_o.getPlot() != null
-                && movie_o.getDirector() != null && movie_o.get_id().length() > 0 && movie_o.getTitle().length() > 0
-                && movie_o.getPlot().length() > 0 && movie_o.getIn_stock() >= 0 && movie_o.getRented() >= 0
-                && movie_o.getDirector().length() > 0 && movie_o.getYear() >= 1900;
     }
 
     /**
