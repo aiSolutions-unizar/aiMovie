@@ -5,15 +5,27 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="TextStyle">
+    <style name="textStyle_list">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/textSecondary</item>
-        <item name="android:textSize">15dip</item>
+        <item name="android:textSize">15sp</item>
     </style>
-    <style name="TextStyle.Title">
+    <style name="textStyle_list.title">
         <item name="android:textColor">@color/textPrimary</item>
-        <item name="android:textSize">25dip</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="textStyle_info">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="textStyle_info.title">
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

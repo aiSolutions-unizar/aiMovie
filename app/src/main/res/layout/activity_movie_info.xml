@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dip">
+
+    <LinearLayout
+        android:id="@+id/activity_movie_info_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical"
+        android:paddingLeft="15dip">
+
+        <ImageView
+            android:id="@+id/activity_movie_info_image"
+            android:layout_width="152dip"
+            android:layout_height="225dip"/>
+    </LinearLayout>
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/activity_movie_info_title"
+        style="@style/textStyle_info.title"
+        android:layout_alignTop="@id/activity_movie_info_thumbnail"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="3dip"
+        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+        android:text="Titulo"/>
+
+    <!-- Director -->
+    <TextView
+        android:id="@+id/activity_movie_info_director"
+        style="@style/textStyle_info"
+        android:layout_below="@id/activity_movie_info_title"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="3dip"
+        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+        android:text="Director" />
+
+    <!-- Year -->
+    <TextView
+        android:id="@+id/activity_movie_info_year"
+        style="@style/textStyle_info"
+        android:layout_below="@id/activity_movie_info_director"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="3dip"
+        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+        android:text="2015" />
+
+    <!-- Genre -->
+    <TextView
+        android:id="@+id/activity_movie_info_genre"
+        style="@style/textStyle_info"
+        android:layout_below="@id/activity_movie_info_year"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="3dip"
+        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+        android:text="Action, Drama" />
+
+    <LinearLayout
+        android:id="@+id/activity_movie_info_buttons"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip"
+        android:layout_below="@id/activity_movie_info_thumbnail">
+
+        <Button
+            android:id="@+id/activity_movie_info_rentButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="6dip"
+            android:layout_weight="1.0"
+            android:text="@string/rent" />
+
+        <Button
+            android:id="@+id/activity_movie_info_editButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="6dip"
+            android:layout_weight="1.0"
+            android:text="@string/edit" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/activity_movie_info_synopsis"
+        style="@style/textStyle_info"
+        android:layout_below="@id/activity_movie_info_buttons"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="5dip"
+        android:text="@string/synopsis" />
+
+</RelativeLayout>

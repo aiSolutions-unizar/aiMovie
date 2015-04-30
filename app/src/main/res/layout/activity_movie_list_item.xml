@@ -21,7 +21,7 @@
     <!-- Title -->
     <TextView
         android:id="@+id/activity_movie_list_item_title"
-        style="@style/TextStyle.Title"
+        style="@style/textStyle_list.title"
         android:layout_alignTop="@id/activity_movie_list_item_thumbnail"
         android:layout_marginLeft="4dip"
         android:layout_marginTop="3dip"
@@ -31,7 +31,7 @@
     <!-- Director -->
     <TextView
         android:id="@+id/activity_movie_list_item_director"
-        style="@style/TextStyle"
+        style="@style/textStyle_list"
         android:layout_below="@id/activity_movie_list_item_title"
         android:layout_marginLeft="4dip"
         android:layout_marginTop="3dip"
@@ -41,7 +41,7 @@
     <!-- Year -->
     <TextView
         android:id="@+id/activity_movie_list_item_year"
-        style="@style/TextStyle"
+        style="@style/textStyle_list"
         android:layout_below="@id/activity_movie_list_item_director"
         android:layout_marginLeft="4dip"
         android:layout_marginTop="3dip"
@@ -51,7 +51,7 @@
     <!-- Genre -->
     <TextView
         android:id="@+id/activity_movie_list_item_genre"
-        style="@style/TextStyle"
+        style="@style/textStyle_list"
         android:layout_below="@id/activity_movie_list_item_year"
         android:layout_marginLeft="4dip"
         android:layout_marginTop="3dip"
