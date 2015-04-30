@@ -9,5 +9,7 @@
     <string name="year">Year</string>
     <string name="director">Director</string>
     <string name="confirm">Confirm</string>
-    <string name="synopsis">Synopsis</string>
+    <string name="enter_imdb_id">Enter IMDb ID</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
 </resources>

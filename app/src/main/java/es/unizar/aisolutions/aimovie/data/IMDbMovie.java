@@ -13,14 +13,14 @@ import java.util.List;
 /**
  * Created by dbarelop on 27/04/15.
  */
-public class IMDbMovie extends Movie {
+public class IMDbMovie implements Movie {
     private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("d MMM yyyy");
     private String title;
     private int year;
     private String rated;
     private Date released;
     private String runtime;
-    private List<String> genre;
+    private List<String> genres;
     private String director;
     private String writer;
     private List<String> actors;
@@ -34,33 +34,60 @@ public class IMDbMovie extends Movie {
     private int imdbVotes;
     private String imdbID;
 
-    public IMDbMovie(JsonObject jsonMovie) {
-        title = jsonMovie.get("Title").getAsString();
-        year = jsonMovie.get("Year").getAsInt();
-        rated = jsonMovie.get("Rated").getAsString();
-        try {
-            released = DATE_FORMATTER.parse(jsonMovie.get("Released").getAsString());
-        } catch (ParseException e) {
-            released = null;
+    public IMDbMovie(JsonObject jsonMovie) throws MovieParseException {
+        String response = jsonMovie.get("Response").getAsString();
+        if (!response.equals("False")) {
+            String type = jsonMovie.get("Type").getAsString();
+            if (type.equals("movie")) {
+                title = jsonMovie.get("Title").getAsString();
+                year = jsonMovie.get("Year").getAsInt();
+                rated = jsonMovie.get("Rated").getAsString();
+                try {
+                    released = DATE_FORMATTER.parse(jsonMovie.get("Released").getAsString());
+                } catch (ParseException e) {
+                    released = null;
+                }
+                runtime = jsonMovie.get("Runtime").getAsString();
+                genres = Arrays.asList(jsonMovie.get("Genre").getAsString().split(","));
+                director = jsonMovie.get("Director").getAsString();
+                writer = jsonMovie.get("Writer").getAsString();
+                actors = Arrays.asList(jsonMovie.get("Actors").getAsString().split(","));
+                plot = jsonMovie.get("Plot").getAsString();
+                language = jsonMovie.get("Language").getAsString();
+                country = jsonMovie.get("Country").getAsString();
+                awards = jsonMovie.get("Awards").getAsString();
+                try {
+                    poster = new URL(jsonMovie.get("Poster").getAsString());
+                } catch (MalformedURLException e) {
+                    poster = null;
+                }
+                try {
+                    metascore = Integer.parseInt(jsonMovie.get("Metascore").getAsString());
+                } catch (NumberFormatException e) {
+                    metascore = -1;
+                }
+                try {
+                    imdbRating = Float.parseFloat(jsonMovie.get("imdbRating").getAsString());
+                } catch (NumberFormatException e) {
+                    imdbRating = -1;
+                }
+                try {
+                    imdbVotes = Integer.parseInt(jsonMovie.get("imdbVotes").getAsString().replace(",", ""));
+                } catch (NumberFormatException e) {
+                    imdbVotes = -1;
+                }
+                imdbID = jsonMovie.get("imdbID").getAsString();
+            } else {
+                throw new MovieParseException("Provided JSON doesn't belong to a movie");
+            }
+        } else {
+            throw new MovieParseException("Error parsing IMDbMovie from JSON");
         }
-        runtime = jsonMovie.get("Runtime").getAsString();
-        genre = Arrays.asList(jsonMovie.get("Genre").getAsString().split(","));
-        director = jsonMovie.get("Director").getAsString();
-        writer = jsonMovie.get("Writer").getAsString();
-        actors = Arrays.asList(jsonMovie.get("Actors").getAsString().split(","));
-        plot = jsonMovie.get("Plot").getAsString();
-        language = jsonMovie.get("Language").getAsString();
-        country = jsonMovie.get("Country").getAsString();
-        awards = jsonMovie.get("Awards").getAsString();
-        try {
-            poster = new URL(jsonMovie.get("Poster").getAsString());
-        } catch (MalformedURLException e) {
-            poster = null;
-        }
-        metascore = Integer.parseInt(jsonMovie.get("Metascore").getAsString());
-        imdbRating = Float.parseFloat(jsonMovie.get("imdbRating").getAsString());
-        imdbVotes = Integer.parseInt(jsonMovie.get("imdbVotes").getAsString().replace(",", ""));
-        imdbID = jsonMovie.get("imdbID").getAsString();
+    }
+
+    @Override
+    public long get_id() {
+        return -1;
     }
 
     @Override
@@ -73,20 +100,24 @@ public class IMDbMovie extends Movie {
         return year;
     }
 
+    @Override
     public String getRated() {
         return rated;
     }
 
+    @Override
     public Date getReleased() {
         return released;
     }
 
+    @Override
     public String getRuntime() {
         return runtime;
     }
 
-    public List<String> getGenre() {
-        return genre;
+    @Override
+    public List<String> getGenres() {
+        return genres;
     }
 
     @Override
@@ -94,10 +125,12 @@ public class IMDbMovie extends Movie {
         return director;
     }
 
+    @Override
     public String getWriter() {
         return writer;
     }
 
+    @Override
     public List<String> getActors() {
         return actors;
     }
@@ -107,34 +140,42 @@ public class IMDbMovie extends Movie {
         return plot;
     }
 
+    @Override
     public String getLanguage() {
         return language;
     }
 
+    @Override
     public String getCountry() {
         return country;
     }
 
+    @Override
     public String getAwards() {
         return awards;
     }
 
+    @Override
     public URL getPoster() {
         return poster;
     }
 
+    @Override
     public int getMetascore() {
         return metascore;
     }
 
+    @Override
     public float getImdbRating() {
         return imdbRating;
     }
 
+    @Override
     public int getImdbVotes() {
         return imdbVotes;
     }
 
+    @Override
     public String getImdbID() {
         return imdbID;
     }

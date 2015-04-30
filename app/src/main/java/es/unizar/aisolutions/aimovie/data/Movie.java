@@ -1,61 +1,48 @@
 package es.unizar.aisolutions.aimovie.data;
 
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
+
 /**
- * Film defines which information is stored in a Film.
- * <p/>
- * Created by diego on 2/04/15.
- * Time spent: 7 minutes.
+ * Created by dbarelop on 29/04/15.
  */
-public class Movie {
-    // TODO: make _id long and add another field for IMDB identifier
-    private String _id;
-    private String title;
-    private String plot;
-    private String director;
-    private int in_stock;
-    private int rented;
-    private int year;
-    // TODO: add list of categories related to the movie
+public interface Movie {
+    long get_id();
 
-    public Movie() {
+    String getTitle();
 
-    }
+    int getYear();
 
-    public Movie(String _id, String title, String plot, String director, int in_stock, int rented, int year) {
-        this._id = _id;
-        this.title = title;
-        this.plot = plot;
-        this.director = director;
-        this.in_stock = in_stock;
-        this.rented = rented;
-        this.year = year;
-    }
+    String getRated();
 
-    public String get_id() {
-        return _id;
-    }
+    Date getReleased();
 
-    public String getTitle() {
-        return title;
-    }
+    String getRuntime();
 
-    public String getPlot() {
-        return plot;
-    }
+    List<String> getGenres();
 
-    public String getDirector() {
-        return director;
-    }
+    String getDirector();
 
-    public int getIn_stock() {
-        return in_stock;
-    }
+    String getWriter();
 
-    public int getRented() {
-        return rented;
-    }
+    List<String> getActors();
 
-    public int getYear() {
-        return year;
-    }
+    String getPlot();
+
+    String getLanguage();
+
+    String getCountry();
+
+    String getAwards();
+
+    URL getPoster();
+
+    int getMetascore();
+
+    float getImdbRating();
+
+    int getImdbVotes();
+
+    String getImdbID();
 }

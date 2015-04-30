@@ -11,6 +11,7 @@ import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.ContentUpdates;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentMiddleware;
 import es.unizar.aisolutions.aimovie.data.Movie;
+import es.unizar.aisolutions.aimovie.data.StoredMovie;
 
 public class MovieAdder extends ActionBarActivity {
 
@@ -49,10 +50,15 @@ public class MovieAdder extends ActionBarActivity {
 
     private void saveState() {
         String title = ((EditText) findViewById(R.id.title)).getText().toString();
-        int year = Integer.parseInt(((EditText) findViewById(R.id.year)).getText().toString());
+        int year = -1;
+        try {
+            year = Integer.parseInt(((EditText) findViewById(R.id.year)).getText().toString());
+        } catch (NumberFormatException e) {
+
+        }
         String director = ((EditText) findViewById(R.id.director)).getText().toString();
-        String synopsis = ((EditText) findViewById(R.id.synopsis)).getText().toString();
-        Movie m = new Movie(null, title, synopsis, director, -1, -1, year);
+        Movie m = new StoredMovie(-1, title, year, null, null, null, null, director, null, null,
+                null, null, null, null, null, -1, -1, -1, null);
         ContentUpdates db = new MoviesContentMiddleware(this);
         db.addMovie(m);
     }
