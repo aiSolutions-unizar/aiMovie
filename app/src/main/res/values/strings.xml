@@ -15,4 +15,5 @@
     <string name="cancel">Cancel</string>
     <string name="rent">Rent</string>
     <string name="edit">Edit</string>
+    <string name="title_activity_movie_info">MovieInfo</string>
 </resources>

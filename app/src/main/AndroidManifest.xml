@@ -9,6 +9,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/CustomTheme">
+        <provider
+            android:name=".contentprovider.MoviesContentProvider"
+            android:authorities="es.unizar.aisolutions.aimovie.contentprovider" />
+
         <activity
             android:name=".activity.MovieList"
             android:label="@string/app_name">
@@ -18,14 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <provider
-            android:name=".contentprovider.MoviesContentProvider"
-            android:authorities="es.unizar.aisolutions.aimovie.contentprovider" />
-
         <activity
             android:name=".activity.MovieAdder"
             android:label="@string/title_activity_movie_adder"
+            android:parentActivityName=".activity.MovieList">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="es.unizar.aisolutions.aimovie.activity.MovieList" />
+        </activity>
+        <activity
+            android:name=".activity.MovieInfo"
+            android:label="@string/title_activity_movie_info"
             android:parentActivityName=".activity.MovieList">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

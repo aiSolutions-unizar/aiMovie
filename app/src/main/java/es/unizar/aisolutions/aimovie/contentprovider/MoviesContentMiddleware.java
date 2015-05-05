@@ -73,7 +73,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
         if (cursor.moveToFirst()) {
             do {
                 // TODO: optimize using a more complex query (in ContentProvider)
-                result.add(fetchMovie(cursor.getString(cursor.getColumnIndex(KindTable.COLUMN_MOVIE_ID))));
+                result.add(fetchMovie(cursor.getLong(cursor.getColumnIndex(KindTable.COLUMN_MOVIE_ID))));
             } while (cursor.moveToNext());
         }
         return result;
@@ -118,7 +118,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      * @return The movie asked
      */
     @Override
-    public Movie fetchMovie(String id) {
+    public Movie fetchMovie(long id) {
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + id);
         String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;

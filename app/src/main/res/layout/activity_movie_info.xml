@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dip">
+    android:layout_marginTop="10dip"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/activity_movie_info_thumbnail"
@@ -15,7 +16,7 @@
         <ImageView
             android:id="@+id/activity_movie_info_image"
             android:layout_width="152dip"
-            android:layout_height="225dip"/>
+            android:layout_height="225dip" />
     </LinearLayout>
 
     <!-- Title -->
@@ -26,7 +27,7 @@
         android:layout_marginLeft="10dip"
         android:layout_marginTop="3dip"
         android:layout_toRightOf="@id/activity_movie_info_thumbnail"
-        android:text="Titulo"/>
+        android:text="Titulo" />
 
     <!-- Director -->
     <TextView
@@ -50,7 +51,7 @@
 
     <!-- Genre -->
     <TextView
-        android:id="@+id/activity_movie_info_genre"
+        android:id="@+id/activity_movie_info_genres"
         style="@style/textStyle_info"
         android:layout_below="@id/activity_movie_info_year"
         android:layout_marginLeft="10dip"
@@ -60,25 +61,25 @@
 
     <LinearLayout
         android:id="@+id/activity_movie_info_buttons"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/activity_movie_info_thumbnail"
+        android:orientation="horizontal"
         android:paddingLeft="6dip"
-        android:paddingRight="6dip"
-        android:layout_below="@id/activity_movie_info_thumbnail">
+        android:paddingRight="6dip">
 
         <Button
             android:id="@+id/activity_movie_info_rentButton"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="6dip"
             android:layout_weight="1.0"
             android:text="@string/rent" />
 
         <Button
             android:id="@+id/activity_movie_info_editButton"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="6dip"
             android:layout_weight="1.0"
             android:text="@string/edit" />
@@ -86,7 +87,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/activity_movie_info_synopsis"
+        android:id="@+id/activity_movie_info_plot"
         style="@style/textStyle_info"
         android:layout_below="@id/activity_movie_info_buttons"
         android:layout_marginLeft="15dip"

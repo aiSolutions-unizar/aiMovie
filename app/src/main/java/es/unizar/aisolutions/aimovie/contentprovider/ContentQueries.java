@@ -39,6 +39,6 @@ public interface ContentQueries {
      * @param id Identifier from film to fetch.
      * @return The film whose identifier matches with 'id' or null.
      */
-    Movie fetchMovie(String id);
+    Movie fetchMovie(long id);
 
 }
