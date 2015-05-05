@@ -49,11 +49,12 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(view.getContext(), MovieInfo.class);
+                Intent i = new Intent(MovieList.this, MovieInfo.class);
                 i.putExtra(MoviesTable.PRIMARY_KEY, id);
                 startActivity(i);
             }
         });
+        // TODO: add genres
         String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER};
         int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
@@ -103,7 +104,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             @Override
             public void onClick(View v) {
                 fabButton.collapse();
-                Intent i = new Intent(v.getContext(), MovieAdder.class);
+                Intent i = new Intent(MovieList.this, MovieAdder.class);
                 startActivity(i);
             }
         });
@@ -133,7 +134,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                                 if (movie != null) {
                                     mcm.addMovie(movie);
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Movie not found", Toast.LENGTH_LONG);
+                                    Toast.makeText(MovieList.this, "Movie not found", Toast.LENGTH_LONG).show();
                                 }
                             }
                         }.execute(id);
@@ -177,7 +178,10 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = MoviesContentProvider.CONTENT_URI;
         String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        return new CursorLoader(this, uri, projection, null, null, null);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        return new CursorLoader(this, uri, projection, selection, selectionArgs, sortOrder);
     }
 
     @Override

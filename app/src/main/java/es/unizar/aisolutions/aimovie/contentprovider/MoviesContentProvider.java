@@ -74,7 +74,7 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case MOVIE_ID:
                 queryBuilder.setTables(MoviesTable.TABLE_NAME);
-                queryBuilder.appendWhereEscapeString(MoviesTable.PRIMARY_KEY + " = '" + uri.getLastPathSegment() + "'");
+                queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
             case CATEGORIES:
                 queryBuilder.setTables(CategoriesTable.TABLE_NAME);
@@ -87,7 +87,7 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case CATEGORY_ID:
                 queryBuilder.setTables(CategoriesTable.TABLE_NAME);
-                queryBuilder.appendWhereEscapeString(CategoriesTable.PRIMARY_KEY + " = '" + uri.getLastPathSegment() + "'");
+                queryBuilder.appendWhere(CategoriesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
