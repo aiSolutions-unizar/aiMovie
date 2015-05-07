@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.ContentUpdates;
@@ -50,16 +51,20 @@ public class MovieAdder extends ActionBarActivity {
 
     private void saveState() {
         String title = ((EditText) findViewById(R.id.title)).getText().toString();
-        int year = -1;
-        try {
-            year = Integer.parseInt(((EditText) findViewById(R.id.year)).getText().toString());
-        } catch (NumberFormatException e) {
+        if (!title.isEmpty()) {
+            int year = -1;
+            try {
+                year = Integer.parseInt(((EditText) findViewById(R.id.year)).getText().toString());
+            } catch (NumberFormatException e) {
 
+            }
+            String director = ((EditText) findViewById(R.id.director)).getText().toString();
+            Movie m = new StoredMovie(-1, title, year, null, null, null, null, director, null, null,
+                    null, null, null, null, null, -1, -1, -1, null);
+            ContentUpdates db = new MoviesContentMiddleware(this);
+            db.addMovie(m);
+        } else {
+            Toast.makeText(this, getString(R.string.title_not_entered), Toast.LENGTH_SHORT).show();
         }
-        String director = ((EditText) findViewById(R.id.director)).getText().toString();
-        Movie m = new StoredMovie(-1, title, year, null, null, null, null, director, null, null,
-                null, null, null, null, null, -1, -1, -1, null);
-        ContentUpdates db = new MoviesContentMiddleware(this);
-        db.addMovie(m);
     }
 }
