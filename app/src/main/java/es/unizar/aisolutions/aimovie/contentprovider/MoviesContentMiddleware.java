@@ -125,8 +125,11 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
         String[] selectionArgs = null;
         String sortOrder = null;
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        cursor.moveToFirst();
-        return extractMovie(cursor);
+        if (cursor.moveToFirst()) {
+            return extractMovie(cursor);
+        } else {
+            return null;
+        }
     }
 
     /**

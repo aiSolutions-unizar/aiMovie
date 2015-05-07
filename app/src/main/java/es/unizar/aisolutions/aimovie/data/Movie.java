@@ -8,6 +8,7 @@ import java.util.List;
  * Created by dbarelop on 29/04/15.
  */
 public interface Movie {
+    // TODO: make year, metascore, imdb_rating and imdb_votes Integer and Float (nullable)
     long get_id();
 
     String getTitle();
