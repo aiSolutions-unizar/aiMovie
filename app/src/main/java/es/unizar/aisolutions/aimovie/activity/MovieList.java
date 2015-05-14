@@ -40,7 +40,6 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
 
 public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int CONTEXT_MENU_DELETE_ID = Menu.FIRST;
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private SimpleCursorAdapter adapter;
@@ -62,7 +61,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.add(0, CONTEXT_MENU_DELETE_ID, 0, getString(R.string.delete));
+                getMenuInflater().inflate(R.menu.context_menu_movie_list, menu);
             }
         });
 
@@ -162,7 +161,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case CONTEXT_MENU_DELETE_ID:
+            case R.id.action_delete:
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + info.id);
                 getContentResolver().delete(uri, null, null);
