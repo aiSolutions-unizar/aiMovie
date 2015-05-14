@@ -17,9 +17,10 @@ import java.net.URL;
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentMiddleware;
 import es.unizar.aisolutions.aimovie.data.Movie;
-import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 public class MovieInfo extends ActionBarActivity {
+    public static final String EXTRA_MOVIE_ID = "movie_id";
+    public static final String EXTRA_THUMBNAIL = "movie_thumbnail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class MovieInfo extends ActionBarActivity {
         final ImageView image = (ImageView) findViewById(R.id.activity_movie_info_image);
 
         if (savedInstanceState != null || getIntent().getExtras() != null) {
-            long id = getIntent().getExtras().getLong(MoviesTable.PRIMARY_KEY);
+            long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
             final MoviesContentMiddleware mcm = new MoviesContentMiddleware(this);
             Movie m = mcm.fetchMovie(id);
             title.setText(m.getTitle());

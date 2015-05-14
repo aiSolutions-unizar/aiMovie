@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,8 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
 
 public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
+    private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private SimpleCursorAdapter adapter;
 
     @Override
@@ -53,7 +56,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(MovieList.this, MovieInfo.class);
-                i.putExtra(MoviesTable.PRIMARY_KEY, id);
+                i.putExtra(MovieInfo.EXTRA_MOVIE_ID, id);
                 startActivity(i);
             }
         });
@@ -71,9 +74,14 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                         @Override
                         protected Bitmap doInBackground(String... link) {
                             try {
-                                // TODO: cache thumbnail into resource when inserting movie
-                                URL url = new URL(link[0]);
-                                Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                                Bitmap thumbnail = thumbnailCache.get(link[0]);
+                                if (thumbnail == null) {
+                                    URL url = new URL(link[0]);
+                                    thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                                    synchronized (thumbnailCache) {
+                                        thumbnailCache.put(link[0], thumbnail);
+                                    }
+                                }
                                 return thumbnail;
                             } catch (IOException e) {
                                 // TODO: error handling
