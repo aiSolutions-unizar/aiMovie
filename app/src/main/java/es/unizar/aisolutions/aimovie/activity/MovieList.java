@@ -2,7 +2,6 @@ package es.unizar.aisolutions.aimovie.activity;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,11 +15,10 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.LruCache;
-import android.view.LayoutInflater;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +40,7 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
 
 public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final int CONTEXT_MENU_DELETE_ID = Menu.FIRST;
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private SimpleCursorAdapter adapter;
@@ -60,16 +59,20 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 startActivity(i);
             }
         });
+        listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                menu.add(0, CONTEXT_MENU_DELETE_ID, 0, getString(R.string.delete));
+            }
+        });
+
         // TODO: add genres
         String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER};
         int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0) {
             @Override
-            public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                View v = LayoutInflater.from(context).inflate(R.layout.activity_movie_list_item, parent, false);
-                String link = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_POSTER));
-                final ImageView imageView = (ImageView) v.findViewById(R.id.activity_movie_list_item_image);
-                if (imageView != null) {
+            public void setViewImage(final ImageView imageView, String value) {
+                if (imageView != null && value != null) {
                     new AsyncTask<String, Void, Bitmap>() {
                         @Override
                         protected Bitmap doInBackground(String... link) {
@@ -94,9 +97,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                         protected void onPostExecute(Bitmap thumbnail) {
                             imageView.setImageBitmap(thumbnail);
                         }
-                    }.execute(link);
+                    }.execute(value);
                 }
-                return v;
             }
         };
         listView.setAdapter(adapter);
@@ -155,6 +157,18 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 fabButton.collapse();
             }
         });
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_DELETE_ID:
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + info.id);
+                getContentResolver().delete(uri, null, null);
+                return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
