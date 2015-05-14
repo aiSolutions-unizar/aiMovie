@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".MovieList">
 
+    <ListView
+        android:id="@+id/movie_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions"
         android:layout_width="wrap_content"
@@ -39,10 +44,5 @@
             fab:fab_title="Via IMDB" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-    <ListView
-        android:id="@+id/movie_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </RelativeLayout>
