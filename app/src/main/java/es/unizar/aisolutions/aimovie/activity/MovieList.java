@@ -2,6 +2,7 @@ package es.unizar.aisolutions.aimovie.activity;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +15,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,43 +60,37 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         // TODO: add genres
         String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER};
         int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
-        adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0);
-        SimpleCursorAdapter.ViewBinder viewBinder = new SimpleCursorAdapter.ViewBinder() {
+        adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0) {
             @Override
-            public boolean setViewValue(final View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == cursor.getColumnIndex(MoviesTable.COLUMN_POSTER)) {
-                    final String link = cursor.getString(columnIndex);
-                    if (link != null && !link.isEmpty()) {
-                        new AsyncTask<String, Void, Bitmap>() {
-                            @Override
-                            protected Bitmap doInBackground(String... link) {
-                                try {
-                                    // TODO: cache thumbnail into resource when inserting movie
-                                    URL url = new URL(link[0]);
-                                    Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                                    return thumbnail;
-                                } catch (IOException e) {
-                                    // TODO: error handling
-                                    e.printStackTrace();
-                                    return null;
-                                }
+            public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                View v = LayoutInflater.from(context).inflate(R.layout.activity_movie_list_item, parent, false);
+                String link = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_POSTER));
+                final ImageView imageView = (ImageView) v.findViewById(R.id.activity_movie_list_item_image);
+                if (imageView != null) {
+                    new AsyncTask<String, Void, Bitmap>() {
+                        @Override
+                        protected Bitmap doInBackground(String... link) {
+                            try {
+                                // TODO: cache thumbnail into resource when inserting movie
+                                URL url = new URL(link[0]);
+                                Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                                return thumbnail;
+                            } catch (IOException e) {
+                                // TODO: error handling
+                                e.printStackTrace();
+                                return null;
                             }
+                        }
 
-                            @Override
-                            protected void onPostExecute(Bitmap thumbnail) {
-                                ((ImageView) view).setImageBitmap(thumbnail);
-                            }
-                        }.execute(link);
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
+                        @Override
+                        protected void onPostExecute(Bitmap thumbnail) {
+                            imageView.setImageBitmap(thumbnail);
+                        }
+                    }.execute(link);
                 }
+                return v;
             }
         };
-        adapter.setViewBinder(viewBinder);
         listView.setAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
 
