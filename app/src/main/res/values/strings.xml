@@ -23,5 +23,6 @@
     <string-array name="sorting_choices">
         <item>Title</item>
         <item>Director</item>
+        <item>Year</item>
     </string-array>
 </resources>

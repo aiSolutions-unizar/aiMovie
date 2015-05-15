@@ -194,6 +194,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                             break;
                         case MoviesTable.COLUMN_DIRECTOR:
                             selected = 1;
+                            break;
+                        case MoviesTable.COLUMN_YEAR:
+                            selected = 2;
                     }
                 }
                 DialogInterface.OnClickListener selectListener = new DialogInterface.OnClickListener() {
@@ -206,6 +209,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                                 break;
                             case 1:
                                 sortOrder = MoviesTable.COLUMN_DIRECTOR;
+                                break;
+                            case 2:
+                                sortOrder = MoviesTable.COLUMN_YEAR;
                         }
                         getLoaderManager().restartLoader(0, null, MovieList.this);
                         dialog.dismiss();
