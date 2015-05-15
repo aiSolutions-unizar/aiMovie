@@ -74,19 +74,6 @@ public class MoviesManager {
     }
 
     /**
-     * @param genres = Genres list used as filter.
-     * @return A list with all movies whose genre is in c
-     */
-    public List<Movie> fetchMovies(List<Genre> genres) {
-        // TODO: optimize using a more complex query
-        List<Movie> result = new ArrayList<>();
-        for (Genre c : genres) {
-            result.addAll(fetchMovies(c));
-        }
-        return result;
-    }
-
-    /**
      * @return A list with all movies from the database (it's possible with null)
      */
     public List<Movie> fetchMovies() {

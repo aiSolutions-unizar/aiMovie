@@ -29,9 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:gravity="top|left"
-        android:hint="@string/synopsis" />
-
-    <!-- TODO: add checkboxes for genre selection (fetch from database -> do in MovieAdder?) -->
+        android:hint="@string/plot" />
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -43,43 +41,167 @@
             android:layout_height="wrap_content">
 
             <CheckBox
+                android:id="@+id/action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Action"
-                android:id="@+id/action" />
+                android:text="@string/genre_action" />
 
             <CheckBox
+                android:id="@+id/adventure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Animation"
-                android:id="@+id/animation" />
+                android:text="@string/genre_adventure" />
 
             <CheckBox
+                android:id="@+id/animation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Comedy"
-                android:id="@+id/comedy" />
-
+                android:text="@string/genre_animation" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <CheckBox
+                android:id="@+id/biography"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Drama"
-                android:id="@+id/drama" />
+                android:text="@string/genre_biography" />
 
             <CheckBox
+                android:id="@+id/comedy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Horror"
-                android:id="@+id/horror" />
+                android:text="@string/genre_comedy" />
 
+            <CheckBox
+                android:id="@+id/crime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_crime" />
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/documentary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_documentary" />
+
+            <CheckBox
+                android:id="@+id/drama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_drama" />
+
+            <CheckBox
+                android:id="@+id/family"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_family" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/fantasy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_fantasy" />
+
+            <CheckBox
+                android:id="@+id/film-noir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_filmnoir" />
+
+            <CheckBox
+                android:id="@+id/history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_history" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/horror"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_horror" />
+
+            <CheckBox
+                android:id="@+id/music"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_music" />
+
+            <CheckBox
+                android:id="@+id/musical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_musical" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/mystery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_mystery" />
+
+            <CheckBox
+                android:id="@+id/romance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_romance" />
+
+            <CheckBox
+                android:id="@+id/sci-fi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_scifi" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/sport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_sport" />
+
+            <CheckBox
+                android:id="@+id/thriller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_thriller" />
+
+            <CheckBox
+                android:id="@+id/war"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_war" />
+
+            <CheckBox
+                android:id="@+id/western"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genre_western" />
+        </TableRow>
     </TableLayout>
 
     <!-- TODO: move to the bottom right of the screen -->
