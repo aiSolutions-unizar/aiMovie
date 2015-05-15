@@ -20,9 +20,14 @@
     <string name="action_delete">Delete</string>
     <string name="action_sort">Sort</string>
     <string name="sort_by">Sort by</string>
+    <string name="action_edit">action_edit</string>
+    <string name="Add_stock">Add stock</string>
     <string-array name="sorting_choices">
         <item>Title</item>
         <item>Director</item>
         <item>Year</item>
     </string-array>
+    <string name="title_activity_user_info">UserInfo</string>
+    <string name="activity_user_info_name">activity_user_info_name</string>
+    <string name="activity_user_info_appellidos">activity_user_info_apellido</string>
 </resources>

@@ -27,11 +27,12 @@ public class StoredMovie implements Movie {
     private float imdbRating;
     private int imdbVotes;
     private String imdbID;
+    private int stock;
 
     public StoredMovie(long _id, String title, int year, String rated, Date released, String runtime,
                        List<Genre> genres, String director, String writer, List<String> actors,
                        String plot, String language, String country, String awards, URL poster,
-                       int metascore, float imdbRating, int imdbVotes, String imdbID) {
+                       int metascore, float imdbRating, int imdbVotes, String imdbID, int stock) {
         this._id = _id;
         this.title = title;
         this.year = year;
@@ -51,6 +52,8 @@ public class StoredMovie implements Movie {
         this.imdbRating = imdbRating;
         this.imdbVotes = imdbVotes;
         this.imdbID = imdbID;
+        this.stock = stock;
+        // TODO Add rented movies
     }
 
     @Override
@@ -124,6 +127,16 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public int getStock() {
+        return stock;
+    }
+
+    @Override
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    @Override
     public URL getPoster() {
         return poster;
     }
@@ -147,4 +160,5 @@ public class StoredMovie implements Movie {
     public String getImdbID() {
         return imdbID;
     }
+
 }

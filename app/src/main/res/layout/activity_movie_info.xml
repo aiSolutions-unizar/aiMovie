@@ -59,6 +59,35 @@
         android:layout_toRightOf="@id/activity_movie_info_thumbnail"
         android:text="Action, Drama" />
 
+    <!-- In stock movies -->
+    <LinearLayout
+        android:id="@+id/activity_movie_info_stock"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_movie_info_genres"
+        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+        android:orientation="horizontal"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip">
+
+        <!-- Header -->
+        <TextView
+            android:id="@+id/activity_movie_info_stock_header"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Stock: " />
+
+        <!-- Value -->
+        <TextView
+            android:id="@+id/activity_movie_info_stock_value"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="10" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/activity_movie_info_buttons"
         android:layout_width="fill_parent"
@@ -82,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="6dip"
             android:layout_weight="1.0"
-            android:text="@string/edit" />
+            android:text="@string/Add_stock" />
 
     </LinearLayout>
 

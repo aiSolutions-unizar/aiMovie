@@ -59,7 +59,7 @@ public class MovieAdder extends ActionBarActivity {
             }
             String director = ((EditText) findViewById(R.id.director)).getText().toString();
             Movie m = new StoredMovie(-1, title, year, null, null, null, null, director, null, null,
-                    null, null, null, null, null, -1, -1, -1, null);
+                    null, null, null, null, null, -1, -1, -1, null, 0);
             MoviesManager db = new MoviesManager(this);
             db.addMovie(m);
         } else {

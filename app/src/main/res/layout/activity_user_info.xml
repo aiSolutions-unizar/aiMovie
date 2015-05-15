@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="es.unizar.aisolutions.aimovie.activity.UserInfo">
+
+    <!-- Name -->
+    <LinearLayout
+        android:id="@+id/activity_user_info_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip">
+
+        <!-- Tag -->
+        <TextView
+            android:id="@+id/activity_user_info_name_tag"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Name" />
+
+        <!-- Value -->
+        <TextView
+            android:id="@+id/activity_user_info_name_value"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="name" />
+
+    </LinearLayout>
+
+    <!-- SurName -->
+    <LinearLayout
+        android:id="@+id/activity_user_info_surname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_user_info_name"
+        android:orientation="horizontal"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip">
+
+        <!-- Tag -->
+        <TextView
+            android:id="@+id/activity_user_info_surname_tag"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Surname" />
+
+        <!-- Value -->
+        <TextView
+            android:id="@+id/activity_user_info_surname_value"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="surname" />
+
+    </LinearLayout>
+
+    <!-- SurName -->
+    <LinearLayout
+        android:id="@+id/activity_user_info_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_user_info_surname"
+        android:orientation="horizontal"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip">
+
+        <!-- Tag -->
+        <TextView
+            android:id="@+id/activity_user_info_email_tag"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Email" />
+
+        <!-- Value -->
+        <TextView
+            android:id="@+id/activity_user_info_email_value"
+            style="@style/textStyle_info"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.0"
+            android:text="email" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_user_info_button_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/activity_user_info_email"
+        android:text="Order" />
+
+    <Button
+        android:id="@+id/activity_user_info_button_rent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/activity_user_info_button_order"
+        android:layout_centerHorizontal="true"
+        android:text="Cancel" />
+
+
+</RelativeLayout>

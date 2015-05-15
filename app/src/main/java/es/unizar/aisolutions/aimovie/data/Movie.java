@@ -46,4 +46,8 @@ public interface Movie {
     int getImdbVotes();
 
     String getImdbID();
+
+    int getStock();
+
+    void setStock(int newValue);
 }

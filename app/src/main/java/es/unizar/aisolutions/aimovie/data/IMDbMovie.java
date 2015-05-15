@@ -184,4 +184,13 @@ public class IMDbMovie implements Movie {
     public String getImdbID() {
         return imdbID;
     }
+
+    @Override
+    public int getStock() {
+        return -1;
+    }
+
+    @Override
+    public void setStock(int newValue) {
+    }
 }
