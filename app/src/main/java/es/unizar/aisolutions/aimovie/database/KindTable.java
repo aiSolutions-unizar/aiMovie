@@ -27,9 +27,10 @@ public class KindTable {
                     "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "%s INTEGER NOT NULL, " +
                     "%s INTEGER NOT NULL, " +
-                    "foreign key (%s) references %s (%s), " +
-                    "foreign key (%s) references %s (%s));",
-            TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_ID, COLUMN_MOVIE_ID, COLUMN_GENRE_ID, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY
+                    "FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE CASCADE, " +
+                    "FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE CASCADE);",
+            TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_ID, COLUMN_MOVIE_ID, COLUMN_GENRE_ID, GenresTable.TABLE_NAME,
+            GenresTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY
     );
 
     // SQL code to create needed triggers
