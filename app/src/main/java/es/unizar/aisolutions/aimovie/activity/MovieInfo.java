@@ -90,26 +90,28 @@ public class MovieInfo extends ActionBarActivity {
             genres.setText(m.getGenres() != null ? TextUtils.join(", ", m.getGenres()) : null);
             plot.setText(m.getPlot());
             stock.setText(Integer.toString(m.getStock()));
-            new AsyncTask<String, Void, Bitmap>() {
-                @Override
-                protected Bitmap doInBackground(String... link) {
-                    try {
-                        // TODO: cache thumbnail into resource when inserting movie
-                        URL url = new URL(link[0]);
-                        Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        return thumbnail;
-                    } catch (IOException e) {
-                        // TODO: error handling
-                        e.printStackTrace();
-                        return null;
+            if (m.getPoster() != null) {
+                new AsyncTask<String, Void, Bitmap>() {
+                    @Override
+                    protected Bitmap doInBackground(String... link) {
+                        try {
+                            // TODO: cache thumbnail into resource when inserting movie
+                            URL url = new URL(link[0]);
+                            Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            return thumbnail;
+                        } catch (IOException e) {
+                            // TODO: error handling
+                            e.printStackTrace();
+                            return null;
+                        }
                     }
-                }
 
-                @Override
-                protected void onPostExecute(Bitmap thumbnail) {
-                    image.setImageBitmap(thumbnail);
-                }
-            }.execute(m.getPoster().toString());
+                    @Override
+                    protected void onPostExecute(Bitmap thumbnail) {
+                        image.setImageBitmap(thumbnail);
+                    }
+                }.execute(m.getPoster().toString());
+            }
         }
     }
 

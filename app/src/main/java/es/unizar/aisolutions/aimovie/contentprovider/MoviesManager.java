@@ -34,6 +34,22 @@ public class MoviesManager {
         this.context = context;
     }
 
+    public Genre fetchGenre(String name) {
+        // TODO: not working?
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
+        String[] projection = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = GenresTable.COLUMN_GENRE_NAME + " = ?";
+        String[] selectionArgs = new String[]{name};
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            Genre g = extractGenre(cursor);
+            return g;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @return A list with all genres from the database (may be null)
      */
@@ -117,7 +133,6 @@ public class MoviesManager {
     public boolean addMovie(Movie newMovie) {
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
         Uri uriMovie = MoviesContentProvider.CONTENT_URI;
-        Uri uriGenre = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
         Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
 
         ContentValues valuesMovie = new ContentValues();
@@ -138,21 +153,16 @@ public class MoviesManager {
         valuesMovie.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
         valuesMovie.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
 
-        ContentValues valuesGenre = new ContentValues();
-        for (Genre genre : newMovie.getGenres()) {
-            valuesGenre.put(GenresTable.COLUMN_GENRE_NAME, genre.getName());
-        }
-
         ContentProviderOperation movieAddition = ContentProviderOperation.newInsert(uriMovie)
                 .withValues(valuesMovie).build();
-        ContentProviderOperation genreAddition = ContentProviderOperation.newInsert(uriGenre)
-                .withValues(valuesGenre).build();
-        ContentProviderOperation kindAddition = ContentProviderOperation.newInsert(uriKind)
-                .withValueBackReference(KindTable.COLUMN_MOVIE_ID, 0)
-                .withValueBackReference(KindTable.COLUMN_GENRE_ID, 1).build();
         operations.add(movieAddition);
-        operations.add(genreAddition);
-        operations.add(kindAddition);
+        for (Genre g : newMovie.getGenres()) {
+            ContentProviderOperation kindAddition = ContentProviderOperation.newInsert(uriKind)
+                    .withValue(KindTable.COLUMN_GENRE_ID, g.get_id())
+                    .withValueBackReference(KindTable.COLUMN_MOVIE_ID, 0).build();
+            operations.add(kindAddition);
+        }
+
         try {
             ContentProviderResult[] results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
         } catch (RemoteException e) {
@@ -161,19 +171,6 @@ public class MoviesManager {
         } catch (OperationApplicationException e) {
             e.printStackTrace();
         }
-        return true;
-    }
-
-    /**
-     * @param newGenre New genre to be added.
-     * @return True if the genre newGenre is added successfully else false
-     */
-    public boolean addGenre(Genre newGenre) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
-        ContentValues values = new ContentValues();
-        values.put(GenresTable.PRIMARY_KEY, newGenre.get_id());
-        values.put(GenresTable.COLUMN_GENRE_NAME, newGenre.getName());
-        Uri insertedUri = context.getContentResolver().insert(uri, values);
         return true;
     }
 
@@ -243,25 +240,6 @@ public class MoviesManager {
     public boolean deleteKind(String f, String g) {
         // TODO: use ContentProvider, implement
         return false;
-    }
-
-    /**
-     * @param newGenre Genre replacing one with the same _id.
-     * @return True if the update have been successfully else false
-     */
-    public boolean updateGenre(Genre newGenre) {
-        if (newGenre != null) {
-            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORY/" + newGenre.get_id());
-            ContentValues values = new ContentValues();
-            values.put(GenresTable.PRIMARY_KEY, newGenre.get_id());
-            values.put(GenresTable.COLUMN_GENRE_NAME, newGenre.getName());
-            String where = null;
-            String[] selectionArgs = null;
-            int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
-            return rowsUpdated > 0;
-        } else {
-            return false;
-        }
     }
 
     /**

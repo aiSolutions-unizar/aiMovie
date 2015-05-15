@@ -19,13 +19,6 @@ import es.unizar.aisolutions.aimovie.database.KindTable;
 import es.unizar.aisolutions.aimovie.database.MoviesDatabaseHelper;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
-/**
- * moviesContentProvider manage access to our structured set of data.
- * They encapsulate the data, and provide mechanisms for defining data security.
- * <p/>
- * Created by diego on 18/04/15.
- * Time spent: 60 minutes.
- */
 public class MoviesContentProvider extends ContentProvider {
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/movies";
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/movie";
