@@ -22,14 +22,7 @@ import es.unizar.aisolutions.aimovie.database.GenresTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
-/**
- * moviesContentMiddleware implements all needed methods to manage database.
- * <p/>
- * Created by diego on 2/04/15.
- * Time spent: 1 minute.
- */
 public class MoviesManager {
-    // TODO: use ContentProvider for all the queries/modifications of the database!
     private Context context;
 
     /**
@@ -42,9 +35,9 @@ public class MoviesManager {
     }
 
     /**
-     * @return A list with all categories from the database (it's possible with null)
+     * @return A list with all genres from the database (may be null)
      */
-    public List<Genre> fetchCategories() {
+    public List<Genre> fetchGenres() {
         List<Genre> result = new ArrayList<>();
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
         String[] projection = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
@@ -66,29 +59,28 @@ public class MoviesManager {
      */
     public List<Movie> fetchMovies(Genre g) {
         List<Movie> result = new ArrayList<>();
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
-        String[] projection = KindTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = KindTable.COLUMN_GENRE_ID + " = " + g.get_id();
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES/" + g.get_id() + "/MOVIES");
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
         String[] selectionArgs = null;
         String sortOrder = null;
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         if (cursor.moveToFirst()) {
             do {
-                // TODO: optimize using a more complex query (in ContentProvider)
-                result.add(fetchMovie(cursor.getLong(cursor.getColumnIndex(KindTable.COLUMN_MOVIE_ID))));
+                result.add(extractMovie(cursor));
             } while (cursor.moveToNext());
         }
         return result;
     }
 
     /**
-     * @param categories = Categories list used as filter.
+     * @param genres = Genres list used as filter.
      * @return A list with all movies whose genre is in c
      */
-    public List<Movie> fetchMovies(List<Genre> categories) {
+    public List<Movie> fetchMovies(List<Genre> genres) {
         // TODO: optimize using a more complex query
         List<Movie> result = new ArrayList<>();
-        for (Genre c : categories) {
+        for (Genre c : genres) {
             result.addAll(fetchMovies(c));
         }
         return result;
@@ -107,7 +99,7 @@ public class MoviesManager {
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         if (cursor.moveToFirst()) {
             do {
-                c.add(extractMovie(cursor, null));
+                c.add(extractMovie(cursor));
             } while (cursor.moveToNext());
         }
         return c;
@@ -124,14 +116,8 @@ public class MoviesManager {
         String[] selectionArgs = null;
         String sortOrder = null;
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        Uri uriGenres = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + _id + "/GENRES");
-        String[] projectionGenres = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selectionGenres = null;
-        String[] selectionArgsGenres = null;
-        String sortOrderGenres = null;
-        Cursor cursorGenres = context.getContentResolver().query(uriGenres, projectionGenres, selectionGenres, selectionArgsGenres, sortOrderGenres);
         if (cursor.moveToFirst()) {
-            return extractMovie(cursor, cursorGenres);
+            return extractMovie(cursor);
         } else {
             return null;
         }
@@ -167,7 +153,7 @@ public class MoviesManager {
 
         ContentValues valuesGenre = new ContentValues();
         for (Genre genre : newMovie.getGenres()) {
-            valuesGenre.put(GenresTable.COLUMN_CATEGORY_NAME, genre.getName());
+            valuesGenre.put(GenresTable.COLUMN_GENRE_NAME, genre.getName());
         }
 
         ContentProviderOperation movieAddition = ContentProviderOperation.newInsert(uriMovie)
@@ -199,7 +185,7 @@ public class MoviesManager {
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
         ContentValues values = new ContentValues();
         values.put(GenresTable.PRIMARY_KEY, newGenre.get_id());
-        values.put(GenresTable.COLUMN_CATEGORY_NAME, newGenre.getName());
+        values.put(GenresTable.COLUMN_GENRE_NAME, newGenre.getName());
         Uri insertedUri = context.getContentResolver().insert(uri, values);
         return true;
     }
@@ -281,7 +267,7 @@ public class MoviesManager {
             Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORY/" + newGenre.get_id());
             ContentValues values = new ContentValues();
             values.put(GenresTable.PRIMARY_KEY, newGenre.get_id());
-            values.put(GenresTable.COLUMN_CATEGORY_NAME, newGenre.getName());
+            values.put(GenresTable.COLUMN_GENRE_NAME, newGenre.getName());
             String where = null;
             String[] selectionArgs = null;
             int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
@@ -325,7 +311,7 @@ public class MoviesManager {
      * @param cursor Cursor where to get the information
      * @return Get the information from a Cursor into a movie
      */
-    private Movie extractMovie(Cursor cursor, Cursor cursorGenres) {
+    private Movie extractMovie(Cursor cursor) {
         long _id = cursor.getLong(cursor.getColumnIndex(MoviesTable.PRIMARY_KEY));
         String title = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_TITLE));
         int year = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_YEAR));
@@ -333,13 +319,6 @@ public class MoviesManager {
         String rated = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_RATED));
         Date released = new Date(cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RELEASED)));
         String runtime = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_RUNTIME));
-        List<Genre> genres = new ArrayList<>();
-        if (cursorGenres != null && cursorGenres.moveToFirst()) {
-            do {
-                Genre g = extractGenre(cursorGenres);
-                genres.add(g);
-            } while (cursorGenres.moveToNext());
-        }
         String director = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_DIRECTOR));
         String writer = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_WRITER));
         List<String> actors = null;
@@ -359,6 +338,21 @@ public class MoviesManager {
         String imdb_id = cursor.getString(cursor.getColumnIndex(MoviesTable.COLUMN_IMDB_ID));
         int stock = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_STOCK));
         int rented = cursor.getInt(cursor.getColumnIndex(MoviesTable.COLUMN_RENTED));
+
+        Uri uriGenres = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + _id + "/GENRES");
+        String[] projectionGenres = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selectionGenres = null;
+        String[] selectionArgsGenres = null;
+        String sortOrderGenres = null;
+        Cursor cursorGenres = context.getContentResolver().query(uriGenres, projectionGenres, selectionGenres, selectionArgsGenres, sortOrderGenres);
+        List<Genre> genres = new ArrayList<>();
+        if (cursorGenres != null && cursorGenres.moveToFirst()) {
+            do {
+                Genre g = extractGenre(cursorGenres);
+                genres.add(g);
+            } while (cursorGenres.moveToNext());
+        }
+
         return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
                 writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
                 imdb_votes, imdb_id);
@@ -371,7 +365,7 @@ public class MoviesManager {
     private Genre extractGenre(Cursor cursor) {
         if (cursor != null) {
             long _id = cursor.getLong(cursor.getColumnIndex(GenresTable.PRIMARY_KEY));
-            String name = cursor.getString(cursor.getColumnIndex(GenresTable.COLUMN_CATEGORY_NAME));
+            String name = cursor.getString(cursor.getColumnIndex(GenresTable.COLUMN_GENRE_NAME));
             return new Genre(_id, name);
         } else {
             return null;

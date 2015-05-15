@@ -33,10 +33,12 @@ public class MoviesContentProvider extends ContentProvider {
     private static final int MOVIE_ID = 1;
     private static final int MOVIES = 2;
     private static final int GENRES = 3;
-    private static final int JOIN = 5;
+    private static final int MOVIES_JOIN_GENRES = 5;
     private static final int KINDS = 6;
     private static final int GENRE_ID = 7;
     private static final int MOVIE_GENRES = 8;
+    private static final int GENRE_MOVIES = 9;
+    private static final int MOVIE_ID_JOIN_GENRES = 10;
     private static final String BASE_PATH = "MOVIES";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -46,9 +48,11 @@ public class MoviesContentProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", MOVIE_ID);              // To manage a movie
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#/GENRES", MOVIE_GENRES);   // To manage all the genres a movie belongs to
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRES", GENRES);           // To manage all genres
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN", JOIN);               // To manage all genres & movies together
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN", MOVIES_JOIN_GENRES);     // To manage all genres & movies together
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN/#", MOVIE_ID_JOIN_GENRES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/KINDS", KINDS);             // To manage relationships between movies & genres
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#", GENRE_ID);        // To manage a genre
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#/MOVIES", GENRE_MOVIES); // To manage all movies that belong to a given genre
     }
 
     private MoviesDatabaseHelper database;
@@ -78,21 +82,30 @@ public class MoviesContentProvider extends ContentProvider {
                 queryBuilder.setTables(MoviesTable.TABLE_NAME);
                 queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
+            case MOVIES_JOIN_GENRES:
+                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s INNER JOIN %s ON %s.%s = %s.%s",
+                        MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME));
+                break;
+            case MOVIE_ID_JOIN_GENRES:
+                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s INNER JOIN %s ON %s.%s = %s.%s",
+                        MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME));
+                queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
+                break;
             case MOVIE_GENRES:
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
                         KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.PRIMARY_KEY,
                         GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY));
                 queryBuilder.appendWhere(String.format("%s.%s = %s",
                         KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, uri.getPathSegments().get(1)));
-                for (int i = 0; i < projection.length; i++) {
-                    projection[i] = GenresTable.TABLE_NAME + "." + projection[i];
-                }
                 break;
             case GENRES:
                 queryBuilder.setTables(GenresTable.TABLE_NAME);
-                break;
-            case JOIN:
-                queryBuilder.setTables(MoviesTable.TABLE_NAME + "," + GenresTable.TABLE_NAME);
                 break;
             case KINDS:
                 queryBuilder.setTables(KindTable.TABLE_NAME);
@@ -199,11 +212,10 @@ public class MoviesContentProvider extends ContentProvider {
     }
 
     private void checkColumns(String[] projection, int uriType) {
+        // TODO: review
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));
             if (uriType == GENRES && !GenresTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
-                throw new IllegalArgumentException("Unknown columns in projection");
-            } else if (uriType == JOIN && !KindTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
             } else if ((uriType == MOVIE_ID || uriType == MOVIES) && !MoviesTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");

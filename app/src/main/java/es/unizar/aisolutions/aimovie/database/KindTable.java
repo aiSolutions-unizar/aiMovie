@@ -3,7 +3,9 @@ package es.unizar.aisolutions.aimovie.database;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * KindTable provides methods so as to create and update table called 'TABLE_NAME'
@@ -18,8 +20,11 @@ public class KindTable {
     public static final String COLUMN_MOVIE_ID = "movie";
     public static final String COLUMN_GENRE_ID = "genre";
 
-    public static final HashSet<String> AVAILABLE_COLUMNS = new HashSet<>();
-
+    public static final Set<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{
+            TABLE_NAME + "." + PRIMARY_KEY,
+            TABLE_NAME + "." + COLUMN_MOVIE_ID,
+            TABLE_NAME + "." + COLUMN_GENRE_ID
+    }));
 
     // SQL code to create table called 'TABLE_NAME'
     public static final String CREATE_TABLE = String.format(
@@ -44,8 +49,6 @@ public class KindTable {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         //db.execSQL(CREATE_TRIGGER);
-        AVAILABLE_COLUMNS.addAll(MoviesTable.AVAILABLE_COLUMNS);
-        AVAILABLE_COLUMNS.addAll(GenresTable.AVAILABLE_COLUMNS);
     }
 
     /**

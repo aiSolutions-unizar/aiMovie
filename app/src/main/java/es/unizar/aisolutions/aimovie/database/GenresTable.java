@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * GenresTable provides methods so as to create and update table called 'TABLE_NAME'
@@ -16,8 +17,12 @@ import java.util.HashSet;
 public class GenresTable {
     public static final String TABLE_NAME = "genres";
     public static final String PRIMARY_KEY = "_id";
-    public static final String COLUMN_CATEGORY_NAME = "name";
-    public static final HashSet<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{PRIMARY_KEY, COLUMN_CATEGORY_NAME}));
+    public static final String COLUMN_GENRE_NAME = "name";
+
+    public static final Set<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{
+            TABLE_NAME + "." + PRIMARY_KEY,
+            TABLE_NAME + "." + COLUMN_GENRE_NAME
+    }));
 
 
     // SQL code to create table called 'TABLE_NAME'
@@ -25,7 +30,7 @@ public class GenresTable {
             "CREATE TABLE %s (" +
                     "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "%s TEXT UNIQUE NOT NULL);",
-            TABLE_NAME, PRIMARY_KEY, COLUMN_CATEGORY_NAME
+            TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_NAME
     );
 
     // SQL code to create needed triggers
