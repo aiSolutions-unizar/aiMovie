@@ -134,13 +134,13 @@ public class MoviesContentProvider extends ContentProvider {
         long id;
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
-                id = db.insertOrThrow(MoviesTable.TABLE_NAME, null, values);
+                id = db.insert(MoviesTable.TABLE_NAME, null, values);
                 break;
             case GENRES:
-                id = db.insertOrThrow(GenresTable.TABLE_NAME, null, values);
+                id = db.insert(GenresTable.TABLE_NAME, null, values);
                 break;
             case KINDS:
-                id = db.insertOrThrow(KindTable.TABLE_NAME, null, values);
+                id = db.insert(KindTable.TABLE_NAME, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
