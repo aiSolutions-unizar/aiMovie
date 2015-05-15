@@ -77,7 +77,7 @@ public class MoviesTable {
                     "%s INTEGER, " +                // metascore
                     "%s REAL, " +                   // imdb_rating
                     "%s INTEGER, " +                // imdb_votes
-                    "%s TEXT, " +                   // imdb_id
+                    "%s TEXT UNIQUE, " +            // imdb_id
                     "%s INTEGER NOT NULL DEFAULT 0, " +         // stock
                     "%s INTEGER NOT NULL DEFAULT 0);",          // rented
             TABLE_NAME, PRIMARY_KEY, COLUMN_TITLE, COLUMN_YEAR, COLUMN_RATED, COLUMN_RELEASED, COLUMN_RUNTIME,

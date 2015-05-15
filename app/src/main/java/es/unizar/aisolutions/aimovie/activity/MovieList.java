@@ -126,7 +126,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 final MoviesManager mcm = new MoviesManager(MovieList.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 // for debugging purposes
-                final String[] ids = {"tt0070735", "tt2395427", "tt2967224", "tt1655441", "tt2820852", "tt3450650"};
+                final String[] ids = {"tt0070735", "tt2395427", "tt2967224", "tt1655441", "tt2820852",
+                        "tt3450650", "tt1375666", "tt0137523", "tt1345836", "tt0133093"};
                 if (i < ids.length) input.setText(ids[i++]);
                 builder.setView(input);
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
