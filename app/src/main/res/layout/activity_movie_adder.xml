@@ -116,7 +116,7 @@
                 android:text="@string/genre_fantasy" />
 
             <CheckBox
-                android:id="@+id/film-noir"
+                android:id="@+id/filmnoir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/genre_filmnoir" />
@@ -168,7 +168,7 @@
                 android:text="@string/genre_romance" />
 
             <CheckBox
-                android:id="@+id/sci-fi"
+                android:id="@+id/scifi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/genre_scifi" />
