@@ -14,7 +14,7 @@ public class StoredMovie implements Movie {
     private String rated;
     private Date released;
     private String runtime;
-    private List<String> genres;
+    private List<Genre> genres;
     private String director;
     private String writer;
     private List<String> actors;
@@ -29,7 +29,7 @@ public class StoredMovie implements Movie {
     private String imdbID;
 
     public StoredMovie(long _id, String title, int year, String rated, Date released, String runtime,
-                       List<String> genres, String director, String writer, List<String> actors,
+                       List<Genre> genres, String director, String writer, List<String> actors,
                        String plot, String language, String country, String awards, URL poster,
                        int metascore, float imdbRating, int imdbVotes, String imdbID) {
         this._id = _id;
@@ -84,7 +84,7 @@ public class StoredMovie implements Movie {
     }
 
     @Override
-    public List<String> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 

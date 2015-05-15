@@ -42,6 +42,7 @@ import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
 public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
+    private static int i = 0;
     private SimpleCursorAdapter adapter;
     private String sortOrder = null;
 
@@ -124,6 +125,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 final EditText input = new EditText(MovieList.this);
                 final MoviesManager mcm = new MoviesManager(MovieList.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
+                final String[] ids = {"tt0070735", "tt2395427", "tt2967224", "tt1655441", "tt2820852", "tt3450650"};
+                if (i < ids.length) input.setText(ids[i++]);
                 builder.setView(input);
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
                     @Override

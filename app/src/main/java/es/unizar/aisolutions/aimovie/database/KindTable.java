@@ -16,7 +16,7 @@ public class KindTable {
     public static final String TABLE_NAME = "kind";
     public static final String PRIMARY_KEY = "_id";
     public static final String COLUMN_MOVIE_ID = "movie";
-    public static final String COLUMN_CATEGORY_ID = "category";
+    public static final String COLUMN_GENRE_ID = "genre";
 
     public static final HashSet<String> AVAILABLE_COLUMNS = new HashSet<>();
 
@@ -29,7 +29,7 @@ public class KindTable {
                     "%s INTEGER NOT NULL, " +
                     "foreign key (%s) references %s (%s), " +
                     "foreign key (%s) references %s (%s));",
-            TABLE_NAME, PRIMARY_KEY, COLUMN_CATEGORY_ID, COLUMN_MOVIE_ID, COLUMN_CATEGORY_ID, CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY
+            TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_ID, COLUMN_MOVIE_ID, COLUMN_GENRE_ID, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY
     );
 
     // SQL code to create needed triggers
@@ -44,7 +44,7 @@ public class KindTable {
         db.execSQL(CREATE_TABLE);
         //db.execSQL(CREATE_TRIGGER);
         AVAILABLE_COLUMNS.addAll(MoviesTable.AVAILABLE_COLUMNS);
-        AVAILABLE_COLUMNS.addAll(CategoriesTable.availableColumns);
+        AVAILABLE_COLUMNS.addAll(GenresTable.AVAILABLE_COLUMNS);
     }
 
     /**

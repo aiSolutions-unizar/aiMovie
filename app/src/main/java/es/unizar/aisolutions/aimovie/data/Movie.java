@@ -21,7 +21,7 @@ public interface Movie {
 
     String getRuntime();
 
-    List<String> getGenres();
+    List<Genre> getGenres();
 
     String getDirector();
 

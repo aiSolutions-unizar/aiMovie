@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,7 @@ public class IMDbMovie implements Movie {
     private String rated;
     private Date released;
     private String runtime;
-    private List<String> genres;
+    private List<Genre> genres;
     private String director;
     private String writer;
     private List<String> actors;
@@ -48,7 +49,11 @@ public class IMDbMovie implements Movie {
                     released = null;
                 }
                 runtime = jsonMovie.get("Runtime").getAsString();
-                genres = Arrays.asList(jsonMovie.get("Genre").getAsString().split(","));
+                genres = new ArrayList<>();
+                for (String genre : Arrays.asList(jsonMovie.get("Genre").getAsString().split(","))) {
+                    Genre g = new Genre(-1, genre);
+                    genres.add(g);
+                }
                 director = jsonMovie.get("Director").getAsString();
                 writer = jsonMovie.get("Writer").getAsString();
                 actors = Arrays.asList(jsonMovie.get("Actors").getAsString().split(","));
@@ -116,7 +121,7 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
-    public List<String> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 

@@ -14,7 +14,7 @@ import android.text.TextUtils;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import es.unizar.aisolutions.aimovie.database.CategoriesTable;
+import es.unizar.aisolutions.aimovie.database.GenresTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
 import es.unizar.aisolutions.aimovie.database.MoviesDatabaseHelper;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
@@ -29,24 +29,26 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
 public class MoviesContentProvider extends ContentProvider {
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/movies";
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/movie";
+    public static final String AUTHORITY = "es.unizar.aisolutions.aimovie.contentprovider";
     private static final int MOVIE_ID = 1;
     private static final int MOVIES = 2;
-    private static final int CATEGORIES = 3;
+    private static final int GENRES = 3;
     private static final int JOIN = 5;
     private static final int KINDS = 6;
-    private static final int CATEGORY_ID = 7;
-    private static final String AUTHORITY = "es.unizar.aisolutions.aimovie.contentprovider";
+    private static final int GENRE_ID = 7;
+    private static final int MOVIE_GENRES = 8;
     private static final String BASE_PATH = "MOVIES";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH, MOVIES);                   // To manage all movies
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", MOVIE_ID);          // To manage a movie
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/CATEGORIES", CATEGORIES);   // To manage all categories
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN", JOIN);           // To manage all categories & movies together
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/KINDS", KINDS);         // To manage relationship between movies & categories
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/CATEGORY/#", CATEGORY_ID);  // To manage a category
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH, MOVIES);                       // To manage all movies
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", MOVIE_ID);              // To manage a movie
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#/GENRES", MOVIE_GENRES);   // To manage all the genres a movie belongs to
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRES", GENRES);           // To manage all genres
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN", JOIN);               // To manage all genres & movies together
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/KINDS", KINDS);             // To manage relationships between movies & genres
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#", GENRE_ID);        // To manage a genre
     }
 
     private MoviesDatabaseHelper database;
@@ -76,18 +78,28 @@ public class MoviesContentProvider extends ContentProvider {
                 queryBuilder.setTables(MoviesTable.TABLE_NAME);
                 queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
-            case CATEGORIES:
-                queryBuilder.setTables(CategoriesTable.TABLE_NAME);
+            case MOVIE_GENRES:
+                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.PRIMARY_KEY,
+                        GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY));
+                queryBuilder.appendWhere(String.format("%s.%s = %s",
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, uri.getPathSegments().get(1)));
+                for (int i = 0; i < projection.length; i++) {
+                    projection[i] = GenresTable.TABLE_NAME + "." + projection[i];
+                }
+                break;
+            case GENRES:
+                queryBuilder.setTables(GenresTable.TABLE_NAME);
                 break;
             case JOIN:
-                queryBuilder.setTables(MoviesTable.TABLE_NAME + "," + CategoriesTable.TABLE_NAME);
+                queryBuilder.setTables(MoviesTable.TABLE_NAME + "," + GenresTable.TABLE_NAME);
                 break;
             case KINDS:
                 queryBuilder.setTables(KindTable.TABLE_NAME);
                 break;
-            case CATEGORY_ID:
-                queryBuilder.setTables(CategoriesTable.TABLE_NAME);
-                queryBuilder.appendWhere(CategoriesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
+            case GENRE_ID:
+                queryBuilder.setTables(GenresTable.TABLE_NAME);
+                queryBuilder.appendWhere(GenresTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -111,8 +123,8 @@ public class MoviesContentProvider extends ContentProvider {
             case MOVIES:
                 id = db.insertOrThrow(MoviesTable.TABLE_NAME, null, values);
                 break;
-            case CATEGORIES:
-                id = db.insertOrThrow(CategoriesTable.TABLE_NAME, null, values);
+            case GENRES:
+                id = db.insertOrThrow(GenresTable.TABLE_NAME, null, values);
                 break;
             case KINDS:
                 id = db.insertOrThrow(KindTable.TABLE_NAME, null, values);
@@ -140,11 +152,11 @@ public class MoviesContentProvider extends ContentProvider {
                     rowsDeleted = db.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
-            case CATEGORY_ID:
+            case GENRE_ID:
                 String category_id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(category_id)) {
-                    rowsDeleted = db.delete(CategoriesTable.TABLE_NAME, CategoriesTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_CATEGORY_ID + " = " + category_id, null);
+                    rowsDeleted = db.delete(GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY + " = " + category_id, null);
+                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID + " = " + category_id, null);
                 }
                 break;
             default:
@@ -170,11 +182,11 @@ public class MoviesContentProvider extends ContentProvider {
                     rowsUpdated = db.update(MoviesTable.TABLE_NAME, values, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
-            case CATEGORY_ID:
+            case GENRE_ID:
                 String category_id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(category_id)) {
-                    rowsUpdated = db.update(CategoriesTable.TABLE_NAME, values, CategoriesTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_CATEGORY_ID + " = " + category_id, null);
+                    rowsUpdated = db.update(GenresTable.TABLE_NAME, values, GenresTable.PRIMARY_KEY + " = " + category_id, null);
+                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_GENRE_ID + " = " + category_id, null);
                 }
                 break;
             default:
@@ -189,7 +201,7 @@ public class MoviesContentProvider extends ContentProvider {
     private void checkColumns(String[] projection, int uriType) {
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));
-            if (uriType == CATEGORIES && !CategoriesTable.availableColumns.containsAll(requestedColumns)) {
+            if (uriType == GENRES && !GenresTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
             } else if (uriType == JOIN && !KindTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
