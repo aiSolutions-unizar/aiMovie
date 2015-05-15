@@ -18,4 +18,10 @@
     <string name="title_activity_movie_info">MovieInfo</string>
     <string name="title_not_entered">You need to provide a title</string>
     <string name="action_delete">Delete</string>
+    <string name="action_sort">Sort</string>
+    <string name="sort_by">Sort by</string>
+    <string-array name="sorting_choices">
+        <item>Title</item>
+        <item>Director</item>
+    </string-array>
 </resources>

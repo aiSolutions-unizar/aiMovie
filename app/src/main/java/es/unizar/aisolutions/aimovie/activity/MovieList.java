@@ -43,6 +43,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private SimpleCursorAdapter adapter;
+    private String sortOrder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,16 +180,41 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // Do nothing
+                break;
+            case R.id.action_sort:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                int selected = -1;
+                if (sortOrder != null) {
+                    switch (sortOrder) {
+                        case MoviesTable.COLUMN_TITLE:
+                            selected = 0;
+                            break;
+                        case MoviesTable.COLUMN_DIRECTOR:
+                            selected = 1;
+                    }
+                }
+                DialogInterface.OnClickListener selectListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: parameterize?
+                        switch (which) {
+                            case 0:
+                                sortOrder = MoviesTable.COLUMN_TITLE;
+                                break;
+                            case 1:
+                                sortOrder = MoviesTable.COLUMN_DIRECTOR;
+                        }
+                        getLoaderManager().restartLoader(0, null, MovieList.this);
+                        dialog.dismiss();
+                    }
+                };
+                builder.setTitle(getString(R.string.sort_by));
+                builder.setSingleChoiceItems(R.array.sorting_choices, selected, selectListener);
+                builder.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -198,7 +224,6 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;
         String[] selectionArgs = null;
-        String sortOrder = null;
         return new CursorLoader(this, uri, projection, selection, selectionArgs, sortOrder);
     }
 
