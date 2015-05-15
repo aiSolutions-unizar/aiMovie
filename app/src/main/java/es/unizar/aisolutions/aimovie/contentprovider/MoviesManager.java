@@ -24,7 +24,7 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
  * Created by diego on 2/04/15.
  * Time spent: 1 minute.
  */
-public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
+public class MoviesManager implements ContentQueries, ContentUpdates {
     // TODO: use ContentProvider for all the queries/modifications of the database!
     private Context context;
 
@@ -33,7 +33,7 @@ public class MoviesContentMiddleware implements ContentQueries, ContentUpdates {
      *
      * @param context the Context within which to work
      */
-    public MoviesContentMiddleware(Context context) {
+    public MoviesManager(Context context) {
         this.context = context;
     }
 

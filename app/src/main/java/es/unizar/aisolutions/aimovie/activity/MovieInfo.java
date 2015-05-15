@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentMiddleware;
+import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 
 public class MovieInfo extends ActionBarActivity {
@@ -36,7 +36,7 @@ public class MovieInfo extends ActionBarActivity {
 
         if (savedInstanceState != null || getIntent().getExtras() != null) {
             long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-            final MoviesContentMiddleware mcm = new MoviesContentMiddleware(this);
+            final MoviesManager mcm = new MoviesManager(this);
             Movie m = mcm.fetchMovie(id);
             title.setText(m.getTitle());
             director.setText(m.getDirector());

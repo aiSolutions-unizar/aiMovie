@@ -33,8 +33,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentMiddleware;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentProvider;
+import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
@@ -122,7 +122,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 AlertDialog.Builder builder = new AlertDialog.Builder(MovieList.this);
                 builder.setTitle(getString(R.string.enter_imdb_id));
                 final EditText input = new EditText(MovieList.this);
-                final MoviesContentMiddleware mcm = new MoviesContentMiddleware(MovieList.this);
+                final MoviesManager mcm = new MoviesManager(MovieList.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
