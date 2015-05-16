@@ -112,7 +112,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             @Override
             public void onClick(View v) {
                 fabButton.collapse();
-                Intent i = new Intent(MovieList.this, MovieAdder.class);
+                Intent i = new Intent(MovieList.this, MovieEditor.class);
                 startActivity(i);
             }
         });

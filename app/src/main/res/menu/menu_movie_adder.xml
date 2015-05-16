@@ -1,4 +1,4 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context="es.unizar.aisolutions.aimovie.activity.MovieAdder">
+    tools:context="es.unizar.aisolutions.aimovie.activity.MovieEditor">
 
 </menu>

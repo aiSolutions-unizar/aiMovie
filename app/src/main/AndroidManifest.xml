@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MovieAdder"
+            android:name=".activity.MovieEditor"
             android:label="@string/title_activity_movie_adder"
             android:parentActivityName=".activity.MovieList">
             <meta-data

@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,8 @@ import es.unizar.aisolutions.aimovie.data.Genre;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.data.StoredMovie;
 
-public class MovieAdder extends ActionBarActivity {
+public class MovieEditor extends ActionBarActivity {
+    public static final String EXTRA_MOVIE_ID = "no_id";
     private static final int[] GENRE_CHECKBOXES_IDS = new int[]{
             R.id.genre_action, R.id.genre_adventure, R.id.genre_animation, R.id.genre_biography,
             R.id.genre_comedy, R.id.genre_crime, R.id.genre_documentary, R.id.genre_drama,
@@ -40,6 +42,30 @@ public class MovieAdder extends ActionBarActivity {
                 finish();
             }
         });
+
+        Long id;
+        try {
+            id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+        } catch (Exception e) {
+            id = 0L;
+        }
+
+        if (id != 0L) {
+            MoviesManager mm = new MoviesManager(this);
+            Movie m = mm.fetchMovie(id);
+
+            EditText title = (EditText) findViewById(R.id.title);
+            EditText year = (EditText) findViewById(R.id.year);
+            EditText director = (EditText) findViewById(R.id.director);
+            EditText plot = (EditText) findViewById(R.id.synopsis);
+
+            title.setText(m.getTitle());
+            year.setText(Integer.toString(m.getYear()));
+            director.setText(m.getDirector());
+            plot.setText(m.getPlot());
+
+            // TODO Persist genres from oldMovie to newMovie
+        }
     }
 
     @Override
@@ -83,12 +109,38 @@ public class MovieAdder extends ActionBarActivity {
                     }
                 }
             }
-            Movie m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
-                    null, null, null, null, null, -1, -1, -1, null, 0);
             MoviesManager db = new MoviesManager(this);
+            Long id;
+            try {
+                id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+            } catch (Exception e) {
+                id = 0L;
+            }
+            Movie m;
+            if (id != 0L) {
+                Movie oldMovie = db.fetchMovie(id);
+                URL poster = null;
+                String plot = null;
+                int stock = 0;
+
+                if (oldMovie.getPoster() != null) poster = oldMovie.getPoster();
+                if (oldMovie.getStock() != 0) stock = oldMovie.getStock();
+                if (oldMovie.getPlot() != null) plot = oldMovie.getPlot();
+
+                m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
+                        plot, null, null, null, poster, -1, -1, -1, null, stock);
+                db.deleteMovie(oldMovie);
+                // TODO Automatic update
+            } else {
+                m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
+                        null, null, null, null, null, -1, -1, -1, null, 0);
+            }
             db.addMovie(m);
+
         } else {
             Toast.makeText(this, getString(R.string.title_not_entered), Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
