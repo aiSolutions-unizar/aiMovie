@@ -10,102 +10,46 @@
 
     <!-- Name -->
     <LinearLayout
-        android:id="@+id/activity_user_info_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingLeft="6dip"
         android:paddingRight="6dip">
 
-        <!-- Tag -->
-        <TextView
-            android:id="@+id/activity_user_info_name_tag"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="Name" />
+        <EditText
+            android:id="@+id/activity_user_info_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name" />
 
-        <!-- Value -->
-        <TextView
-            android:id="@+id/activity_user_info_name_value"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="name" />
+        <EditText
+            android:id="@+id/activity_user_info_surname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Surname" />
 
-    </LinearLayout>
+        <EditText
+            android:id="@+id/activity_user_info_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email" />
 
-    <!-- SurName -->
-    <LinearLayout
-        android:id="@+id/activity_user_info_surname"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/activity_user_info_name"
-        android:orientation="horizontal"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip">
 
-        <!-- Tag -->
-        <TextView
-            android:id="@+id/activity_user_info_surname_tag"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="Surname" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <!-- Value -->
-        <TextView
-            android:id="@+id/activity_user_info_surname_value"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="surname" />
+            <Button
+                android:id="@+id/activity_user_info_button_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Order" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <!-- SurName -->
-    <LinearLayout
-        android:id="@+id/activity_user_info_email"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/activity_user_info_surname"
-        android:orientation="horizontal"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip">
-
-        <!-- Tag -->
-        <TextView
-            android:id="@+id/activity_user_info_email_tag"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="Email" />
-
-        <!-- Value -->
-        <TextView
-            android:id="@+id/activity_user_info_email_value"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="email" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/activity_user_info_button_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/activity_user_info_email"
-        android:text="Order" />
-
-    <Button
-        android:id="@+id/activity_user_info_button_rent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/activity_user_info_button_order"
-        android:layout_centerHorizontal="true"
-        android:text="Cancel" />
 
 
 </RelativeLayout>

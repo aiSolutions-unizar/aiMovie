@@ -61,7 +61,7 @@ public class MovieInfo extends ActionBarActivity {
                             int add = Integer.parseInt(input.getText().toString());
                             m.setStock(m.getStock() + add);
                             mcm.updateMovie(m);
-                            // TODO Automatic update
+                            stock.setText(Integer.toString(m.getStock()));
                         }
                     });
                     builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -79,7 +79,8 @@ public class MovieInfo extends ActionBarActivity {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(MovieInfo.this, UserInfo.class);
-                    i.putExtra(UserInfo.EXTRA_MOVIE_ID, EXTRA_MOVIE_ID);
+                    long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+                    i.putExtra(UserInfo.EXTRA_MOVIE_ID, id);
                     startActivity(i);
                 }
             });
@@ -136,4 +137,5 @@ public class MovieInfo extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
