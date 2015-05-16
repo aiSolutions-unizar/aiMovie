@@ -20,6 +20,7 @@ public class UserInfo extends ActionBarActivity {
 
     public static final String EXTRA_MOVIE_ID = "movie_id";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

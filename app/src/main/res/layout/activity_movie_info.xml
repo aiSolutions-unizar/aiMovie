@@ -115,10 +115,18 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/activity_movie_info_button_delete"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_movie_info_buttons"
+        android:layout_margin="6dip"
+        android:text="Delete" />
+
     <TextView
         android:id="@+id/activity_movie_info_plot"
         style="@style/textStyle_info"
-        android:layout_below="@id/activity_movie_info_buttons"
+        android:layout_below="@id/activity_movie_info_button_delete"
         android:layout_marginLeft="15dip"
         android:layout_marginTop="5dip"
         android:text="@string/plot" />

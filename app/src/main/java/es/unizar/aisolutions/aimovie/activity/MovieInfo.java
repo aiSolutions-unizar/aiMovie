@@ -75,6 +75,17 @@ public class MovieInfo extends ActionBarActivity {
                 }
             });
 
+            Button delButton = (Button) findViewById(R.id.activity_movie_info_button_delete);
+            delButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+                    MoviesManager mm = new MoviesManager(MovieInfo.this);
+                    mm.deleteMovie(mm.fetchMovie(id));
+                    MovieInfo.this.finish();
+                }
+            });
+
             Button rentButton = (Button) findViewById(R.id.activity_movie_info_rentButton);
             rentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
