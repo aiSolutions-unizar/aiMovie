@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage;
  * Created by diego on 16/05/15.
  */
 public class MailHelper {
-
+    // TODO: not expose credentials
     private final String USERNAME = "aimovie.zar@gmail.com ";
     private final String PASSWORD = "culopedo";
     private final Properties props = new Properties() {{
