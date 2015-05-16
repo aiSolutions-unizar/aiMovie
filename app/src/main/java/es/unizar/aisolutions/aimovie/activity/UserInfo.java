@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
+import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.email.MailHelper;
 
 public class UserInfo extends ActionBarActivity {
@@ -25,24 +26,29 @@ public class UserInfo extends ActionBarActivity {
         setContentView(R.layout.activity_user_info);
 
         MoviesManager mm = new MoviesManager(UserInfo.this);
-        long idMovie = this.getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-        final String title = mm.fetchMovie(idMovie).getTitle();
+        final long idMovie = this.getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+        final Movie m = mm.fetchMovie(idMovie);
 
 
         Button acceptButton = (Button) findViewById(R.id.activity_user_info_button_order);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AsyncTask<String, Void, Boolean>() {
+                new AsyncTask<Movie, Void, Boolean>() {
                     @Override
-                    protected Boolean doInBackground(String... title) {
+                    protected Boolean doInBackground(Movie... title) {
                         TextView mail = (TextView) findViewById(R.id.activity_user_info_email);
                         TextView name = (TextView) findViewById(R.id.activity_user_info_name);
                         TextView surname = (TextView) findViewById(R.id.activity_user_info_surname);
 
                         MailHelper mh = new MailHelper(mail.getText().toString());
-                        mh.fillEmail(name.getText().toString(), surname.getText().toString(), title[0]);
-                        return mh.sendMail("[Order] Movie Rented");
+                        Boolean ok = mh.sendMail("[Order] Movie Rented");
+
+                        m.setStock(m.getStock() - 1);
+                        MoviesManager mm = new MoviesManager(UserInfo.this);
+                        mm.updateMovie(m);
+
+                        return ok;
                     }
 
                     @Override
@@ -61,7 +67,7 @@ public class UserInfo extends ActionBarActivity {
                         });
                         builder.show();
                     }
-                }.execute(title);
+                }.execute(m);
             }
         });
     }

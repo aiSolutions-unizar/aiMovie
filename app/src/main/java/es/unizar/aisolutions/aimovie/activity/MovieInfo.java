@@ -28,6 +28,7 @@ import es.unizar.aisolutions.aimovie.data.Movie;
 public class MovieInfo extends ActionBarActivity {
     public static final String EXTRA_MOVIE_ID = "movie_id";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +115,16 @@ public class MovieInfo extends ActionBarActivity {
                 }.execute(m.getPoster().toString());
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+        final MoviesManager mcm = new MoviesManager(this);
+        final Movie m = mcm.fetchMovie(id);
+        TextView stock = (TextView) findViewById(R.id.activity_movie_info_stock_value);
+        stock.setText(Integer.toString(m.getStock()));
     }
 
     @Override
