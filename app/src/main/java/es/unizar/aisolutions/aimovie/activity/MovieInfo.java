@@ -28,7 +28,6 @@ import es.unizar.aisolutions.aimovie.data.Movie;
 public class MovieInfo extends ActionBarActivity {
     public static final String EXTRA_MOVIE_ID = "movie_id";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +140,6 @@ public class MovieInfo extends ActionBarActivity {
         return super.onContextItemSelected(item);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -149,7 +147,17 @@ public class MovieInfo extends ActionBarActivity {
         final MoviesManager mcm = new MoviesManager(this);
         final Movie m = mcm.fetchMovie(id);
         TextView stock = (TextView) findViewById(R.id.activity_movie_info_stock_value);
+        TextView title = (TextView) findViewById(R.id.activity_movie_info_title);
+        TextView plot = (TextView) findViewById(R.id.activity_movie_info_plot);
+        TextView director = (TextView) findViewById(R.id.activity_movie_info_director);
+        TextView year = (TextView) findViewById(R.id.activity_movie_info_year);
+        TextView genres = (TextView) findViewById(R.id.activity_movie_info_genres);
         if (m != null) {
+            title.setText(m.getTitle());
+            director.setText(m.getDirector());
+            year.setText(Integer.toString(m.getYear()));
+            genres.setText(m.getGenres() != null ? TextUtils.join(", ", m.getGenres()) : null);
+            plot.setText(m.getPlot());
             stock.setText(Integer.toString(m.getStock()));
         }
     }
@@ -160,6 +168,5 @@ public class MovieInfo extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_movie_info, menu);
         return true;
     }
-
 
 }

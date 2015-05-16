@@ -127,20 +127,19 @@ public class MovieEditor extends ActionBarActivity {
                 if (oldMovie.getStock() != 0) stock = oldMovie.getStock();
                 if (oldMovie.getPlot() != null) plot = oldMovie.getPlot();
 
-                m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
+                m = new StoredMovie(oldMovie.get_id(), title, year, null, null, null, genres, director, null, null,
                         plot, null, null, null, poster, -1, -1, -1, null, stock);
-                db.deleteMovie(oldMovie);
-                // TODO Automatic update
+                db.updateMovie(m);
+                // TODO Genres update
             } else {
                 m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
                         null, null, null, null, null, -1, -1, -1, null, 0);
+                db.addMovie(m);
             }
-            db.addMovie(m);
+
 
         } else {
             Toast.makeText(this, getString(R.string.title_not_entered), Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }
