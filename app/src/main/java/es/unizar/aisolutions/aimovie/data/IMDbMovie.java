@@ -295,13 +295,5 @@ public class IMDbMovie implements Movie {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public int getRented() {
-        return 0;
-    }
-
-    @Override
-    public void setRented(int newValue) {
-
-    }
 }
+

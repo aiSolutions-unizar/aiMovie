@@ -178,8 +178,8 @@ public class StoredMovie implements Movie {
     }
 
     @Override
-    public void setAwards(String awards) {
-        this.awards = awards;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Override
@@ -190,16 +190,6 @@ public class StoredMovie implements Movie {
     @Override
     public void setAwards(String awards) {
         this.awards = awards;
-    }
-
-    @Override
-    public int getStock() {
-        return stock;
-    }
-
-    @Override
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 
     @Override
@@ -245,10 +235,6 @@ public class StoredMovie implements Movie {
     @Override
     public String getImdbID() {
         return imdbID;
-    }
-
-    public int getRented() {
-        return rented;
     }
 
     @Override

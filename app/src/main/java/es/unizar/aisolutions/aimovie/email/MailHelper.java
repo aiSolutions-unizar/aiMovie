@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
 public class MailHelper {
     // TODO: not expose credentials
     private final String USERNAME = "aimovie.zar@gmail.com ";
-    private final String PASSWORD = "verystrong";
+    private final String PASSWORD = "*******";
     private final Properties props = new Properties() {{
         put("mail.smtp.auth", "true");
         put("mail.smtp.starttls.enable", "true");

@@ -46,10 +46,9 @@ public class UserInfo extends ActionBarActivity {
                         mh.fillEmail(name.getText().toString(), surname.getText().toString(), m.getTitle());
                         Boolean ok = mh.sendMail("[Order] Movie Rented");
 
-                        m.setStock(m.getStock() - 1);
                         MovieManager mm = new MovieManager(UserInfo.this);
+                        m.setStock(m.getStock() - 1);
                         m.setRented(m.getRented() + 1);
-                        MoviesManager mm = new MoviesManager(UserInfo.this);
                         mm.updateMovie(m);
 
                         return ok;
