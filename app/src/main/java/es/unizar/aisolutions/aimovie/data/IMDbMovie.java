@@ -193,4 +193,14 @@ public class IMDbMovie implements Movie {
     @Override
     public void setStock(int newValue) {
     }
+
+    @Override
+    public int getRented() {
+        return 0;
+    }
+
+    @Override
+    public void setRented(int newValue) {
+
+    }
 }

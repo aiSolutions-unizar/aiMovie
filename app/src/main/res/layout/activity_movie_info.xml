@@ -16,131 +16,160 @@
 
 
             <LinearLayout
-        android:id="@+id/activity_movie_info_thumbnail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:orientation="vertical"
-        android:paddingLeft="15dip">
+                android:id="@+id/activity_movie_info_thumbnail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:orientation="vertical"
+                android:paddingLeft="15dip">
 
-        <ImageView
-            android:id="@+id/activity_movie_info_image"
-            android:layout_width="152dip"
-            android:layout_height="225dip" />
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/activity_movie_info_image"
+                    android:layout_width="152dip"
+                    android:layout_height="225dip" />
+            </LinearLayout>
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/activity_movie_info_title"
-        style="@style/textStyle_info.title"
-        android:layout_alignTop="@id/activity_movie_info_thumbnail"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="3dip"
-        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
-        android:text="Titulo" />
+            <!-- Title -->
+            <TextView
+                android:id="@+id/activity_movie_info_title"
+                style="@style/textStyle_info.title"
+                android:layout_alignTop="@id/activity_movie_info_thumbnail"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="3dip"
+                android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+                android:text="Titulo" />
 
-    <!-- Director -->
-    <TextView
-        android:id="@+id/activity_movie_info_director"
-        style="@style/textStyle_info"
-        android:layout_below="@id/activity_movie_info_title"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="3dip"
-        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
-        android:text="Director" />
+            <!-- Director -->
+            <TextView
+                android:id="@+id/activity_movie_info_director"
+                style="@style/textStyle_info"
+                android:layout_below="@id/activity_movie_info_title"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="3dip"
+                android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+                android:text="Director" />
 
-    <!-- Year -->
-    <TextView
-        android:id="@+id/activity_movie_info_year"
-        style="@style/textStyle_info"
-        android:layout_below="@id/activity_movie_info_director"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="3dip"
-        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
-        android:text="2015" />
+            <!-- Year -->
+            <TextView
+                android:id="@+id/activity_movie_info_year"
+                style="@style/textStyle_info"
+                android:layout_below="@id/activity_movie_info_director"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="3dip"
+                android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+                android:text="2015" />
 
-    <!-- Genre -->
-    <TextView
-        android:id="@+id/activity_movie_info_genres"
-        style="@style/textStyle_info"
-        android:layout_below="@id/activity_movie_info_year"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="3dip"
-        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
-        android:text="Action, Drama" />
+            <!-- Genre -->
+            <TextView
+                android:id="@+id/activity_movie_info_genres"
+                style="@style/textStyle_info"
+                android:layout_below="@id/activity_movie_info_year"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="3dip"
+                android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+                android:text="Action, Drama" />
 
-    <!-- In stock movies -->
-    <LinearLayout
-        android:id="@+id/activity_movie_info_stock"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/activity_movie_info_genres"
-        android:layout_toRightOf="@id/activity_movie_info_thumbnail"
-        android:orientation="horizontal"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip">
+            <!-- In stock movies -->
+            <LinearLayout
+                android:id="@+id/activity_movie_info_stock"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_movie_info_genres"
+                android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+                android:orientation="horizontal"
+                android:paddingLeft="6dip"
+                android:paddingRight="6dip">
 
-        <!-- Header -->
-        <TextView
-            android:id="@+id/activity_movie_info_stock_header"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:paddingLeft="5dip"
-            android:text="Stock: " />
+                <!-- Header -->
+                <TextView
+                    android:id="@+id/activity_movie_info_stock_header"
+                    style="@style/textStyle_info"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1.0"
+                    android:paddingLeft="5dip"
+                    android:text="Stock: " />
 
-        <!-- Value -->
-        <TextView
-            android:id="@+id/activity_movie_info_stock_value"
-            style="@style/textStyle_info"
-            android:layout_width="wrap_content"
-            android:layout_weight="1.0"
-            android:text="10" />
+                <!-- Value -->
+                <TextView
+                    android:id="@+id/activity_movie_info_stock_value"
+                    style="@style/textStyle_info"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1.0"
+                    android:text="10" />
 
-    </LinearLayout>
+            </LinearLayout>
+            <!-- Rented movies -->
+            <LinearLayout
+                android:id="@+id/activity_movie_info_rented"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_movie_info_stock"
+                android:layout_toRightOf="@id/activity_movie_info_thumbnail"
+                android:orientation="horizontal"
+                android:paddingLeft="6dip"
+                android:paddingRight="6dip">
 
-    <LinearLayout
-        android:id="@+id/activity_movie_info_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/activity_movie_info_thumbnail"
-        android:orientation="horizontal"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip">
+                <!-- Tag -->
+                <TextView
+                    android:id="@+id/activity_movie_info_rented_tag"
+                    style="@style/textStyle_info"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1.0"
+                    android:paddingLeft="5dip"
+                    android:text="Rented:" />
 
-        <Button
-            android:id="@+id/activity_movie_info_rentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dip"
-            android:layout_weight="1.0"
-            android:text="@string/rent" />
+                <!-- Value -->
+                <TextView
+                    android:id="@+id/activity_movie_info_rented_value"
+                    style="@style/textStyle_info"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1.0"
+                    android:text="11" />
 
-        <Button
-            android:id="@+id/activity_movie_info_editButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dip"
-            android:layout_weight="1.0"
-            android:text="@string/Add_stock" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/activity_movie_info_buttons"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_movie_info_thumbnail"
+                android:orientation="horizontal"
+                android:paddingLeft="6dip"
+                android:paddingRight="6dip">
 
-    <Button
-        android:id="@+id/activity_movie_info_button_delete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/activity_movie_info_buttons"
-        android:layout_margin="6dip"
-        android:text="Delete" />
+                <Button
+                    android:id="@+id/activity_movie_info_rentButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dip"
+                    android:layout_weight="1.0"
+                    android:text="@string/rent" />
 
-    <TextView
-        android:id="@+id/activity_movie_info_plot"
-        style="@style/textStyle_info"
-        android:layout_below="@id/activity_movie_info_button_delete"
-        android:layout_marginLeft="15dip"
-        android:layout_marginTop="5dip"
-        android:text="@string/plot" />
+                <Button
+                    android:id="@+id/activity_movie_info_editButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dip"
+                    android:layout_weight="1.0"
+                    android:text="@string/Add_stock" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/activity_movie_info_button_delete"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_movie_info_buttons"
+                android:layout_margin="6dip"
+                android:text="Delete" />
+
+            <TextView
+                android:id="@+id/activity_movie_info_plot"
+                style="@style/textStyle_info"
+                android:layout_below="@id/activity_movie_info_button_delete"
+                android:layout_marginLeft="15dip"
+                android:layout_marginTop="5dip"
+                android:text="@string/plot" />
 
         </RelativeLayout>
 

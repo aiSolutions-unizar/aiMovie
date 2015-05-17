@@ -43,9 +43,11 @@ public class UserInfo extends ActionBarActivity {
                         TextView surname = (TextView) findViewById(R.id.activity_user_info_surname);
 
                         MailHelper mh = new MailHelper(mail.getText().toString());
+                        mh.fillEmail(name.getText().toString(), surname.getText().toString(), m.getTitle());
                         Boolean ok = mh.sendMail("[Order] Movie Rented");
 
                         m.setStock(m.getStock() - 1);
+                        m.setRented(m.getRented() + 1);
                         MoviesManager mm = new MoviesManager(UserInfo.this);
                         mm.updateMovie(m);
 

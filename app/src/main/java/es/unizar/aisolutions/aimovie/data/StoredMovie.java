@@ -28,11 +28,12 @@ public class StoredMovie implements Movie {
     private int imdbVotes;
     private String imdbID;
     private int stock;
+    private int rented;
 
     public StoredMovie(long _id, String title, int year, String rated, Date released, String runtime,
                        List<Genre> genres, String director, String writer, List<String> actors,
                        String plot, String language, String country, String awards, URL poster,
-                       int metascore, float imdbRating, int imdbVotes, String imdbID, int stock) {
+                       int metascore, float imdbRating, int imdbVotes, String imdbID, int stock, int rented) {
         this._id = _id;
         this.title = title;
         this.year = year;
@@ -53,7 +54,7 @@ public class StoredMovie implements Movie {
         this.imdbVotes = imdbVotes;
         this.imdbID = imdbID;
         this.stock = stock;
-        // TODO Add rented movies
+        this.rented = rented;
     }
 
     @Override
@@ -161,4 +162,11 @@ public class StoredMovie implements Movie {
         return imdbID;
     }
 
+    public int getRented() {
+        return rented;
+    }
+
+    public void setRented(int rented) {
+        this.rented = rented;
+    }
 }

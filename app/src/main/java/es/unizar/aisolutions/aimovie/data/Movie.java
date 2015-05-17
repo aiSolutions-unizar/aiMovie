@@ -50,4 +50,8 @@ public interface Movie {
     int getStock();
 
     void setStock(int newValue);
+
+    int getRented();
+
+    void setRented(int newValue);
 }

@@ -40,6 +40,7 @@ public class MovieInfo extends ActionBarActivity {
         final TextView plot = (TextView) findViewById(R.id.activity_movie_info_plot);
         final TextView stock = (TextView) findViewById(R.id.activity_movie_info_stock_value);
         final ImageView image = (ImageView) findViewById(R.id.activity_movie_info_image);
+        final TextView rented = (TextView) findViewById(R.id.activity_movie_info_rented_value);
 
         if (savedInstanceState != null || getIntent().getExtras() != null) {
             long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
@@ -102,6 +103,7 @@ public class MovieInfo extends ActionBarActivity {
             genres.setText(m.getGenres() != null ? TextUtils.join(", ", m.getGenres()) : null);
             plot.setText(m.getPlot());
             stock.setText(Integer.toString(m.getStock()));
+            rented.setText(Integer.toString(m.getRented()));
             if (m.getPoster() != null) {
                 new AsyncTask<String, Void, Bitmap>() {
                     @Override
@@ -152,6 +154,7 @@ public class MovieInfo extends ActionBarActivity {
         TextView director = (TextView) findViewById(R.id.activity_movie_info_director);
         TextView year = (TextView) findViewById(R.id.activity_movie_info_year);
         TextView genres = (TextView) findViewById(R.id.activity_movie_info_genres);
+        TextView rented = (TextView) findViewById(R.id.activity_movie_info_rented_value);
         if (m != null) {
             title.setText(m.getTitle());
             director.setText(m.getDirector());
@@ -159,6 +162,7 @@ public class MovieInfo extends ActionBarActivity {
             genres.setText(m.getGenres() != null ? TextUtils.join(", ", m.getGenres()) : null);
             plot.setText(m.getPlot());
             stock.setText(Integer.toString(m.getStock()));
+            rented.setText(Integer.toString(m.getRented()));
         }
     }
 

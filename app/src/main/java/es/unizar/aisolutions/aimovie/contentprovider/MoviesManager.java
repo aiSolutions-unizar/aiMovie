@@ -267,7 +267,7 @@ public class MoviesManager {
         values.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
         values.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
         values.put(MoviesTable.COLUMN_STOCK, newMovie.getStock());
-        //values.put(RENTED);
+        values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
         String where = null;
         String[] selectionArgs = null;
         int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
@@ -322,7 +322,7 @@ public class MoviesManager {
 
         return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
                 writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
-                imdb_votes, imdb_id, stock);
+                imdb_votes, imdb_id, stock, rented);
     }
 
     /**

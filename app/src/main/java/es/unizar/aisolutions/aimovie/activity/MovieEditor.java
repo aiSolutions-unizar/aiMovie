@@ -64,7 +64,7 @@ public class MovieEditor extends ActionBarActivity {
             director.setText(m.getDirector());
             plot.setText(m.getPlot());
 
-            // TODO Persist genres from oldMovie to newMovie
+            // TODO mark  genres checkboxes to persist old genres
         }
     }
 
@@ -121,19 +121,19 @@ public class MovieEditor extends ActionBarActivity {
                 Movie oldMovie = db.fetchMovie(id);
                 URL poster = null;
                 String plot = null;
-                int stock = 0;
+                int stock = 0, rented = 0;
 
                 if (oldMovie.getPoster() != null) poster = oldMovie.getPoster();
                 if (oldMovie.getStock() != 0) stock = oldMovie.getStock();
                 if (oldMovie.getPlot() != null) plot = oldMovie.getPlot();
+                if (oldMovie.getRented() != 0) rented = oldMovie.getRented();
 
                 m = new StoredMovie(oldMovie.get_id(), title, year, null, null, null, genres, director, null, null,
-                        plot, null, null, null, poster, -1, -1, -1, null, stock);
+                        plot, null, null, null, poster, -1, -1, -1, null, stock, rented);
                 db.updateMovie(m);
-                // TODO Genres update
             } else {
                 m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
-                        null, null, null, null, null, -1, -1, -1, null, 0);
+                        null, null, null, null, null, -1, -1, -1, null, 0, 0);
                 db.addMovie(m);
             }
 
