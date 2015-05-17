@@ -194,18 +194,6 @@ public class MovieManager {
     }
 
     /**
-     * @param g Genre to delete.
-     * @return true if the delete have been successfully
-     */
-    public boolean deleteGenre(Genre g) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORY/" + g.get_id());
-        String selection = null;
-        String[] selectionArgs = null;
-        int rowsDeleted = context.getContentResolver().delete(uri, selection, selectionArgs);
-        return rowsDeleted > 0;
-    }
-
-    /**
      * @param m Movie to delete.
      * @return true if the delete have been successfully
      */
@@ -215,31 +203,6 @@ public class MovieManager {
         String[] selectionArgs = null;
         int rowsDeleted = context.getContentResolver().delete(uri, selection, selectionArgs);
         return rowsDeleted > 0;
-    }
-
-    public List<Boolean> deleteMovies(Genre g) {
-        // TODO: use ContentProvider, implement
-        return null;
-    }
-
-    public List<Boolean> deleteMovies(List<Genre> g) {
-        // TODO: use ContentProvider, implement
-        return null;
-    }
-
-    public boolean deleteKind(String id) {
-        // TODO: use ContentProvider, implement
-        return false;
-    }
-
-    /**
-     * @param f Identifier from movie whose relationship 'kind' be deleted.
-     * @param g Identifier from genre whose relationship 'kind' be deleted.
-     * @return true if the delete have been successfully
-     */
-    public boolean deleteKind(String f, String g) {
-        // TODO: use ContentProvider, implement
-        return false;
     }
 
     /**
