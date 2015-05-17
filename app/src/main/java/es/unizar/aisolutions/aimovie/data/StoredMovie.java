@@ -68,8 +68,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
     public int getYear() {
         return year;
+    }
+
+    @Override
+    public void setYear(int year) {
+        this.year = year;
     }
 
     @Override
@@ -78,8 +88,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setRated(String rated) {
+        this.rated = rated;
+    }
+
+    @Override
     public Date getReleased() {
         return released;
+    }
+
+    @Override
+    public void setReleased(Date released) {
+        this.released = released;
     }
 
     @Override
@@ -88,8 +108,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
+
+    @Override
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    @Override
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 
     @Override
@@ -98,8 +128,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    @Override
     public String getWriter() {
         return writer;
+    }
+
+    @Override
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
     @Override
@@ -108,8 +148,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
+
+    @Override
     public String getPlot() {
         return plot;
+    }
+
+    @Override
+    public void setPlot(String plot) {
+        this.plot = plot;
     }
 
     @Override
@@ -118,13 +168,28 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    @Override
     public String getCountry() {
         return country;
     }
 
     @Override
+    public void setAwards(String awards) {
+        this.awards = awards;
+    }
+
+    @Override
     public String getAwards() {
         return awards;
+    }
+
+    @Override
+    public void setAwards(String awards) {
+        this.awards = awards;
     }
 
     @Override
@@ -143,8 +208,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setPoster(URL poster) {
+        this.poster = poster;
+    }
+
+    @Override
     public int getMetascore() {
         return metascore;
+    }
+
+    @Override
+    public void setMetascore(int metascore) {
+        this.metascore = metascore;
     }
 
     @Override
@@ -153,8 +228,18 @@ public class StoredMovie implements Movie {
     }
 
     @Override
+    public void setImdbRating(float imdbRating) {
+        this.imdbRating = imdbRating;
+    }
+
+    @Override
     public int getImdbVotes() {
         return imdbVotes;
+    }
+
+    @Override
+    public void setImdbVotes(int imdbVotes) {
+        this.imdbVotes = imdbVotes;
     }
 
     @Override
@@ -166,6 +251,27 @@ public class StoredMovie implements Movie {
         return rented;
     }
 
+    @Override
+    public void setImdbID(String imdbID) {
+        this.imdbID = imdbID;
+    }
+
+    @Override
+    public int getStock() {
+        return stock;
+    }
+
+    @Override
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    @Override
+    public int getRented() {
+        return rented;
+    }
+
+    @Override
     public void setRented(int rented) {
         this.rented = rented;
     }

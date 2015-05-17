@@ -9,12 +9,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.data.Genre;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.data.StoredMovie;
@@ -29,11 +28,15 @@ public class MovieEditor extends ActionBarActivity {
             R.id.genre_romance, R.id.genre_scifi, R.id.genre_sport, R.id.genre_thriller,
             R.id.genre_war, R.id.genre_western
     };
+    private static Movie m = null;
+    private static MovieManager mgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_adder);
+        setContentView(R.layout.activity_movie_editor);
+
+        mgr = new MovieManager(this);
 
         Button confirmButton = (Button) findViewById(R.id.confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -43,21 +46,14 @@ public class MovieEditor extends ActionBarActivity {
             }
         });
 
-        Long id;
-        try {
-            id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-        } catch (Exception e) {
-            id = 0L;
-        }
+        if (!getIntent().getExtras().isEmpty()) {
+            final long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+            m = mgr.fetchMovie(id);
 
-        if (id != 0L) {
-            MoviesManager mm = new MoviesManager(this);
-            Movie m = mm.fetchMovie(id);
-
-            EditText title = (EditText) findViewById(R.id.title);
-            EditText year = (EditText) findViewById(R.id.year);
-            EditText director = (EditText) findViewById(R.id.director);
-            EditText plot = (EditText) findViewById(R.id.synopsis);
+            final EditText title = (EditText) findViewById(R.id.title);
+            final EditText year = (EditText) findViewById(R.id.year);
+            final EditText director = (EditText) findViewById(R.id.director);
+            final EditText plot = (EditText) findViewById(R.id.plot);
 
             title.setText(m.getTitle());
             year.setText(Integer.toString(m.getYear()));
@@ -97,7 +93,7 @@ public class MovieEditor extends ActionBarActivity {
 
             }
             String director = ((EditText) findViewById(R.id.director)).getText().toString();
-            MoviesManager mgr = new MoviesManager(this);
+            String plot = ((EditText) findViewById(R.id.plot)).getText().toString();
             List<Genre> genres = new ArrayList<>();
             for (int genreId : GENRE_CHECKBOXES_IDS) {
                 CheckBox cb = (CheckBox) findViewById(genreId);
@@ -109,35 +105,19 @@ public class MovieEditor extends ActionBarActivity {
                     }
                 }
             }
-            MoviesManager db = new MoviesManager(this);
-            Long id;
-            try {
-                id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-            } catch (Exception e) {
-                id = 0L;
-            }
-            Movie m;
-            if (id != 0L) {
-                Movie oldMovie = db.fetchMovie(id);
-                URL poster = null;
-                String plot = null;
-                int stock = 0, rented = 0;
 
-                if (oldMovie.getPoster() != null) poster = oldMovie.getPoster();
-                if (oldMovie.getStock() != 0) stock = oldMovie.getStock();
-                if (oldMovie.getPlot() != null) plot = oldMovie.getPlot();
-                if (oldMovie.getRented() != 0) rented = oldMovie.getRented();
-
-                m = new StoredMovie(oldMovie.get_id(), title, year, null, null, null, genres, director, null, null,
-                        plot, null, null, null, poster, -1, -1, -1, null, stock, rented);
-                db.updateMovie(m);
+            if (m != null) {
+                m.setTitle(title);
+                m.setYear(year);
+                m.setDirector(director);
+                m.setPlot(plot);
+                m.setGenres(genres);
+                mgr.updateMovie(m);
             } else {
                 m = new StoredMovie(-1, title, year, null, null, null, genres, director, null, null,
-                        null, null, null, null, null, -1, -1, -1, null, 0, 0);
-                db.addMovie(m);
+                        plot, null, null, null, null, -1, -1, -1, null, 0, 0);
+                mgr.addMovie(m);
             }
-
-
         } else {
             Toast.makeText(this, getString(R.string.title_not_entered), Toast.LENGTH_SHORT).show();
         }

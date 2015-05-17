@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.email.MailHelper;
 
@@ -26,7 +26,7 @@ public class UserInfo extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        MoviesManager mm = new MoviesManager(UserInfo.this);
+        MovieManager mm = new MovieManager(UserInfo.this);
         final long idMovie = this.getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
         final Movie m = mm.fetchMovie(idMovie);
 
@@ -47,6 +47,7 @@ public class UserInfo extends ActionBarActivity {
                         Boolean ok = mh.sendMail("[Order] Movie Rented");
 
                         m.setStock(m.getStock() - 1);
+                        MovieManager mm = new MovieManager(UserInfo.this);
                         m.setRented(m.getRented() + 1);
                         MoviesManager mm = new MoviesManager(UserInfo.this);
                         mm.updateMovie(m);

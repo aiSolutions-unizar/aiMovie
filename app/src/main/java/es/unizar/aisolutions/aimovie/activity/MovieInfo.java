@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 
 public class MovieInfo extends ActionBarActivity {
@@ -44,7 +44,7 @@ public class MovieInfo extends ActionBarActivity {
 
         if (savedInstanceState != null || getIntent().getExtras() != null) {
             long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-            final MoviesManager mcm = new MoviesManager(this);
+            final MovieManager mcm = new MovieManager(this);
             final Movie m = mcm.fetchMovie(id);
 
             Button editButton = (Button) findViewById(R.id.activity_movie_info_editButton);
@@ -80,7 +80,7 @@ public class MovieInfo extends ActionBarActivity {
                 @Override
                 public void onClick(View view) {
                     long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-                    MoviesManager mm = new MoviesManager(MovieInfo.this);
+                    MovieManager mm = new MovieManager(MovieInfo.this);
                     mm.deleteMovie(mm.fetchMovie(id));
                     MovieInfo.this.finish();
                 }
@@ -146,7 +146,7 @@ public class MovieInfo extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-        final MoviesManager mcm = new MoviesManager(this);
+        final MovieManager mcm = new MovieManager(this);
         final Movie m = mcm.fetchMovie(id);
         TextView stock = (TextView) findViewById(R.id.activity_movie_info_stock_value);
         TextView title = (TextView) findViewById(R.id.activity_movie_info_title);
