@@ -44,8 +44,8 @@ public class MovieInfo extends ActionBarActivity {
 
         if (savedInstanceState != null || getIntent().getExtras() != null) {
             long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-            final MovieManager mcm = new MovieManager(this);
-            final Movie m = mcm.fetchMovie(id);
+            final MovieManager mgr = new MovieManager(this);
+            final Movie m = mgr.fetchMovie(id);
 
             Button editButton = (Button) findViewById(R.id.activity_movie_info_editButton);
             editButton.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +61,7 @@ public class MovieInfo extends ActionBarActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             int add = Integer.parseInt(input.getText().toString());
                             m.setStock(m.getStock() + add);
-                            mcm.updateMovie(m);
+                            mgr.updateMovie(m);
                             stock.setText(Integer.toString(m.getStock()));
                         }
                     });

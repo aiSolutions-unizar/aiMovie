@@ -92,7 +92,7 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case MOVIE_GENRES:
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
-                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
                         GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY));
                 queryBuilder.appendWhere(String.format("%s.%s = %s",
                         KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, uri.getPathSegments().get(1)));
@@ -129,9 +129,6 @@ public class MoviesContentProvider extends ContentProvider {
             case MOVIES:
                 id = db.insert(MoviesTable.TABLE_NAME, null, values);
                 break;
-            case GENRES:
-                id = db.insert(GenresTable.TABLE_NAME, null, values);
-                break;
             case KINDS:
                 id = db.insert(KindTable.TABLE_NAME, null, values);
                 break;
@@ -158,13 +155,6 @@ public class MoviesContentProvider extends ContentProvider {
                     rowsDeleted = db.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
-            case GENRE_ID:
-                String category_id = uri.getLastPathSegment();
-                if (!TextUtils.isEmpty(category_id)) {
-                    rowsDeleted = db.delete(GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID + " = " + category_id, null);
-                }
-                break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
         }
@@ -186,13 +176,6 @@ public class MoviesContentProvider extends ContentProvider {
                 String id = uri.getLastPathSegment();
                 if (!TextUtils.isEmpty(id)) {
                     rowsUpdated = db.update(MoviesTable.TABLE_NAME, values, MoviesTable.PRIMARY_KEY + " = " + id, null);
-                }
-                break;
-            case GENRE_ID:
-                String category_id = uri.getLastPathSegment();
-                if (!TextUtils.isEmpty(category_id)) {
-                    rowsUpdated = db.update(GenresTable.TABLE_NAME, values, GenresTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_GENRE_ID + " = " + category_id, null);
                 }
                 break;
             default:

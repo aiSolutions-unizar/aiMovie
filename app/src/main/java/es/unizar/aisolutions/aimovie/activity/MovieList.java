@@ -137,7 +137,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                         new AsyncTask<String, Void, Movie>() {
                             @Override
                             protected Movie doInBackground(String... id) {
-                                Movie movie = new OMDbMovieFetcher().getMovieById(id[0]);
+                                Movie movie = new OMDbMovieFetcher(MovieList.this).getMovieById(id[0]);
                                 return movie;
                             }
 

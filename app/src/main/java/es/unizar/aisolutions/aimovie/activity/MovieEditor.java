@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
@@ -19,23 +21,40 @@ import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.data.StoredMovie;
 
 public class MovieEditor extends ActionBarActivity {
-    public static final String EXTRA_MOVIE_ID = "no_id";
-    private static final int[] GENRE_CHECKBOXES_IDS = new int[]{
-            R.id.genre_action, R.id.genre_adventure, R.id.genre_animation, R.id.genre_biography,
-            R.id.genre_comedy, R.id.genre_crime, R.id.genre_documentary, R.id.genre_drama,
-            R.id.genre_family, R.id.genre_fantasy, R.id.genre_filmnoir, R.id.genre_history,
-            R.id.genre_horror, R.id.genre_music, R.id.genre_musical, R.id.genre_mystery,
-            R.id.genre_romance, R.id.genre_scifi, R.id.genre_sport, R.id.genre_thriller,
-            R.id.genre_war, R.id.genre_western
-    };
-    private static Movie m = null;
-    private static MovieManager mgr;
+    public static final String EXTRA_MOVIE_ID = "movie_id";
+    private Map<String, Integer> AVAILABLE_GENRES;
+    private Movie m = null;
+    private MovieManager mgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_editor);
 
+        AVAILABLE_GENRES = new HashMap<String, Integer>() {{
+            put(getString(R.string.genre_action), R.id.genre_action);
+            put(getString(R.string.genre_adventure), R.id.genre_adventure);
+            put(getString(R.string.genre_animation), R.id.genre_animation);
+            put(getString(R.string.genre_biography), R.id.genre_biography);
+            put(getString(R.string.genre_comedy), R.id.genre_comedy);
+            put(getString(R.string.genre_crime), R.id.genre_crime);
+            put(getString(R.string.genre_documentary), R.id.genre_documentary);
+            put(getString(R.string.genre_drama), R.id.genre_drama);
+            put(getString(R.string.genre_family), R.id.genre_family);
+            put(getString(R.string.genre_fantasy), R.id.genre_fantasy);
+            put(getString(R.string.genre_filmnoir), R.id.genre_filmnoir);
+            put(getString(R.string.genre_history), R.id.genre_history);
+            put(getString(R.string.genre_horror), R.id.genre_horror);
+            put(getString(R.string.genre_music), R.id.genre_music);
+            put(getString(R.string.genre_musical), R.id.genre_musical);
+            put(getString(R.string.genre_mystery), R.id.genre_mystery);
+            put(getString(R.string.genre_romance), R.id.genre_romance);
+            put(getString(R.string.genre_scifi), R.id.genre_scifi);
+            put(getString(R.string.genre_sport), R.id.genre_sport);
+            put(getString(R.string.genre_thriller), R.id.genre_thriller);
+            put(getString(R.string.genre_war), R.id.genre_war);
+            put(getString(R.string.genre_western), R.id.genre_western);
+        }};
         mgr = new MovieManager(this);
 
         Button confirmButton = (Button) findViewById(R.id.confirm);
@@ -59,8 +78,11 @@ public class MovieEditor extends ActionBarActivity {
             year.setText(Integer.toString(m.getYear()));
             director.setText(m.getDirector());
             plot.setText(m.getPlot());
-
-            // TODO mark  genres checkboxes to persist old genres
+            for (Genre g : m.getGenres()) {
+                int genreId = AVAILABLE_GENRES.get(g.getName());
+                CheckBox cb = (CheckBox) findViewById(genreId);
+                cb.setChecked(true);
+            }
         }
     }
 
@@ -95,7 +117,7 @@ public class MovieEditor extends ActionBarActivity {
             String director = ((EditText) findViewById(R.id.director)).getText().toString();
             String plot = ((EditText) findViewById(R.id.plot)).getText().toString();
             List<Genre> genres = new ArrayList<>();
-            for (int genreId : GENRE_CHECKBOXES_IDS) {
+            for (int genreId : AVAILABLE_GENRES.values()) {
                 CheckBox cb = (CheckBox) findViewById(genreId);
                 if (cb.isChecked()) {
                     String genre = cb.getText().toString();

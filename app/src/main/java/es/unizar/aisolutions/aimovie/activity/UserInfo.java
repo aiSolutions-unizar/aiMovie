@@ -17,18 +17,16 @@ import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.email.MailHelper;
 
 public class UserInfo extends ActionBarActivity {
-
     public static final String EXTRA_MOVIE_ID = "movie_id";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        MovieManager mm = new MovieManager(UserInfo.this);
+        final MovieManager mgr = new MovieManager(this);
         final long idMovie = this.getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-        final Movie m = mm.fetchMovie(idMovie);
+        final Movie m = mgr.fetchMovie(idMovie);
 
 
         Button acceptButton = (Button) findViewById(R.id.activity_user_info_button_order);
@@ -46,10 +44,9 @@ public class UserInfo extends ActionBarActivity {
                         mh.fillEmail(name.getText().toString(), surname.getText().toString(), m.getTitle());
                         Boolean ok = mh.sendMail("[Order] Movie Rented");
 
-                        MovieManager mm = new MovieManager(UserInfo.this);
                         m.setStock(m.getStock() - 1);
                         m.setRented(m.getRented() + 1);
-                        mm.updateMovie(m);
+                        mgr.updateMovie(m);
 
                         return ok;
                     }

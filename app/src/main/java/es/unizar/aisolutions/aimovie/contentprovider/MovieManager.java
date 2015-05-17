@@ -162,8 +162,9 @@ public class MovieManager {
             operations.add(kindAddition);
         }
 
+        ContentProviderResult[] results = null;
         try {
-            ContentProviderResult[] results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+            results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
         } catch (RemoteException e) {
             // TODO: handle exceptions
             e.printStackTrace();
@@ -266,6 +267,7 @@ public class MovieManager {
         values.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
         values.put(MoviesTable.COLUMN_STOCK, newMovie.getStock());
         values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
+        // TODO: update genres
         String where = null;
         String[] selectionArgs = null;
         int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);

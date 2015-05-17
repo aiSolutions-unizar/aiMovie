@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import es.unizar.aisolutions.aimovie.R;
-
 /**
  * GenresTable provides methods so as to create and update table called 'TABLE_NAME'
  * in a SQLite database.
@@ -31,19 +29,19 @@ public class GenresTable {
     public static final String CREATE_TABLE = String.format(
             "CREATE TABLE %s (" +
                     "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "%s TEXT UNIQUE NOT NULL);" +
-                    "INSERT INTO %s (%s) VALUES " +
-                    "(%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), " +
-                    "(%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s);",
-            TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_NAME, TABLE_NAME, COLUMN_GENRE_NAME,
-            R.string.genre_action, R.string.genre_adventure, R.string.genre_animation,
-            R.string.genre_biography, R.string.genre_comedy, R.string.genre_crime,
-            R.string.genre_documentary, R.string.genre_drama, R.string.genre_family,
-            R.string.genre_fantasy, R.string.genre_filmnoir, R.string.genre_history,
-            R.string.genre_horror, R.string.genre_music, R.string.genre_musical,
-            R.string.genre_mystery, R.string.genre_romance, R.string.genre_scifi,
-            R.string.genre_sport, R.string.genre_thriller, R.string.genre_war,
-            R.string.genre_western
+                    "%s TEXT UNIQUE NOT NULL);",
+            TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_NAME
+    );
+    public static final String INITIALIZE_TABLE = String.format(
+            "INSERT INTO %s (%s) VALUES " +
+                    "('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), " +
+                    "('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), ('%s'), " +
+                    "('%s'), ('%s'), ('%s'), ('%s');",
+            TABLE_NAME, COLUMN_GENRE_NAME,
+            // TODO: parameterize (possible?)
+            "Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary",
+            "Drama", "Family", "Fantasy", "Film-Noir", "History", "Horror", "Music", "Musical",
+            "Mystery", "Romance", "Sci-Fi", "Sport", "Thriller", "War", "Western"
     );
 
     // SQL code to create needed triggers
@@ -56,6 +54,7 @@ public class GenresTable {
      */
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
+        db.execSQL(INITIALIZE_TABLE);
         //db.execSQL(CREATE_TRIGGER);
     }
 

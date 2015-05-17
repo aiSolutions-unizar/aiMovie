@@ -1,5 +1,6 @@
 package es.unizar.aisolutions.aimovie.external_data;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.google.gson.JsonObject;
@@ -36,6 +37,11 @@ public class OMDbMovieFetcher implements MovieFetcher {
     private static final String OMDB_PARAM_INCLUDE_RT_RATINGS = "tomatoes";
     private static final String OMDB_PARAM_INCLUDE_RT_RATINGS_OPT_TRUE = "true";
     private static final String OMDB_PARAM_INCLUDE_RT_RATINGS_OPT_FALSE = "false";
+    private Context context;
+
+    public OMDbMovieFetcher(Context context) {
+        this.context = context;
+    }
 
     @Override
     public IMDbMovie getMovieById(String imdbId) {
@@ -58,7 +64,7 @@ public class OMDbMovieFetcher implements MovieFetcher {
             request.connect();
             JsonParser jp = new JsonParser();
             JsonObject jsonMovie = jp.parse(new InputStreamReader((InputStream) request.getContent())).getAsJsonObject();
-            IMDbMovie movie = new IMDbMovie(jsonMovie);
+            IMDbMovie movie = new IMDbMovie(jsonMovie, context);
             return movie;
         } catch (IOException e) {
             // TODO: log exception
