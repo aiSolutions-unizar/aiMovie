@@ -101,8 +101,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setTitle(String title) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int getYear() {
         return year;
+    }
+
+    @Override
+    public void setYear(int year) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -111,8 +121,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setRated(String rated) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Date getReleased() {
         return released;
+    }
+
+    @Override
+    public void setReleased(Date released) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -121,8 +141,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setRuntime(String runtime) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    @Override
+    public void setGenres(List<Genre> genres) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -131,8 +161,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setDirector(String director) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getWriter() {
         return writer;
+    }
+
+    @Override
+    public void setWriter(String writer) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -141,8 +181,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setActors(List<String> actors) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getPlot() {
         return plot;
+    }
+
+    @Override
+    public void setPlot(String plot) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -151,8 +201,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setLanguage(String language) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getCountry() {
         return country;
+    }
+
+    @Override
+    public void setCountry(String country) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -161,8 +221,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setAwards(String awards) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public URL getPoster() {
         return poster;
+    }
+
+    @Override
+    public void setPoster(URL poster) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -171,8 +241,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setMetascore(int metascore) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public float getImdbRating() {
         return imdbRating;
+    }
+
+    @Override
+    public void setImdbRating(float imdbRating) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -181,16 +261,37 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setImdbVotes(int imdbVotes) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getImdbID() {
         return imdbID;
     }
 
     @Override
+    public void setImdbID(String imdbID) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int getStock() {
-        return -1;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setStock(int newValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getRented() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setRented(int rented) {
+        throw new UnsupportedOperationException();
     }
 }

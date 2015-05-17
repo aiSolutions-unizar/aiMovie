@@ -22,7 +22,7 @@ import es.unizar.aisolutions.aimovie.database.GenresTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
-public class MoviesManager {
+public class MovieManager {
     private Context context;
 
     /**
@@ -30,12 +30,11 @@ public class MoviesManager {
      *
      * @param context the Context within which to work
      */
-    public MoviesManager(Context context) {
+    public MovieManager(Context context) {
         this.context = context;
     }
 
     public Genre fetchGenre(String name) {
-        // TODO: not working?
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
         String[] projection = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = GenresTable.COLUMN_GENRE_NAME + " = ?";
@@ -249,7 +248,6 @@ public class MoviesManager {
     public boolean updateMovie(Movie newMovie) {
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id());
         ContentValues values = new ContentValues();
-        values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
         values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
         values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
         values.put(MoviesTable.COLUMN_RATED, newMovie.getRated());
@@ -322,7 +320,7 @@ public class MoviesManager {
 
         return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
                 writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
-                imdb_votes, imdb_id, stock);
+                imdb_votes, imdb_id, stock, rented);
     }
 
     /**
