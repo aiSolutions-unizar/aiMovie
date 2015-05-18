@@ -34,6 +34,67 @@ public class MovieManager {
         this.context = context;
     }
 
+    /**
+     * @param _id Identifier of movie to fetch.
+     * @return The movie asked
+     */
+    public Movie fetchMovie(long _id) {
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + _id);
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            return extractMovie(cursor);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return A list with all movies from the database (it's possible with null)
+     */
+    public List<Movie> fetchMovies() {
+        List<Movie> c = new ArrayList<>();
+        Uri uri = MoviesContentProvider.CONTENT_URI;
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            do {
+                c.add(extractMovie(cursor));
+            } while (cursor.moveToNext());
+        }
+        return c;
+    }
+
+    /**
+     * @param g Genre used as filter.
+     * @return A list with all movies whose genre is c
+     */
+    public List<Movie> fetchMovies(Genre g) {
+        List<Movie> result = new ArrayList<>();
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES/" + g.get_id() + "/MOVIES");
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(extractMovie(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    /**
+     * @param name Name of the genre to fetch
+     * @return A genre object which represents the genre 'name'
+     */
     public Genre fetchGenre(String name) {
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
         String[] projection = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
@@ -66,63 +127,6 @@ public class MovieManager {
             } while (cursor.moveToNext());
         }
         return result;
-    }
-
-    /**
-     * @param g Genre used as filter.
-     * @return A list with all movies whose genre is c
-     */
-    public List<Movie> fetchMovies(Genre g) {
-        List<Movie> result = new ArrayList<>();
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES/" + g.get_id() + "/MOVIES");
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(extractMovie(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    /**
-     * @return A list with all movies from the database (it's possible with null)
-     */
-    public List<Movie> fetchMovies() {
-        List<Movie> c = new ArrayList<>();
-        Uri uri = MoviesContentProvider.CONTENT_URI;
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        if (cursor.moveToFirst()) {
-            do {
-                c.add(extractMovie(cursor));
-            } while (cursor.moveToNext());
-        }
-        return c;
-    }
-
-    /**
-     * @param _id Identifier of movie to fetch.
-     * @return The movie asked
-     */
-    public Movie fetchMovie(long _id) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + _id);
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        if (cursor.moveToFirst()) {
-            return extractMovie(cursor);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -172,25 +176,6 @@ public class MovieManager {
             e.printStackTrace();
         }
         return true;
-    }
-
-    /**
-     * @param f movie to link
-     * @param g Genre to link
-     * @return True if the parameters are complete, have a correct value and a kind is added successfully
-     * False if not
-     */
-    public boolean addKind(String f, String g) {
-        if (f != null && g != null && f.length() > 0 && g.length() > 0) {
-            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
-            ContentValues values = new ContentValues();
-            values.put(KindTable.COLUMN_MOVIE_ID, f);
-            values.put(KindTable.COLUMN_GENRE_ID, g);
-            Uri insertedUri = context.getContentResolver().insert(uri, values);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
