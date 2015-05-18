@@ -195,7 +195,11 @@ public class MovieManager {
      * @return True if the update have been successfully else false
      */
     public boolean updateMovie(Movie newMovie) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id());
+        ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+        Uri uriMovie = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id());
+        Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
+        Uri uriMovieKinds = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id() + "/GENRES");
+
         ContentValues values = new ContentValues();
         values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
         values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
@@ -215,11 +219,29 @@ public class MovieManager {
         values.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
         values.put(MoviesTable.COLUMN_STOCK, newMovie.getStock());
         values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
-        // TODO: update genres
-        String where = null;
-        String[] selectionArgs = null;
-        int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
-        return rowsUpdated > 0;
+
+        ContentProviderOperation movieUpdate = ContentProviderOperation.newUpdate(uriMovie)
+                .withValues(values).build();
+        operations.add(movieUpdate);
+        ContentProviderOperation kindsDeletion = ContentProviderOperation.newDelete(uriMovieKinds).build();
+        operations.add(kindsDeletion);
+        for (Genre g : newMovie.getGenres()) {
+            ContentProviderOperation kindAddition = ContentProviderOperation.newInsert(uriKind)
+                    .withValue(KindTable.COLUMN_MOVIE_ID, newMovie.get_id())
+                    .withValue(KindTable.COLUMN_GENRE_ID, g.get_id()).build();
+            operations.add(kindAddition);
+        }
+
+        ContentProviderResult[] results = null;
+        try {
+            results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (RemoteException e) {
+            // TODO: handle exceptions
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     /**

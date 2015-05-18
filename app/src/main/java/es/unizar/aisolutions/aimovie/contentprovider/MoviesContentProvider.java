@@ -155,6 +155,12 @@ public class MoviesContentProvider extends ContentProvider {
                     rowsDeleted = db.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
+            case MOVIE_GENRES:
+                String movieId = uri.getPathSegments().get(1);
+                if (!TextUtils.isEmpty(movieId)) {
+                    rowsDeleted = db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID + " = " + movieId, null);
+                }
+                break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
         }
