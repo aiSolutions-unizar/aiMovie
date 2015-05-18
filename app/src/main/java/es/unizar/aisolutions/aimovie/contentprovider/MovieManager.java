@@ -1,13 +1,13 @@
 package es.unizar.aisolutions.aimovie.contentprovider;
 
 import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -166,14 +166,10 @@ public class MovieManager {
             operations.add(kindAddition);
         }
 
-        ContentProviderResult[] results = null;
         try {
-            results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
-        } catch (RemoteException e) {
-            // TODO: handle exceptions
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
+            context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (RemoteException | OperationApplicationException e) {
+            Log.e(e.getMessage(), e.toString(), e);
         }
         return true;
     }
@@ -232,14 +228,10 @@ public class MovieManager {
             operations.add(kindAddition);
         }
 
-        ContentProviderResult[] results = null;
         try {
-            results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
-        } catch (RemoteException e) {
-            // TODO: handle exceptions
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
+            context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (RemoteException | OperationApplicationException e) {
+            Log.e(e.getMessage(), e.toString(), e);
         }
         return true;
     }

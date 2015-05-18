@@ -28,32 +28,33 @@ public class UserInfo extends ActionBarActivity {
         final long idMovie = this.getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
         final Movie m = mgr.fetchMovie(idMovie);
 
-
         Button acceptButton = (Button) findViewById(R.id.activity_user_info_button_order);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                m.setStock(m.getStock() - 1);
+                m.setRented(m.getRented() + 1);
+                mgr.updateMovie(m);
                 new AsyncTask<Movie, Void, Boolean>() {
                     @Override
                     protected Boolean doInBackground(Movie... title) {
-                        TextView mail = (TextView) findViewById(R.id.activity_user_info_email);
-                        TextView name = (TextView) findViewById(R.id.activity_user_info_name);
-                        TextView surname = (TextView) findViewById(R.id.activity_user_info_surname);
+                        final TextView mailTextView = (TextView) findViewById(R.id.activity_user_info_email);
+                        final TextView nameTextView = (TextView) findViewById(R.id.activity_user_info_name);
+                        final TextView surnameTextView = (TextView) findViewById(R.id.activity_user_info_surname);
 
-                        MailHelper mh = new MailHelper(mail.getText().toString());
-                        mh.fillEmail(name.getText().toString(), surname.getText().toString(), m.getTitle());
-                        Boolean ok = mh.sendMail("[Order] Movie Rented");
-
-                        m.setStock(m.getStock() - 1);
-                        m.setRented(m.getRented() + 1);
-                        mgr.updateMovie(m);
+                        String subject = "[Order] New movie rented";
+                        String dest = mailTextView.getText().toString();
+                        String name = nameTextView.getText().toString();
+                        String surname = surnameTextView.getText().toString();
+                        String movie = m.getTitle();
+                        boolean ok = MailHelper.sendMail(subject, dest, name, surname, movie);
 
                         return ok;
                     }
 
                     @Override
-                    protected void onPostExecute(Boolean b) {
-                        String message = b ? "Order sent" : "Order not sent";
+                    protected void onPostExecute(Boolean success) {
+                        String message = success ? "Order sent" : "Order not sent";
                         AlertDialog.Builder builder = new AlertDialog.Builder(UserInfo.this);
                         builder.setTitle("Mail");
                         final TextView ms = new TextView(UserInfo.this);

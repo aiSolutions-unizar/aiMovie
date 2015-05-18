@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -88,8 +89,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                                 }
                                 return thumbnail;
                             } catch (IOException e) {
-                                // TODO: error handling
-                                e.printStackTrace();
+                                Log.w(e.getMessage(), e.toString(), e);
                                 return null;
                             }
                         }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -109,19 +110,18 @@ public class MovieInfo extends ActionBarActivity {
                     @Override
                     protected Bitmap doInBackground(String... link) {
                         try {
-                            // TODO: cache thumbnail into resource when inserting movie
                             URL url = new URL(link[0]);
                             Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                             return thumbnail;
                         } catch (IOException e) {
-                            // TODO: error handling
-                            e.printStackTrace();
+                            Log.w(e.getMessage(), e.toString(), e);
                             return null;
                         }
                     }
 
                     @Override
                     protected void onPostExecute(Bitmap thumbnail) {
+                        // TODO: cache image
                         image.setImageBitmap(thumbnail);
                     }
                 }.execute(m.getPoster().toString());

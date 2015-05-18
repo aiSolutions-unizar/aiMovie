@@ -2,6 +2,7 @@ package es.unizar.aisolutions.aimovie.external_data;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -66,11 +67,8 @@ public class OMDbMovieFetcher implements MovieFetcher {
             JsonObject jsonMovie = jp.parse(new InputStreamReader((InputStream) request.getContent())).getAsJsonObject();
             IMDbMovie movie = new IMDbMovie(jsonMovie, context);
             return movie;
-        } catch (IOException e) {
-            // TODO: log exception
-            e.printStackTrace();
-            return null;
-        } catch (MovieParseException e) {
+        } catch (IOException | MovieParseException e) {
+            Log.e(e.getMessage(), e.toString(), e);
             return null;
         }
     }
