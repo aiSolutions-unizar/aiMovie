@@ -2,6 +2,8 @@ package es.unizar.aisolutions.aimovie.activity;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -24,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
@@ -45,6 +49,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private static int i = 0;
     private SimpleCursorAdapter adapter;
+    private String titleFilter = null;
     private String sortOrder = null;
 
     @Override
@@ -180,8 +185,31 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_movie_list, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView =
+                (SearchView) menuItem.getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            titleFilter = query;
+            getLoaderManager().restartLoader(0, null, MovieList.this);
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -235,6 +263,12 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;
         String[] selectionArgs = null;
+        if(titleFilter != null){
+            selection = "name  = ?";
+            selectionArgs = new String[1];
+            selectionArgs[0] = titleFilter;
+            titleFilter = null;
+        }
         return new CursorLoader(this, uri, projection, selection, selectionArgs, sortOrder);
     }
 
