@@ -20,8 +20,8 @@ public class GenresTable {
     public static final String COLUMN_GENRE_NAME = "name";
 
     public static final Set<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{
-            TABLE_NAME + "." + PRIMARY_KEY,
-            TABLE_NAME + "." + COLUMN_GENRE_NAME
+            PRIMARY_KEY,
+            COLUMN_GENRE_NAME
     }));
 
 

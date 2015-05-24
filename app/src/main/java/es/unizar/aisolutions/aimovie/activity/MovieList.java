@@ -14,7 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -44,7 +44,7 @@ import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
 
-public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationDrawerFragment.NavigationDrawerCallbacks {
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private static int i = 0;
@@ -56,6 +56,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
+        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        navigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -210,7 +213,6 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -280,5 +282,10 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        // TODO: complete
     }
 }

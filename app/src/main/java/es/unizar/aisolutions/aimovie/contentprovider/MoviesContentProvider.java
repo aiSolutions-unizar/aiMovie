@@ -69,6 +69,9 @@ public class MoviesContentProvider extends ContentProvider {
                 queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
             case MOVIE_GENRES:
+                for (int i = 0; i < projection.length; i++) {
+                    projection[i] = GenresTable.TABLE_NAME + "." + projection[i];
+                }
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
                         KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
                         GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY));
