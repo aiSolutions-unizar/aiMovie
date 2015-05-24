@@ -7,13 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * KindTable provides methods so as to create and update table called 'TABLE_NAME'
- * in a SQLite database.
- * <p/>
- * Created by diego on 2/04/15.
- * Time spent: 11 minutes.
- */
 public class KindTable {
     public static final String TABLE_NAME = "kind";
     public static final String PRIMARY_KEY = "_id";

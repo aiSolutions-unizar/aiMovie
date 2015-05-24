@@ -1,7 +1,6 @@
 package es.unizar.aisolutions.aimovie.contentprovider;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -20,18 +19,14 @@ import es.unizar.aisolutions.aimovie.database.MoviesDatabaseHelper;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 public class MoviesContentProvider extends ContentProvider {
-    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/movies";
-    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/movie";
     public static final String AUTHORITY = "es.unizar.aisolutions.aimovie.contentprovider";
-    private static final int MOVIE_ID = 1;
-    private static final int MOVIES = 2;
+    private static final int MOVIES = 1;
+    private static final int MOVIE_ID = 2;
     private static final int GENRES = 3;
-    private static final int MOVIES_JOIN_GENRES = 5;
-    private static final int KINDS = 6;
-    private static final int GENRE_ID = 7;
-    private static final int MOVIE_GENRES = 8;
-    private static final int GENRE_MOVIES = 9;
-    private static final int MOVIE_ID_JOIN_GENRES = 10;
+    private static final int KINDS = 4;
+    private static final int GENRE_ID = 5;
+    private static final int MOVIE_GENRES = 6;
+    private static final int GENRE_MOVIES = 7;
     private static final String BASE_PATH = "MOVIES";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -41,8 +36,6 @@ public class MoviesContentProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", MOVIE_ID);              // To manage a movie
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#/GENRES", MOVIE_GENRES);   // To manage all the genres a movie belongs to
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRES", GENRES);           // To manage all genres
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN", MOVIES_JOIN_GENRES);     // To manage all genres & movies together
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/JOIN/#", MOVIE_ID_JOIN_GENRES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/KINDS", KINDS);             // To manage relationships between movies & genres
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#", GENRE_ID);        // To manage a genre
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#/MOVIES", GENRE_MOVIES); // To manage all movies that belong to a given genre
@@ -75,24 +68,9 @@ public class MoviesContentProvider extends ContentProvider {
                 queryBuilder.setTables(MoviesTable.TABLE_NAME);
                 queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
-            case MOVIES_JOIN_GENRES:
-                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s INNER JOIN %s ON %s.%s = %s.%s",
-                        MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.TABLE_NAME,
-                        KindTable.COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
-                        GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
-                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME));
-                break;
-            case MOVIE_ID_JOIN_GENRES:
-                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s INNER JOIN %s ON %s.%s = %s.%s",
-                        MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.TABLE_NAME,
-                        KindTable.COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
-                        GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
-                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME));
-                queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
-                break;
             case MOVIE_GENRES:
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
-                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
                         GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY));
                 queryBuilder.appendWhere(String.format("%s.%s = %s",
                         KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, uri.getPathSegments().get(1)));
@@ -129,9 +107,6 @@ public class MoviesContentProvider extends ContentProvider {
             case MOVIES:
                 id = db.insert(MoviesTable.TABLE_NAME, null, values);
                 break;
-            case GENRES:
-                id = db.insert(GenresTable.TABLE_NAME, null, values);
-                break;
             case KINDS:
                 id = db.insert(KindTable.TABLE_NAME, null, values);
                 break;
@@ -158,11 +133,10 @@ public class MoviesContentProvider extends ContentProvider {
                     rowsDeleted = db.delete(MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
-            case GENRE_ID:
-                String category_id = uri.getLastPathSegment();
-                if (!TextUtils.isEmpty(category_id)) {
-                    rowsDeleted = db.delete(GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsDeleted += db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID + " = " + category_id, null);
+            case MOVIE_GENRES:
+                String movieId = uri.getPathSegments().get(1);
+                if (!TextUtils.isEmpty(movieId)) {
+                    rowsDeleted = db.delete(KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID + " = " + movieId, null);
                 }
                 break;
             default:
@@ -188,13 +162,6 @@ public class MoviesContentProvider extends ContentProvider {
                     rowsUpdated = db.update(MoviesTable.TABLE_NAME, values, MoviesTable.PRIMARY_KEY + " = " + id, null);
                 }
                 break;
-            case GENRE_ID:
-                String category_id = uri.getLastPathSegment();
-                if (!TextUtils.isEmpty(category_id)) {
-                    rowsUpdated = db.update(GenresTable.TABLE_NAME, values, GenresTable.PRIMARY_KEY + " = " + category_id, null);
-                    rowsUpdated += db.update(KindTable.TABLE_NAME, values, KindTable.COLUMN_GENRE_ID + " = " + category_id, null);
-                }
-                break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
         }
@@ -205,13 +172,43 @@ public class MoviesContentProvider extends ContentProvider {
     }
 
     private void checkColumns(String[] projection, int uriType) {
-        // TODO: review
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));
-            if (uriType == GENRES && !GenresTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
-                throw new IllegalArgumentException("Unknown columns in projection");
-            } else if ((uriType == MOVIE_ID || uriType == MOVIES) && !MoviesTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
-                throw new IllegalArgumentException("Unknown columns in projection");
+            switch (uriType) {
+                case MOVIE_ID:
+                    if (!MoviesTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
+                    break;
+                case MOVIES:
+                    if (!MoviesTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
+                    break;
+                case GENRES:
+                    if (!GenresTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
+                    break;
+                case KINDS:
+                    if (!KindTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
+                    break;
+                case GENRE_ID:
+                    if (!GenresTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
+                    break;
+                case MOVIE_GENRES:
+                    if (!GenresTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
+                    break;
+                case GENRE_MOVIES:
+                    if (!MoviesTable.AVAILABLE_COLUMNS.containsAll(requestedColumns)) {
+                        throw new IllegalArgumentException("Unknown columns in projection");
+                    }
             }
         }
     }

@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -33,8 +34,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import es.unizar.aisolutions.aimovie.R;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentProvider;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
@@ -88,8 +89,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                                 }
                                 return thumbnail;
                             } catch (IOException e) {
-                                // TODO: error handling
-                                e.printStackTrace();
+                                Log.w(e.getMessage(), e.toString(), e);
                                 return null;
                             }
                         }
@@ -123,7 +123,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 AlertDialog.Builder builder = new AlertDialog.Builder(MovieList.this);
                 builder.setTitle(getString(R.string.enter_imdb_id));
                 final EditText input = new EditText(MovieList.this);
-                final MoviesManager mcm = new MoviesManager(MovieList.this);
+                final MovieManager mcm = new MovieManager(MovieList.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 // for debugging purposes
                 final String[] ids = {"tt0070735", "tt2395427", "tt2967224", "tt1655441", "tt2820852",
@@ -137,7 +137,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                         new AsyncTask<String, Void, Movie>() {
                             @Override
                             protected Movie doInBackground(String... id) {
-                                Movie movie = new OMDbMovieFetcher().getMovieById(id[0]);
+                                Movie movie = new OMDbMovieFetcher(MovieList.this).getMovieById(id[0]);
                                 return movie;
                             }
 

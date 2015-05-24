@@ -1,13 +1,13 @@
 package es.unizar.aisolutions.aimovie.contentprovider;
 
 import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,7 +22,7 @@ import es.unizar.aisolutions.aimovie.database.GenresTable;
 import es.unizar.aisolutions.aimovie.database.KindTable;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
-public class MoviesManager {
+public class MovieManager {
     private Context context;
 
     /**
@@ -30,12 +30,72 @@ public class MoviesManager {
      *
      * @param context the Context within which to work
      */
-    public MoviesManager(Context context) {
+    public MovieManager(Context context) {
         this.context = context;
     }
 
+    /**
+     * @param _id Identifier of movie to fetch.
+     * @return The movie asked
+     */
+    public Movie fetchMovie(long _id) {
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + _id);
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            return extractMovie(cursor);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return A list with all movies from the database (it's possible with null)
+     */
+    public List<Movie> fetchMovies() {
+        List<Movie> c = new ArrayList<>();
+        Uri uri = MoviesContentProvider.CONTENT_URI;
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            do {
+                c.add(extractMovie(cursor));
+            } while (cursor.moveToNext());
+        }
+        return c;
+    }
+
+    /**
+     * @param g Genre used as filter.
+     * @return A list with all movies whose genre is c
+     */
+    public List<Movie> fetchMovies(Genre g) {
+        List<Movie> result = new ArrayList<>();
+        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES/" + g.get_id() + "/MOVIES");
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(extractMovie(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    /**
+     * @param name Name of the genre to fetch
+     * @return A genre object which represents the genre 'name'
+     */
     public Genre fetchGenre(String name) {
-        // TODO: not working?
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES");
         String[] projection = GenresTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = GenresTable.COLUMN_GENRE_NAME + " = ?";
@@ -67,63 +127,6 @@ public class MoviesManager {
             } while (cursor.moveToNext());
         }
         return result;
-    }
-
-    /**
-     * @param g Genre used as filter.
-     * @return A list with all movies whose genre is c
-     */
-    public List<Movie> fetchMovies(Genre g) {
-        List<Movie> result = new ArrayList<>();
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRES/" + g.get_id() + "/MOVIES");
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(extractMovie(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    /**
-     * @return A list with all movies from the database (it's possible with null)
-     */
-    public List<Movie> fetchMovies() {
-        List<Movie> c = new ArrayList<>();
-        Uri uri = MoviesContentProvider.CONTENT_URI;
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        if (cursor.moveToFirst()) {
-            do {
-                c.add(extractMovie(cursor));
-            } while (cursor.moveToNext());
-        }
-        return c;
-    }
-
-    /**
-     * @param _id Identifier of movie to fetch.
-     * @return The movie asked
-     */
-    public Movie fetchMovie(long _id) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + _id);
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-        if (cursor.moveToFirst()) {
-            return extractMovie(cursor);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -164,45 +167,11 @@ public class MoviesManager {
         }
 
         try {
-            ContentProviderResult[] results = context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
-        } catch (RemoteException e) {
-            // TODO: handle exceptions
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
+            context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (RemoteException | OperationApplicationException e) {
+            Log.e(e.getMessage(), e.toString(), e);
         }
         return true;
-    }
-
-    /**
-     * @param f movie to link
-     * @param g Genre to link
-     * @return True if the parameters are complete, have a correct value and a kind is added successfully
-     * False if not
-     */
-    public boolean addKind(String f, String g) {
-        if (f != null && g != null && f.length() > 0 && g.length() > 0) {
-            Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
-            ContentValues values = new ContentValues();
-            values.put(KindTable.COLUMN_MOVIE_ID, f);
-            values.put(KindTable.COLUMN_GENRE_ID, g);
-            Uri insertedUri = context.getContentResolver().insert(uri, values);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @param g Genre to delete.
-     * @return true if the delete have been successfully
-     */
-    public boolean deleteGenre(Genre g) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/CATEGORY/" + g.get_id());
-        String selection = null;
-        String[] selectionArgs = null;
-        int rowsDeleted = context.getContentResolver().delete(uri, selection, selectionArgs);
-        return rowsDeleted > 0;
     }
 
     /**
@@ -217,39 +186,17 @@ public class MoviesManager {
         return rowsDeleted > 0;
     }
 
-    public List<Boolean> deleteMovies(Genre g) {
-        // TODO: use ContentProvider, implement
-        return null;
-    }
-
-    public List<Boolean> deleteMovies(List<Genre> g) {
-        // TODO: use ContentProvider, implement
-        return null;
-    }
-
-    public boolean deleteKind(String id) {
-        // TODO: use ContentProvider, implement
-        return false;
-    }
-
-    /**
-     * @param f Identifier from movie whose relationship 'kind' be deleted.
-     * @param g Identifier from genre whose relationship 'kind' be deleted.
-     * @return true if the delete have been successfully
-     */
-    public boolean deleteKind(String f, String g) {
-        // TODO: use ContentProvider, implement
-        return false;
-    }
-
     /**
      * @param newMovie Movie replacing one with the same _id.
      * @return True if the update have been successfully else false
      */
     public boolean updateMovie(Movie newMovie) {
-        Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id());
+        ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+        Uri uriMovie = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id());
+        Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
+        Uri uriMovieKinds = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + newMovie.get_id() + "/GENRES");
+
         ContentValues values = new ContentValues();
-        values.put(MoviesTable.PRIMARY_KEY, newMovie.get_id());
         values.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
         values.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
         values.put(MoviesTable.COLUMN_RATED, newMovie.getRated());
@@ -267,11 +214,26 @@ public class MoviesManager {
         values.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
         values.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
         values.put(MoviesTable.COLUMN_STOCK, newMovie.getStock());
-        //values.put(RENTED);
-        String where = null;
-        String[] selectionArgs = null;
-        int rowsUpdated = context.getContentResolver().update(uri, values, where, selectionArgs);
-        return rowsUpdated > 0;
+        values.put(MoviesTable.COLUMN_RENTED, newMovie.getRented());
+
+        ContentProviderOperation movieUpdate = ContentProviderOperation.newUpdate(uriMovie)
+                .withValues(values).build();
+        operations.add(movieUpdate);
+        ContentProviderOperation kindsDeletion = ContentProviderOperation.newDelete(uriMovieKinds).build();
+        operations.add(kindsDeletion);
+        for (Genre g : newMovie.getGenres()) {
+            ContentProviderOperation kindAddition = ContentProviderOperation.newInsert(uriKind)
+                    .withValue(KindTable.COLUMN_MOVIE_ID, newMovie.get_id())
+                    .withValue(KindTable.COLUMN_GENRE_ID, g.get_id()).build();
+            operations.add(kindAddition);
+        }
+
+        try {
+            context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (RemoteException | OperationApplicationException e) {
+            Log.e(e.getMessage(), e.toString(), e);
+        }
+        return true;
     }
 
     /**
@@ -322,7 +284,7 @@ public class MoviesManager {
 
         return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
                 writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
-                imdb_votes, imdb_id, stock);
+                imdb_votes, imdb_id, stock, rented);
     }
 
     /**

@@ -12,49 +12,49 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.email.MailHelper;
 
 public class UserInfo extends ActionBarActivity {
-
     public static final String EXTRA_MOVIE_ID = "movie_id";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        MoviesManager mm = new MoviesManager(UserInfo.this);
+        final MovieManager mgr = new MovieManager(this);
         final long idMovie = this.getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-        final Movie m = mm.fetchMovie(idMovie);
-
+        final Movie m = mgr.fetchMovie(idMovie);
 
         Button acceptButton = (Button) findViewById(R.id.activity_user_info_button_order);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                m.setStock(m.getStock() - 1);
+                m.setRented(m.getRented() + 1);
+                mgr.updateMovie(m);
                 new AsyncTask<Movie, Void, Boolean>() {
                     @Override
                     protected Boolean doInBackground(Movie... title) {
-                        TextView mail = (TextView) findViewById(R.id.activity_user_info_email);
-                        TextView name = (TextView) findViewById(R.id.activity_user_info_name);
-                        TextView surname = (TextView) findViewById(R.id.activity_user_info_surname);
+                        final TextView mailTextView = (TextView) findViewById(R.id.activity_user_info_email);
+                        final TextView nameTextView = (TextView) findViewById(R.id.activity_user_info_name);
+                        final TextView surnameTextView = (TextView) findViewById(R.id.activity_user_info_surname);
 
-                        MailHelper mh = new MailHelper(mail.getText().toString());
-                        Boolean ok = mh.sendMail("[Order] Movie Rented");
-
-                        m.setStock(m.getStock() - 1);
-                        MoviesManager mm = new MoviesManager(UserInfo.this);
-                        mm.updateMovie(m);
+                        String subject = "[Order] New movie rented";
+                        String dest = mailTextView.getText().toString();
+                        String name = nameTextView.getText().toString();
+                        String surname = surnameTextView.getText().toString();
+                        String movie = m.getTitle();
+                        boolean ok = MailHelper.sendMail(subject, dest, name, surname, movie);
 
                         return ok;
                     }
 
                     @Override
-                    protected void onPostExecute(Boolean b) {
-                        String message = b ? "Order sent" : "Order not sent";
+                    protected void onPostExecute(Boolean success) {
+                        String message = success ? "Order sent" : "Order not sent";
                         AlertDialog.Builder builder = new AlertDialog.Builder(UserInfo.this);
                         builder.setTitle("Mail");
                         final TextView ms = new TextView(UserInfo.this);

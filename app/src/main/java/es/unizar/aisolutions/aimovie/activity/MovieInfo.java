@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import es.unizar.aisolutions.aimovie.R;
-import es.unizar.aisolutions.aimovie.contentprovider.MoviesManager;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.data.Movie;
 
 public class MovieInfo extends ActionBarActivity {
@@ -40,11 +41,12 @@ public class MovieInfo extends ActionBarActivity {
         final TextView plot = (TextView) findViewById(R.id.activity_movie_info_plot);
         final TextView stock = (TextView) findViewById(R.id.activity_movie_info_stock_value);
         final ImageView image = (ImageView) findViewById(R.id.activity_movie_info_image);
+        final TextView rented = (TextView) findViewById(R.id.activity_movie_info_rented_value);
 
         if (savedInstanceState != null || getIntent().getExtras() != null) {
             long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-            final MoviesManager mcm = new MoviesManager(this);
-            final Movie m = mcm.fetchMovie(id);
+            final MovieManager mgr = new MovieManager(this);
+            final Movie m = mgr.fetchMovie(id);
 
             Button editButton = (Button) findViewById(R.id.activity_movie_info_editButton);
             editButton.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +62,7 @@ public class MovieInfo extends ActionBarActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             int add = Integer.parseInt(input.getText().toString());
                             m.setStock(m.getStock() + add);
-                            mcm.updateMovie(m);
+                            mgr.updateMovie(m);
                             stock.setText(Integer.toString(m.getStock()));
                         }
                     });
@@ -79,7 +81,7 @@ public class MovieInfo extends ActionBarActivity {
                 @Override
                 public void onClick(View view) {
                     long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-                    MoviesManager mm = new MoviesManager(MovieInfo.this);
+                    MovieManager mm = new MovieManager(MovieInfo.this);
                     mm.deleteMovie(mm.fetchMovie(id));
                     MovieInfo.this.finish();
                 }
@@ -102,24 +104,24 @@ public class MovieInfo extends ActionBarActivity {
             genres.setText(m.getGenres() != null ? TextUtils.join(", ", m.getGenres()) : null);
             plot.setText(m.getPlot());
             stock.setText(Integer.toString(m.getStock()));
+            rented.setText(Integer.toString(m.getRented()));
             if (m.getPoster() != null) {
                 new AsyncTask<String, Void, Bitmap>() {
                     @Override
                     protected Bitmap doInBackground(String... link) {
                         try {
-                            // TODO: cache thumbnail into resource when inserting movie
                             URL url = new URL(link[0]);
                             Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                             return thumbnail;
                         } catch (IOException e) {
-                            // TODO: error handling
-                            e.printStackTrace();
+                            Log.w(e.getMessage(), e.toString(), e);
                             return null;
                         }
                     }
 
                     @Override
                     protected void onPostExecute(Bitmap thumbnail) {
+                        // TODO: cache image
                         image.setImageBitmap(thumbnail);
                     }
                 }.execute(m.getPoster().toString());
@@ -144,7 +146,7 @@ public class MovieInfo extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-        final MoviesManager mcm = new MoviesManager(this);
+        final MovieManager mcm = new MovieManager(this);
         final Movie m = mcm.fetchMovie(id);
         TextView stock = (TextView) findViewById(R.id.activity_movie_info_stock_value);
         TextView title = (TextView) findViewById(R.id.activity_movie_info_title);
@@ -152,6 +154,7 @@ public class MovieInfo extends ActionBarActivity {
         TextView director = (TextView) findViewById(R.id.activity_movie_info_director);
         TextView year = (TextView) findViewById(R.id.activity_movie_info_year);
         TextView genres = (TextView) findViewById(R.id.activity_movie_info_genres);
+        TextView rented = (TextView) findViewById(R.id.activity_movie_info_rented_value);
         if (m != null) {
             title.setText(m.getTitle());
             director.setText(m.getDirector());
@@ -159,6 +162,7 @@ public class MovieInfo extends ActionBarActivity {
             genres.setText(m.getGenres() != null ? TextUtils.join(", ", m.getGenres()) : null);
             plot.setText(m.getPlot());
             stock.setText(Integer.toString(m.getStock()));
+            rented.setText(Integer.toString(m.getRented()));
         }
     }
 

@@ -1,5 +1,7 @@
 package es.unizar.aisolutions.aimovie.data;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
 
 import java.net.MalformedURLException;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 
 /**
  * Created by dbarelop on 27/04/15.
@@ -35,7 +39,7 @@ public class IMDbMovie implements Movie {
     private int imdbVotes;
     private String imdbID;
 
-    public IMDbMovie(JsonObject jsonMovie) throws MovieParseException {
+    public IMDbMovie(JsonObject jsonMovie, Context context) throws MovieParseException {
         String response = jsonMovie.get("Response").getAsString();
         if (!response.equals("False")) {
             String type = jsonMovie.get("Type").getAsString();
@@ -50,8 +54,9 @@ public class IMDbMovie implements Movie {
                 }
                 runtime = jsonMovie.get("Runtime").getAsString();
                 genres = new ArrayList<>();
+                MovieManager mgr = new MovieManager(context);
                 for (String genre : Arrays.asList(jsonMovie.get("Genre").getAsString().split(","))) {
-                    Genre g = new Genre(-1, genre);
+                    Genre g = mgr.fetchGenre(genre.trim());
                     genres.add(g);
                 }
                 director = jsonMovie.get("Director").getAsString();
@@ -101,8 +106,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setTitle(String title) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int getYear() {
         return year;
+    }
+
+    @Override
+    public void setYear(int year) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -111,8 +126,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setRated(String rated) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Date getReleased() {
         return released;
+    }
+
+    @Override
+    public void setReleased(Date released) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -121,8 +146,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setRuntime(String runtime) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    @Override
+    public void setGenres(List<Genre> genres) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -131,8 +166,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setDirector(String director) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getWriter() {
         return writer;
+    }
+
+    @Override
+    public void setWriter(String writer) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -141,8 +186,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setActors(List<String> actors) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getPlot() {
         return plot;
+    }
+
+    @Override
+    public void setPlot(String plot) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -151,8 +206,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setLanguage(String language) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getCountry() {
         return country;
+    }
+
+    @Override
+    public void setCountry(String country) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -161,8 +226,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setAwards(String awards) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public URL getPoster() {
         return poster;
+    }
+
+    @Override
+    public void setPoster(URL poster) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -171,8 +246,18 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setMetascore(int metascore) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public float getImdbRating() {
         return imdbRating;
+    }
+
+    @Override
+    public void setImdbRating(float imdbRating) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -181,16 +266,39 @@ public class IMDbMovie implements Movie {
     }
 
     @Override
+    public void setImdbVotes(int imdbVotes) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getImdbID() {
         return imdbID;
     }
 
     @Override
+    public void setImdbID(String imdbID) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int getStock() {
-        return -1;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setStock(int newValue) {
+        throw new UnsupportedOperationException();
     }
+
+    @Override
+    public int getRented() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setRented(int rented) {
+        throw new UnsupportedOperationException();
+    }
+
 }
+

@@ -1,9 +1,12 @@
 package es.unizar.aisolutions.aimovie.email;
 
-import java.util.Calendar;
+import android.util.Log;
+
+import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -16,23 +19,18 @@ import javax.mail.internet.MimeMessage;
  */
 public class MailHelper {
     // TODO: not expose credentials
-    private final String USERNAME = "aimovie.zar@gmail.com ";
-    private final String PASSWORD = "culopedo";
-    private final Properties props = new Properties() {{
+    private static final String USERNAME = "aimovie.zar@gmail.com ";
+    private static final String PASSWORD = "*******";
+    private static final Properties PROPERTIES = new Properties() {{
         put("mail.smtp.auth", "true");
         put("mail.smtp.starttls.enable", "true");
         put("mail.smtp.host", "smtp.gmail.com");
         put("mail.smtp.port", "587");
     }};
-    private String mail = "";
-    private String destEmail;
+    private static final String MAIL_TEMPLATE = "Hello Mr. %s %s\nYou have rented %s on %s\nThanks";
 
-    public MailHelper(String destEmail) {
-        this.destEmail = destEmail;
-    }
-
-    public boolean sendMail(String title) {
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+    public static boolean sendMail(String subject, String dest, String name, String surname, String movie) {
+        Session session = Session.getInstance(PROPERTIES, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(USERNAME, PASSWORD);
             }
@@ -40,21 +38,16 @@ public class MailHelper {
 
         Message m = new MimeMessage(session);
         try {
+            String body = String.format(MAIL_TEMPLATE, name, surname, movie, new Date(System.currentTimeMillis()));
             m.setFrom(new InternetAddress(USERNAME));
-            m.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destEmail));
-            m.setSubject(title);
-            m.setText(mail);
+            m.setRecipients(Message.RecipientType.TO, InternetAddress.parse(dest));
+            m.setSubject(subject);
+            m.setText(body);
             Transport.send(m);
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (MessagingException e) {
+            Log.e(e.getMessage(), e.toString(), e);
             return false;
         }
-    }
-
-    public void fillEmail(String name, String sur, String movieName) {
-        mail = "Hello " + name + " " + sur +
-                ",\nYou have rented '" + movieName + "' on " + Calendar.getInstance().getTime().toString()
-                + ".\nThanks.\n";
     }
 }
