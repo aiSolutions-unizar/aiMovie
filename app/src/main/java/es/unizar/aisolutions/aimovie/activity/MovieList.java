@@ -14,7 +14,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -49,7 +48,6 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private static int i = 0;
     private SimpleCursorAdapter adapter;
-    private String titleFilter = null;
     private String sortOrder = null;
 
     @Override
@@ -189,11 +187,34 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchView searchView =
-                (SearchView) menuItem.getActionView();
+        final MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconified(false);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Bundle bundle = new Bundle();
+                bundle.putString("query",s);
+                getLoaderManager().restartLoader(0, bundle, MovieList.this);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                menuItem.collapseActionView();
+                getLoaderManager().restartLoader(0, null, MovieList.this);
+                return true;
+            }
+        });
         return true;
     }
 
@@ -205,8 +226,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            titleFilter = query;
-            getLoaderManager().restartLoader(0, null, MovieList.this);
+            Bundle bundle = new Bundle();
+            bundle.putString("query",query);
+            getLoaderManager().restartLoader(0, bundle, MovieList.this);
         }
     }
 
@@ -263,11 +285,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;
         String[] selectionArgs = null;
-        if(titleFilter != null){
-            selection = "name  = ?";
-            selectionArgs = new String[1];
-            selectionArgs[0] = titleFilter;
-            titleFilter = null;
+        if(args != null && args.containsKey("query")){
+            selection = "name LIKE ?";
+            selectionArgs = new String[] {"%"+ args.get("query")+ "%" };
         }
         return new CursorLoader(this, uri, projection, selection, selectionArgs, sortOrder);
     }

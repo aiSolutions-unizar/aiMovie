@@ -13,7 +13,7 @@
         android:title="@string/action_search"
         android:icon="@drawable/action_search"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView|always" />
     <item
         android:id="@+id/action_sort"
         android:orderInCategory="200"
