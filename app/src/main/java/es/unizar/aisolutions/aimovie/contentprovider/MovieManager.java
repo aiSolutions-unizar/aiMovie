@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
@@ -182,8 +183,12 @@ public class MovieManager {
 
         try {
             context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (SQLiteConstraintException e) {
+            Log.d(e.getMessage(), e.toString(), e);
+            return false;
         } catch (RemoteException | OperationApplicationException e) {
             Log.e(e.getMessage(), e.toString(), e);
+            return false;
         }
         return true;
     }

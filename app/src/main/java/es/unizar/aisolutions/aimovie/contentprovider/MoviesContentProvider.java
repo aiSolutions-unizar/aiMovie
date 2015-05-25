@@ -59,7 +59,7 @@ public class MoviesContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        checkColumns(projection, sURIMatcher.match(uri));
+        //checkColumns(projection, sURIMatcher.match(uri));
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
                 queryBuilder.setTables(MoviesTable.TABLE_NAME);
@@ -70,7 +70,10 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case MOVIE_GENRES:
                 for (int i = 0; i < projection.length; i++) {
-                    projection[i] = GenresTable.TABLE_NAME + "." + projection[i];
+                    // support for subqueries
+                    if (projection[i].charAt(0) != '(') {
+                        projection[i] = GenresTable.TABLE_NAME + "." + projection[i];
+                    }
                 }
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
                         KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
@@ -90,7 +93,9 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case GENRE_MOVIES:
                 for (int i = 0; i < projection.length; i++) {
-                    projection[i] = MoviesTable.TABLE_NAME + "." + projection[i];
+                    if (projection[i].charAt(0) != '(') {
+                        projection[i] = MoviesTable.TABLE_NAME + "." + projection[i];
+                    }
                 }
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
                         KindTable.TABLE_NAME, MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
@@ -118,10 +123,10 @@ public class MoviesContentProvider extends ContentProvider {
         long id;
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
-                id = db.insert(MoviesTable.TABLE_NAME, null, values);
+                id = db.insertOrThrow(MoviesTable.TABLE_NAME, null, values);
                 break;
             case KINDS:
-                id = db.insert(KindTable.TABLE_NAME, null, values);
+                id = db.insertOrThrow(KindTable.TABLE_NAME, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);
@@ -183,6 +188,30 @@ public class MoviesContentProvider extends ContentProvider {
         }
         return rowsUpdated;
     }
+
+    /*@Override
+    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) {
+        ContentProviderResult[] result = new ContentProviderResult[operations.size()];
+        int i = 0;
+        // Opens the database object in "write" mode.
+        SQLiteDatabase db = database.getWritableDatabase();
+        // Begin a transaction
+        db.beginTransaction();
+        try {
+            for (ContentProviderOperation operation : operations) {
+                // Chain the result for back references
+                result[i++] = operation.apply(this, result, i);
+            }
+
+            db.setTransactionSuccessful();
+        } catch (OperationApplicationException e) {
+            Log.w(e.getMessage(), e.toString(), e);
+        } finally {
+            db.endTransaction();
+        }
+
+        return result;
+    }*/
 
     private void checkColumns(String[] projection, int uriType) {
         if (projection != null) {
