@@ -80,8 +80,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         });
 
         // TODO: add genres
-        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER};
-        int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
+        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER, MoviesContentProvider.MOVIE_GENRES_LIST};
+        int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image, R.id.activity_movie_list_item_genre};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0) {
             @Override
             public void setViewImage(final ImageView imageView, String value) {
@@ -265,7 +265,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = MoviesContentProvider.CONTENT_URI;
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[MoviesTable.AVAILABLE_COLUMNS.size() + 1]);
+        projection[projection.length - 1] = MoviesContentProvider.MOVIE_GENRES_LIST;
+        //String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;
         String[] selectionArgs = null;
         if(titleFilter != null){

@@ -20,6 +20,7 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 public class MoviesContentProvider extends ContentProvider {
     public static final String AUTHORITY = "es.unizar.aisolutions.aimovie.contentprovider";
+    public static final String MOVIE_GENRES_LIST = "genres_list";
     private static final int MOVIES = 1;
     private static final int MOVIE_ID = 2;
     private static final int GENRES = 3;
@@ -62,10 +63,36 @@ public class MoviesContentProvider extends ContentProvider {
         //checkColumns(projection, sURIMatcher.match(uri));
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
-                queryBuilder.setTables(MoviesTable.TABLE_NAME);
+                // workaround to return a comma-separated list of every movie's genres
+                // TODO: easier to duplicate genres list on each movie record
+                String subquery = String.format(
+                        "SELECT GROUP_CONCAT(%s.%s, ', ') AS %s, %s.%s " +
+                                "FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                                "GROUP BY %s.%s",
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME, MOVIE_GENRES_LIST,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, GenresTable.TABLE_NAME,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID);
+                queryBuilder.setTables(String.format(
+                        "%s INNER JOIN (%s) genres ON %s.%s = genres.%s",
+                        MoviesTable.TABLE_NAME, subquery, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        KindTable.COLUMN_MOVIE_ID));
                 break;
             case MOVIE_ID:
-                queryBuilder.setTables(MoviesTable.TABLE_NAME);
+                subquery = String.format(
+                        "SELECT GROUP_CONCAT(%s.%s, ', ') AS %s, %s.%s " +
+                                "FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                                "GROUP BY %s.%s",
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME, MOVIE_GENRES_LIST,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, GenresTable.TABLE_NAME,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID);
+                queryBuilder.setTables(String.format(
+                        "%s INNER JOIN (%s) genres ON %s.%s = genres.%s",
+                        MoviesTable.TABLE_NAME, subquery, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        KindTable.COLUMN_MOVIE_ID));
                 queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
             case MOVIE_GENRES:
@@ -93,13 +120,29 @@ public class MoviesContentProvider extends ContentProvider {
                 break;
             case GENRE_MOVIES:
                 for (int i = 0; i < projection.length; i++) {
-                    if (projection[i].charAt(0) != '(') {
+                    // fix
+                    if (projection[i].charAt(0) != '(' && !projection[i].equals(MOVIE_GENRES_LIST)) {
                         projection[i] = MoviesTable.TABLE_NAME + "." + projection[i];
                     }
                 }
-                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
-                        KindTable.TABLE_NAME, MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
+                subquery = String.format(
+                        "SELECT GROUP_CONCAT(%s.%s, ', ') AS %s, %s.%s " +
+                                "FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                                "GROUP BY %s.%s",
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME, MOVIE_GENRES_LIST,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, GenresTable.TABLE_NAME,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID);
+                queryBuilder.setTables(String.format(
+                        "%s INNER JOIN (%s) genres ON %s.%s = genres.%s " +
+                                "INNER JOIN %s ON %s.%s = %s.%s",
+                        MoviesTable.TABLE_NAME, subquery, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        KindTable.COLUMN_MOVIE_ID, KindTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
                         MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY));
+                /*queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
+                        KindTable.TABLE_NAME, MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
+                        MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY));*/
                 queryBuilder.appendWhere(String.format("%s.%s = %s",
                         KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, uri.getPathSegments().get(2)));
                 break;
@@ -188,30 +231,6 @@ public class MoviesContentProvider extends ContentProvider {
         }
         return rowsUpdated;
     }
-
-    /*@Override
-    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) {
-        ContentProviderResult[] result = new ContentProviderResult[operations.size()];
-        int i = 0;
-        // Opens the database object in "write" mode.
-        SQLiteDatabase db = database.getWritableDatabase();
-        // Begin a transaction
-        db.beginTransaction();
-        try {
-            for (ContentProviderOperation operation : operations) {
-                // Chain the result for back references
-                result[i++] = operation.apply(this, result, i);
-            }
-
-            db.setTransactionSuccessful();
-        } catch (OperationApplicationException e) {
-            Log.w(e.getMessage(), e.toString(), e);
-        } finally {
-            db.endTransaction();
-        }
-
-        return result;
-    }*/
 
     private void checkColumns(String[] projection, int uriType) {
         if (projection != null) {
