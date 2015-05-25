@@ -88,6 +88,16 @@ public class MoviesContentProvider extends ContentProvider {
                 queryBuilder.setTables(GenresTable.TABLE_NAME);
                 queryBuilder.appendWhere(GenresTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
+            case GENRE_MOVIES:
+                for (int i = 0; i < projection.length; i++) {
+                    projection[i] = MoviesTable.TABLE_NAME + "." + projection[i];
+                }
+                queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
+                        KindTable.TABLE_NAME, MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
+                        MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY));
+                queryBuilder.appendWhere(String.format("%s.%s = %s",
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, uri.getPathSegments().get(2)));
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }

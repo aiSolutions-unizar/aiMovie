@@ -35,6 +35,20 @@ public class MovieManager {
     }
 
     /**
+     * @param cursor Cursor to get the information of a genre from
+     * @return Get the information from a Cursor into one genre
+     */
+    public static Genre extractGenre(Cursor cursor) {
+        if (cursor != null) {
+            long _id = cursor.getLong(cursor.getColumnIndex(GenresTable.PRIMARY_KEY));
+            String name = cursor.getString(cursor.getColumnIndex(GenresTable.COLUMN_GENRE_NAME));
+            return new Genre(_id, name);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @param _id Identifier of movie to fetch.
      * @return The movie asked
      */
@@ -285,19 +299,5 @@ public class MovieManager {
         return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
                 writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
                 imdb_votes, imdb_id, stock, rented);
-    }
-
-    /**
-     * @param cursor Cursor to get the information of a genre from
-     * @return Get the information from a Cursor into one genre
-     */
-    private Genre extractGenre(Cursor cursor) {
-        if (cursor != null) {
-            long _id = cursor.getLong(cursor.getColumnIndex(GenresTable.PRIMARY_KEY));
-            String name = cursor.getString(cursor.getColumnIndex(GenresTable.COLUMN_GENRE_NAME));
-            return new Genre(_id, name);
-        } else {
-            return null;
-        }
     }
 }

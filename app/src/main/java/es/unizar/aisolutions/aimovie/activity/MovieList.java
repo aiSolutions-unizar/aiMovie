@@ -40,6 +40,7 @@ import java.net.URL;
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentProvider;
+import es.unizar.aisolutions.aimovie.data.Genre;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
@@ -48,8 +49,10 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private static int i = 0;
+    private NavigationDrawerFragment navigationDrawerFragment;
     private SimpleCursorAdapter adapter;
     private String titleFilter = null;
+    private Long genreFilter = null;
     private String sortOrder = null;
 
     @Override
@@ -57,7 +60,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         navigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
@@ -271,6 +274,9 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             selectionArgs[0] = titleFilter;
             titleFilter = null;
         }
+        if (genreFilter != null) {
+            uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRE/" + genreFilter + "/MOVIES");
+        }
         return new CursorLoader(this, uri, projection, selection, selectionArgs, sortOrder);
     }
 
@@ -286,6 +292,12 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // TODO: complete
+        if (navigationDrawerFragment != null) {
+            Genre selectedGenre = navigationDrawerFragment.getGenreAtPosition(position);
+            genreFilter = selectedGenre == null ? null : selectedGenre.get_id();
+            getLoaderManager().restartLoader(0, null, this);
+            String title = selectedGenre == null ? "All movies" : selectedGenre.getName();
+            getSupportActionBar().setTitle(title);
+        }
     }
 }

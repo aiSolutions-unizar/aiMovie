@@ -26,7 +26,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import es.unizar.aisolutions.aimovie.R;
+import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentProvider;
+import es.unizar.aisolutions.aimovie.data.Genre;
 import es.unizar.aisolutions.aimovie.database.GenresTable;
 
 /**
@@ -230,6 +232,15 @@ public class NavigationDrawerFragment extends Fragment implements LoaderManager.
 
     private ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
+    }
+
+    protected Genre getGenreAtPosition(int position) {
+        if (position > 0) {
+            Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);
+            return c == null ? null : MovieManager.extractGenre(c);
+        } else {
+            return null;
+        }
     }
 
     @Override
