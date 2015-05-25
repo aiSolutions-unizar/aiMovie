@@ -14,9 +14,9 @@ public class KindTable {
     public static final String COLUMN_GENRE_ID = "genre";
 
     public static final Set<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{
-            TABLE_NAME + "." + PRIMARY_KEY,
-            TABLE_NAME + "." + COLUMN_MOVIE_ID,
-            TABLE_NAME + "." + COLUMN_GENRE_ID
+            PRIMARY_KEY,
+            COLUMN_MOVIE_ID,
+            COLUMN_GENRE_ID
     }));
 
     // SQL code to create table called 'TABLE_NAME'
@@ -26,9 +26,11 @@ public class KindTable {
                     "%s INTEGER NOT NULL, " +
                     "%s INTEGER NOT NULL, " +
                     "FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE CASCADE, " +
-                    "FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE CASCADE);",
+                    "FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE CASCADE, " +
+                    "UNIQUE (%s, %s));",
             TABLE_NAME, PRIMARY_KEY, COLUMN_GENRE_ID, COLUMN_MOVIE_ID, COLUMN_GENRE_ID, GenresTable.TABLE_NAME,
-            GenresTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY
+            GenresTable.PRIMARY_KEY, COLUMN_MOVIE_ID, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY, COLUMN_MOVIE_ID,
+            COLUMN_GENRE_ID
     );
 
     // SQL code to create needed triggers

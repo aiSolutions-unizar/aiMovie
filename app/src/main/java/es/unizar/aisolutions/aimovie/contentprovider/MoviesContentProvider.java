@@ -20,6 +20,7 @@ import es.unizar.aisolutions.aimovie.database.MoviesTable;
 
 public class MoviesContentProvider extends ContentProvider {
     public static final String AUTHORITY = "es.unizar.aisolutions.aimovie.contentprovider";
+    public static final String MOVIE_GENRES_LIST = "genres_list";
     private static final int MOVIES = 1;
     private static final int MOVIE_ID = 2;
     private static final int GENRES = 3;
@@ -59,16 +60,48 @@ public class MoviesContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        checkColumns(projection, sURIMatcher.match(uri));
+        //checkColumns(projection, sURIMatcher.match(uri));
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
-                queryBuilder.setTables(MoviesTable.TABLE_NAME);
+                // workaround to return a comma-separated list of every movie's genres
+                // TODO: easier to duplicate genres list on each movie record
+                String subquery = String.format(
+                        "SELECT GROUP_CONCAT(%s.%s, ', ') AS %s, %s.%s " +
+                                "FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                                "GROUP BY %s.%s",
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME, MOVIE_GENRES_LIST,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, GenresTable.TABLE_NAME,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID);
+                queryBuilder.setTables(String.format(
+                        "%s INNER JOIN (%s) genres ON %s.%s = genres.%s",
+                        MoviesTable.TABLE_NAME, subquery, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        KindTable.COLUMN_MOVIE_ID));
                 break;
             case MOVIE_ID:
-                queryBuilder.setTables(MoviesTable.TABLE_NAME);
+                subquery = String.format(
+                        "SELECT GROUP_CONCAT(%s.%s, ', ') AS %s, %s.%s " +
+                                "FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                                "GROUP BY %s.%s",
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME, MOVIE_GENRES_LIST,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, GenresTable.TABLE_NAME,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID);
+                queryBuilder.setTables(String.format(
+                        "%s INNER JOIN (%s) genres ON %s.%s = genres.%s",
+                        MoviesTable.TABLE_NAME, subquery, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        KindTable.COLUMN_MOVIE_ID));
                 queryBuilder.appendWhere(MoviesTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
                 break;
             case MOVIE_GENRES:
+                for (int i = 0; i < projection.length; i++) {
+                    // support for subqueries
+                    if (projection[i].charAt(0) != '(') {
+                        projection[i] = GenresTable.TABLE_NAME + "." + projection[i];
+                    }
+                }
                 queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
                         KindTable.TABLE_NAME, GenresTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID,
                         GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY));
@@ -84,6 +117,34 @@ public class MoviesContentProvider extends ContentProvider {
             case GENRE_ID:
                 queryBuilder.setTables(GenresTable.TABLE_NAME);
                 queryBuilder.appendWhere(GenresTable.PRIMARY_KEY + " = " + uri.getLastPathSegment());
+                break;
+            case GENRE_MOVIES:
+                for (int i = 0; i < projection.length; i++) {
+                    // fix
+                    if (projection[i].charAt(0) != '(' && !projection[i].equals(MOVIE_GENRES_LIST)) {
+                        projection[i] = MoviesTable.TABLE_NAME + "." + projection[i];
+                    }
+                }
+                subquery = String.format(
+                        "SELECT GROUP_CONCAT(%s.%s, ', ') AS %s, %s.%s " +
+                                "FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                                "GROUP BY %s.%s",
+                        GenresTable.TABLE_NAME, GenresTable.COLUMN_GENRE_NAME, MOVIE_GENRES_LIST,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID, GenresTable.TABLE_NAME,
+                        KindTable.TABLE_NAME, GenresTable.TABLE_NAME, GenresTable.PRIMARY_KEY,
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, KindTable.TABLE_NAME,
+                        KindTable.COLUMN_MOVIE_ID);
+                queryBuilder.setTables(String.format(
+                        "%s INNER JOIN (%s) genres ON %s.%s = genres.%s " +
+                                "INNER JOIN %s ON %s.%s = %s.%s",
+                        MoviesTable.TABLE_NAME, subquery, MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY,
+                        KindTable.COLUMN_MOVIE_ID, KindTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
+                        MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY));
+                /*queryBuilder.setTables(String.format("%s INNER JOIN %s ON %s.%s = %s.%s",
+                        KindTable.TABLE_NAME, MoviesTable.TABLE_NAME, KindTable.TABLE_NAME, KindTable.COLUMN_MOVIE_ID,
+                        MoviesTable.TABLE_NAME, MoviesTable.PRIMARY_KEY));*/
+                queryBuilder.appendWhere(String.format("%s.%s = %s",
+                        KindTable.TABLE_NAME, KindTable.COLUMN_GENRE_ID, uri.getPathSegments().get(2)));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -105,10 +166,10 @@ public class MoviesContentProvider extends ContentProvider {
         long id;
         switch (sURIMatcher.match(uri)) {
             case MOVIES:
-                id = db.insert(MoviesTable.TABLE_NAME, null, values);
+                id = db.insertOrThrow(MoviesTable.TABLE_NAME, null, values);
                 break;
             case KINDS:
-                id = db.insert(KindTable.TABLE_NAME, null, values);
+                id = db.insertOrThrow(KindTable.TABLE_NAME, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Uknown URI: " + uri);

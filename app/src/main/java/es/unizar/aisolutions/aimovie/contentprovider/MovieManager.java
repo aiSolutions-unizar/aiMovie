@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
@@ -32,6 +33,20 @@ public class MovieManager {
      */
     public MovieManager(Context context) {
         this.context = context;
+    }
+
+    /**
+     * @param cursor Cursor to get the information of a genre from
+     * @return Get the information from a Cursor into one genre
+     */
+    public static Genre extractGenre(Cursor cursor) {
+        if (cursor != null) {
+            long _id = cursor.getLong(cursor.getColumnIndex(GenresTable.PRIMARY_KEY));
+            String name = cursor.getString(cursor.getColumnIndex(GenresTable.COLUMN_GENRE_NAME));
+            return new Genre(_id, name);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -168,8 +183,12 @@ public class MovieManager {
 
         try {
             context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+        } catch (SQLiteConstraintException e) {
+            Log.d(e.getMessage(), e.toString(), e);
+            return false;
         } catch (RemoteException | OperationApplicationException e) {
             Log.e(e.getMessage(), e.toString(), e);
+            return false;
         }
         return true;
     }
@@ -285,19 +304,5 @@ public class MovieManager {
         return new StoredMovie(_id, title, year, rated, released, runtime, genres, director,
                 writer, actors, plot, language, country, awards, poster, metascore, imdb_rating,
                 imdb_votes, imdb_id, stock, rented);
-    }
-
-    /**
-     * @param cursor Cursor to get the information of a genre from
-     * @return Get the information from a Cursor into one genre
-     */
-    private Genre extractGenre(Cursor cursor) {
-        if (cursor != null) {
-            long _id = cursor.getLong(cursor.getColumnIndex(GenresTable.PRIMARY_KEY));
-            String name = cursor.getString(cursor.getColumnIndex(GenresTable.COLUMN_GENRE_NAME));
-            return new Genre(_id, name);
-        } else {
-            return null;
-        }
     }
 }

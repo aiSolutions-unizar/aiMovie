@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -39,21 +40,28 @@ import java.net.URL;
 import es.unizar.aisolutions.aimovie.R;
 import es.unizar.aisolutions.aimovie.contentprovider.MovieManager;
 import es.unizar.aisolutions.aimovie.contentprovider.MoviesContentProvider;
+import es.unizar.aisolutions.aimovie.data.Genre;
 import es.unizar.aisolutions.aimovie.data.Movie;
 import es.unizar.aisolutions.aimovie.database.MoviesTable;
 import es.unizar.aisolutions.aimovie.external_data.OMDbMovieFetcher;
 
-public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MovieList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationDrawerFragment.NavigationDrawerCallbacks {
     private static final int CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 8 / 1024);  // 1/8 available mem in KB
     private static LruCache<String, Bitmap> thumbnailCache = new LruCache<>(CACHE_SIZE);
     private static int i = 0;
+    private NavigationDrawerFragment navigationDrawerFragment;
     private SimpleCursorAdapter adapter;
+    private String titleFilter = null;
+    private Long genreFilter = null;
     private String sortOrder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
+        navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        navigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
         ListView listView = (ListView) findViewById(R.id.movie_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,8 +80,8 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         });
 
         // TODO: add genres
-        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER};
-        int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image};
+        String[] from = {MoviesTable.COLUMN_TITLE, MoviesTable.COLUMN_DIRECTOR, MoviesTable.COLUMN_YEAR, MoviesTable.COLUMN_POSTER, MoviesContentProvider.MOVIE_GENRES_LIST};
+        int[] to = {R.id.activity_movie_list_item_title, R.id.activity_movie_list_item_director, R.id.activity_movie_list_item_year, R.id.activity_movie_list_item_image, R.id.activity_movie_list_item_genre};
         adapter = new SimpleCursorAdapter(this, R.layout.activity_movie_list_item, null, from, to, 0) {
             @Override
             public void setViewImage(final ImageView imageView, String value) {
@@ -232,7 +240,6 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -282,12 +289,17 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = MoviesContentProvider.CONTENT_URI;
-        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
+        String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[MoviesTable.AVAILABLE_COLUMNS.size() + 1]);
+        projection[projection.length - 1] = MoviesContentProvider.MOVIE_GENRES_LIST;
+        //String[] projection = MoviesTable.AVAILABLE_COLUMNS.toArray(new String[0]);
         String selection = null;
         String[] selectionArgs = null;
         if(args != null && args.containsKey("query")){
             selection = "name LIKE ?";
             selectionArgs = new String[] {"%"+ args.get("query")+ "%" };
+        }
+        if (genreFilter != null) {
+            uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/GENRE/" + genreFilter + "/MOVIES");
         }
         return new CursorLoader(this, uri, projection, selection, selectionArgs, sortOrder);
     }
@@ -300,5 +312,16 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        if (navigationDrawerFragment != null) {
+            Genre selectedGenre = navigationDrawerFragment.getGenreAtPosition(position);
+            genreFilter = selectedGenre == null ? null : selectedGenre.get_id();
+            getLoaderManager().restartLoader(0, null, this);
+            String title = selectedGenre == null ? "All movies" : selectedGenre.getName();
+            getSupportActionBar().setTitle(title);
+        }
     }
 }

@@ -37,25 +37,25 @@ public class MoviesTable {
     public static final String COLUMN_RENTED = "rented";
 
     public static final Set<String> AVAILABLE_COLUMNS = new HashSet<>(Arrays.asList(new String[]{
-            TABLE_NAME + "." + PRIMARY_KEY,
-            TABLE_NAME + "." + COLUMN_TITLE,
-            TABLE_NAME + "." + COLUMN_YEAR,
-            TABLE_NAME + "." + COLUMN_RATED,
-            TABLE_NAME + "." + COLUMN_RELEASED,
-            TABLE_NAME + "." + COLUMN_RUNTIME,
-            TABLE_NAME + "." + COLUMN_DIRECTOR,
-            TABLE_NAME + "." + COLUMN_WRITER,
-            TABLE_NAME + "." + COLUMN_PLOT,
-            TABLE_NAME + "." + COLUMN_LANGUAGE,
-            TABLE_NAME + "." + COLUMN_COUNTRY,
-            TABLE_NAME + "." + COLUMN_AWARDS,
-            TABLE_NAME + "." + COLUMN_POSTER,
-            TABLE_NAME + "." + COLUMN_METASCORE,
-            TABLE_NAME + "." + COLUMN_IMDB_RATING,
-            TABLE_NAME + "." + COLUMN_IMDB_VOTES,
-            TABLE_NAME + "." + COLUMN_IMDB_ID,
-            TABLE_NAME + "." + COLUMN_STOCK,
-            TABLE_NAME + "." + COLUMN_RENTED
+            PRIMARY_KEY,
+            COLUMN_TITLE,
+            COLUMN_YEAR,
+            COLUMN_RATED,
+            COLUMN_RELEASED,
+            COLUMN_RUNTIME,
+            COLUMN_DIRECTOR,
+            COLUMN_WRITER,
+            COLUMN_PLOT,
+            COLUMN_LANGUAGE,
+            COLUMN_COUNTRY,
+            COLUMN_AWARDS,
+            COLUMN_POSTER,
+            COLUMN_METASCORE,
+            COLUMN_IMDB_RATING,
+            COLUMN_IMDB_VOTES,
+            COLUMN_IMDB_ID,
+            COLUMN_STOCK,
+            COLUMN_RENTED
     }));
 
     // SQL code to create table called 'TABLE_NAME'
