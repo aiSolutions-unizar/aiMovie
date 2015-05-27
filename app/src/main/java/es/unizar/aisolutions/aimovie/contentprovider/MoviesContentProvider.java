@@ -33,12 +33,12 @@ public class MoviesContentProvider extends ContentProvider {
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH, MOVIES);                       // To manage all movies
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", MOVIE_ID);              // To manage a movie
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#/GENRES", MOVIE_GENRES);   // To manage all the genres a movie belongs to
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRES", GENRES);           // To manage all genres
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/KINDS", KINDS);             // To manage relationships between movies & genres
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#", GENRE_ID);        // To manage a genre
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH, MOVIES);                           // To manage all movies
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", MOVIE_ID);                  // To manage a movie
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#/GENRES", MOVIE_GENRES);       // To manage all the genres a movie belongs to
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRES", GENRES);               // To manage all genres
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/KINDS", KINDS);                 // To manage relationships between movies & genres
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#", GENRE_ID);            // To manage a genre
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/GENRE/#/MOVIES", GENRE_MOVIES); // To manage all movies that belong to a given genre
     }
 

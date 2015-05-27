@@ -65,7 +65,7 @@ public class MovieEditor extends ActionBarActivity {
             }
         });
 
-        if (!getIntent().getExtras().isEmpty()) {
+        if (getIntent().getExtras() != null && !getIntent().getExtras().isEmpty()) {
             final long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
             m = mgr.fetchMovie(id);
 

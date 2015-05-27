@@ -56,4 +56,7 @@
     <string name="genre_western">Western</string>
     <string name="navigation_drawer_open">Open drawer</string>
     <string name="navigation_drawer_close">Close drawer</string>
+    <string name="movie_already_added">Movie already added</string>
+    <string name="movie_not_found">Movie not found</string>
+    <string name="all_movies">All movies</string>
 </resources>

@@ -51,7 +51,6 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
     private static int i = 0;
     private NavigationDrawerFragment navigationDrawerFragment;
     private SimpleCursorAdapter adapter;
-    private String titleFilter = null;
     private Long genreFilter = null;
     private String sortOrder = null;
 
@@ -137,8 +136,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 final MovieManager mcm = new MovieManager(MovieList.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 // for debugging purposes
-                final String[] ids = {"tt0070735", "tt2395427", "tt2967224", "tt1655441", "tt2820852",
-                        "tt3450650", "tt1375666", "tt0137523", "tt1345836", "tt0133093"};
+                final String[] ids = {"tt0070735", "tt1375666", "tt1130884", "tt0068646", "tt0110912", "tt0209144"};
                 if (i < ids.length) input.setText(ids[i++]);
                 builder.setView(input);
                 builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
@@ -155,9 +153,11 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                             @Override
                             protected void onPostExecute(Movie movie) {
                                 if (movie != null) {
-                                    mcm.addMovie(movie);
+                                    if (!mcm.addMovie(movie)) {
+                                        Toast.makeText(MovieList.this, getString(R.string.movie_already_added) + " (" + movie.getTitle() + ")", Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
-                                    Toast.makeText(MovieList.this, "Movie not found", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MovieList.this, getString(R.string.movie_not_found), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }.execute(id);
@@ -295,7 +295,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         String selection = null;
         String[] selectionArgs = null;
         if(args != null && args.containsKey("query")){
-            selection = "name LIKE ?";
+            selection = MoviesTable.COLUMN_TITLE + " LIKE ?";
             selectionArgs = new String[] {"%"+ args.get("query")+ "%" };
         }
         if (genreFilter != null) {
@@ -320,7 +320,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             Genre selectedGenre = navigationDrawerFragment.getGenreAtPosition(position);
             genreFilter = selectedGenre == null ? null : selectedGenre.get_id();
             getLoaderManager().restartLoader(0, null, this);
-            String title = selectedGenre == null ? "All movies" : selectedGenre.getName();
+            String title = selectedGenre == null ? getString(R.string.all_movies) : selectedGenre.getName();
             getSupportActionBar().setTitle(title);
         }
     }
