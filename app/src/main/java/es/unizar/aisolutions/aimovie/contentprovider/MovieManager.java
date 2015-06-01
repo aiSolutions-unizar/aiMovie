@@ -149,7 +149,7 @@ public class MovieManager {
      * @return True if the movie newmovie is added successfully else false
      */
     public boolean addMovie(Movie newMovie) {
-        if (!(newMovie.getTitle()=="") && newMovie.getRented()>-1 && newMovie.getStock()>-1) {
+        if (!newMovie.getTitle().isEmpty() && newMovie.getRented() >= 0 && newMovie.getStock() >= 0) {
             ArrayList<ContentProviderOperation> operations = new ArrayList<>();
             Uri uriMovie = MoviesContentProvider.CONTENT_URI;
             Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
@@ -200,7 +200,7 @@ public class MovieManager {
 
     /**
      * @param m Movie to delete.
-     * @return true if the delete have been successfully
+     * @return true if the deletion has been successful
      */
     public boolean deleteMovie(Movie m) {
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + m.get_id());

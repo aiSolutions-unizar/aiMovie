@@ -59,4 +59,6 @@
     <string name="movie_already_added">Movie already added</string>
     <string name="movie_not_found">Movie not found</string>
     <string name="all_movies">All movies</string>
+    <string name="via_imdb">Via IMDb</string>
+    <string name="manually">Manually</string>
 </resources>
