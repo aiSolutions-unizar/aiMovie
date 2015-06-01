@@ -149,7 +149,7 @@ public class MovieManager {
      * @return True if the movie newmovie is added successfully else false
      */
     public boolean addMovie(Movie newMovie) {
-        if (!newMovie.getTitle().isEmpty() && newMovie.getRented() >= 0 && newMovie.getStock() >= 0) {
+        if (!newMovie.getTitle().isEmpty()) {
             ArrayList<ContentProviderOperation> operations = new ArrayList<>();
             Uri uriMovie = MoviesContentProvider.CONTENT_URI;
             Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
