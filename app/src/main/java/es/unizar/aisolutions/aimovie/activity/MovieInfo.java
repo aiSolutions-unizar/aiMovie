@@ -56,7 +56,8 @@ public class MovieInfo extends ActionBarActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MovieInfo.this);
                     builder.setTitle("Add stock");
                     final EditText input = new EditText(MovieInfo.this);
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER|
+                    InputType.TYPE_NUMBER_FLAG_SIGNED);
                     builder.setView(input);
                     builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
                         @Override
