@@ -206,10 +206,11 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             public boolean onQueryTextSubmit(String s) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 Bundle bundle = new Bundle();
-                bundle.putString("query",s);
+                bundle.putString("query", s);
                 getLoaderManager().restartLoader(0, bundle, MovieList.this);
                 return false;
             }
@@ -223,6 +224,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
                 return true;
             }
         });
+        searchView.clearFocus();
         return true;
     }
 
