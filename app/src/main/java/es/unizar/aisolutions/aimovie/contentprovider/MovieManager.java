@@ -149,53 +149,58 @@ public class MovieManager {
      * @return True if the movie newmovie is added successfully else false
      */
     public boolean addMovie(Movie newMovie) {
-        ArrayList<ContentProviderOperation> operations = new ArrayList<>();
-        Uri uriMovie = MoviesContentProvider.CONTENT_URI;
-        Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
+        if (!newMovie.getTitle().isEmpty()) {
+            ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+            Uri uriMovie = MoviesContentProvider.CONTENT_URI;
+            Uri uriKind = Uri.parse(MoviesContentProvider.CONTENT_URI + "/KINDS");
+            ContentValues valuesMovie = new ContentValues();
+            valuesMovie.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
+            valuesMovie.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
+            valuesMovie.put(MoviesTable.COLUMN_RATED, newMovie.getRated());
+            valuesMovie.put(MoviesTable.COLUMN_RELEASED, newMovie.getReleased() != null ? newMovie.getReleased().getTime() : null);
+            valuesMovie.put(MoviesTable.COLUMN_RUNTIME, newMovie.getRuntime());
+            valuesMovie.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
+            valuesMovie.put(MoviesTable.COLUMN_WRITER, newMovie.getWriter());
+            valuesMovie.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
+            valuesMovie.put(MoviesTable.COLUMN_LANGUAGE, newMovie.getLanguage());
+            valuesMovie.put(MoviesTable.COLUMN_COUNTRY, newMovie.getCountry());
+            valuesMovie.put(MoviesTable.COLUMN_AWARDS, newMovie.getAwards());
+            valuesMovie.put(MoviesTable.COLUMN_POSTER, newMovie.getPoster() != null ? newMovie.getPoster().toString() : null);
+            valuesMovie.put(MoviesTable.COLUMN_METASCORE, newMovie.getMetascore() == -1 ? null : newMovie.getMetascore());
+            valuesMovie.put(MoviesTable.COLUMN_IMDB_RATING, newMovie.getImdbRating() == -1 ? null : newMovie.getImdbRating());
+            valuesMovie.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
+            valuesMovie.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
 
-        ContentValues valuesMovie = new ContentValues();
-        valuesMovie.put(MoviesTable.COLUMN_TITLE, newMovie.getTitle());
-        valuesMovie.put(MoviesTable.COLUMN_YEAR, newMovie.getYear() == -1 ? null : newMovie.getYear());
-        valuesMovie.put(MoviesTable.COLUMN_RATED, newMovie.getRated());
-        valuesMovie.put(MoviesTable.COLUMN_RELEASED, newMovie.getReleased() != null ? newMovie.getReleased().getTime() : null);
-        valuesMovie.put(MoviesTable.COLUMN_RUNTIME, newMovie.getRuntime());
-        valuesMovie.put(MoviesTable.COLUMN_DIRECTOR, newMovie.getDirector());
-        valuesMovie.put(MoviesTable.COLUMN_WRITER, newMovie.getWriter());
-        valuesMovie.put(MoviesTable.COLUMN_PLOT, newMovie.getPlot());
-        valuesMovie.put(MoviesTable.COLUMN_LANGUAGE, newMovie.getLanguage());
-        valuesMovie.put(MoviesTable.COLUMN_COUNTRY, newMovie.getCountry());
-        valuesMovie.put(MoviesTable.COLUMN_AWARDS, newMovie.getAwards());
-        valuesMovie.put(MoviesTable.COLUMN_POSTER, newMovie.getPoster() != null ? newMovie.getPoster().toString() : null);
-        valuesMovie.put(MoviesTable.COLUMN_METASCORE, newMovie.getMetascore() == -1 ? null : newMovie.getMetascore());
-        valuesMovie.put(MoviesTable.COLUMN_IMDB_RATING, newMovie.getImdbRating() == -1 ? null : newMovie.getImdbRating());
-        valuesMovie.put(MoviesTable.COLUMN_IMDB_VOTES, newMovie.getImdbVotes() == -1 ? null : newMovie.getImdbVotes());
-        valuesMovie.put(MoviesTable.COLUMN_IMDB_ID, newMovie.getImdbID());
+            ContentProviderOperation movieAddition = ContentProviderOperation.newInsert(uriMovie)
+                    .withValues(valuesMovie).build();
+            operations.add(movieAddition);
+            for (Genre g : newMovie.getGenres()) {
+                ContentProviderOperation kindAddition = ContentProviderOperation.newInsert(uriKind)
+                        .withValue(KindTable.COLUMN_GENRE_ID, g.get_id())
+                        .withValueBackReference(KindTable.COLUMN_MOVIE_ID, 0).build();
+                operations.add(kindAddition);
+            }
 
-        ContentProviderOperation movieAddition = ContentProviderOperation.newInsert(uriMovie)
-                .withValues(valuesMovie).build();
-        operations.add(movieAddition);
-        for (Genre g : newMovie.getGenres()) {
-            ContentProviderOperation kindAddition = ContentProviderOperation.newInsert(uriKind)
-                    .withValue(KindTable.COLUMN_GENRE_ID, g.get_id())
-                    .withValueBackReference(KindTable.COLUMN_MOVIE_ID, 0).build();
-            operations.add(kindAddition);
+            try {
+                context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
+            } catch (SQLiteConstraintException e) {
+                Log.d(e.getMessage(), e.toString(), e);
+                return false;
+            } catch (RemoteException | OperationApplicationException e) {
+                Log.e(e.getMessage(), e.toString(), e);
+                return false;
+            }
+            return true;
         }
 
-        try {
-            context.getContentResolver().applyBatch(MoviesContentProvider.AUTHORITY, operations);
-        } catch (SQLiteConstraintException e) {
-            Log.d(e.getMessage(), e.toString(), e);
-            return false;
-        } catch (RemoteException | OperationApplicationException e) {
-            Log.e(e.getMessage(), e.toString(), e);
+        else {
             return false;
         }
-        return true;
     }
 
     /**
      * @param m Movie to delete.
-     * @return true if the delete have been successfully
+     * @return true if the deletion has been successful
      */
     public boolean deleteMovie(Movie m) {
         Uri uri = Uri.parse(MoviesContentProvider.CONTENT_URI + "/" + m.get_id());

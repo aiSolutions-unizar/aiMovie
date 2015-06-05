@@ -36,7 +36,7 @@
                 fab:fab_colorNormal="@color/white"
                 fab:fab_colorPressed="@color/white_pressed"
                 fab:fab_size="mini"
-                fab:fab_title="Manually" />
+                fab:fab_title="@string/manually" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_movie_imdb"
@@ -45,7 +45,7 @@
                 fab:fab_colorNormal="@color/white"
                 fab:fab_colorPressed="@color/white_pressed"
                 fab:fab_size="mini"
-                fab:fab_title="Via IMDB" />
+                fab:fab_title="@string/via_imdb" />
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

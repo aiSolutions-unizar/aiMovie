@@ -23,6 +23,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -200,7 +201,7 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconified(false);
-
+        searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -220,6 +221,10 @@ public class MovieList extends ActionBarActivity implements LoaderManager.Loader
             @Override
             public boolean onClose() {
                 menuItem.collapseActionView();
+                //hide keyboard
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN);
                 getLoaderManager().restartLoader(0, null, MovieList.this);
                 return true;
             }

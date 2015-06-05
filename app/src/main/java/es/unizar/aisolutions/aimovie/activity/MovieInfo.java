@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,13 +56,20 @@ public class MovieInfo extends ActionBarActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MovieInfo.this);
                     builder.setTitle("Add stock");
                     final EditText input = new EditText(MovieInfo.this);
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER|
+                    InputType.TYPE_NUMBER_FLAG_SIGNED);
                     builder.setView(input);
                     builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             int add = Integer.parseInt(input.getText().toString());
-                            m.setStock(m.getStock() + add);
+                            if(m.getStock() + add < 0){
+                                Toast.makeText(getApplicationContext(),R.string.minimum_stock, Toast.LENGTH_SHORT).show();
+                                m.setStock(0);
+                            }
+                            else{
+                                m.setStock(m.getStock() + add);
+                            }
                             mgr.updateMovie(m);
                             stock.setText(Integer.toString(m.getStock()));
                         }
@@ -91,10 +99,15 @@ public class MovieInfo extends ActionBarActivity {
             rentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent i = new Intent(MovieInfo.this, UserInfo.class);
-                    long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
-                    i.putExtra(UserInfo.EXTRA_MOVIE_ID, id);
-                    startActivity(i);
+                    if(m.getStock() > 0){
+                        Intent i = new Intent(MovieInfo.this, UserInfo.class);
+                        long id = getIntent().getExtras().getLong(EXTRA_MOVIE_ID);
+                        i.putExtra(UserInfo.EXTRA_MOVIE_ID, id);
+                        startActivity(i);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),R.string.movie_not_available, Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
